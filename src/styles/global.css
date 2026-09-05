@@ -188,3 +188,9 @@ nav.main a.on { color: var(--ink); font-weight: 600; background: #EDEFEA; }
 /* ---------- 页脚 ---------- */
 footer { border-top: 1px solid var(--line); margin-top: 40px; }
 .fwrap { max-width: 1080px; margin: 0 auto; padding: 26px 24px 40px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); font-family: var(--mono); }
+
+/* ---------- 列表整行链接化（替代设计稿 mock 的 data-go 行为） ---------- */
+.artlist li > a,
+.recent li > a,
+.relbox li > a { display: flex; flex: 1; align-items: baseline; gap: inherit; min-width: 0; }
+.taggroup h2 { scroll-margin-top: 76px; }

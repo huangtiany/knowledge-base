@@ -1,0 +1,7 @@
+---
+import { getCollection } from 'astro:content';
+import ResourceList from '../../components/ResourceList.astro';
+
+const resources = await getCollection('aiResources');
+---
+<ResourceList dom="ai" resources={resources} />

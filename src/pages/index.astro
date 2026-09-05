@@ -1,19 +1,105 @@
 ---
-// M1 占位首页：只验证构建与 base 路径，M4 将替换为真正的首页。
-const favicon = `${import.meta.env.BASE_URL}favicon.svg`;
+// 首页：动态门户——子主题由标签自动生成，零内容时只有两个领域入口，随内容长成门户。
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import { DOMAINS } from '../lib/domains';
+import { loadTags } from '../lib/tags';
+import { formatShortDate } from '../lib/format';
+
+const base = import.meta.env.BASE_URL;
+const domainTags = loadTags();
+
+const aiArticles = await getCollection('ai');
+const stackArticles = await getCollection('stack');
+const aiResources = await getCollection('aiResources');
+const stackResources = await getCollection('stackResources');
+
+const articleCount = { ai: aiArticles.length, stack: stackArticles.length };
+const resCount = { ai: aiResources.length, stack: stackResources.length };
+
+// 最近更新：笔记与资源卡混排，按日期倒序取前 8
+const recent = [
+  ...aiArticles.map((e) => ({ kind: 'note', dom: 'ai', date: e.data.date, title: e.data.title, url: `${base}ai/${e.id}/` })),
+  ...stackArticles.map((e) => ({ kind: 'note', dom: 'stack', date: e.data.date, title: e.data.title, url: `${base}stack/${e.id}/` })),
+  ...aiResources.map((e) => ({ kind: 'res', dom: 'ai', date: e.data.date, title: e.data.title, url: e.data.url })),
+  ...stackResources.map((e) => ({ kind: 'res', dom: 'stack', date: e.data.date, title: e.data.title, url: e.data.url })),
+].sort((a, b) => +b.date - +a.date).slice(0, 8);
+
+const countByTag = {
+  ai: Object.fromEntries(domainTags.ai.map((t) => [t, aiArticles.filter((a) => a.data.tags.includes(t)).length])),
+  stack: Object.fromEntries(domainTags.stack.map((t) => [t, stackArticles.filter((a) => a.data.tags.includes(t)).length])),
+};
+const isEmpty = articleCount.ai + articleCount.stack + resCount.ai + resCount.stack === 0;
 ---
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href={favicon} />
-    <title>格致 · 个人知识库</title>
-  </head>
-  <body>
-    <main style="font-family: sans-serif; padding: 48px;">
+<Layout title="格致 · 个人知识库" description="一份正在生长的个人知识库：学习 AI / Agent 与全栈开发的笔记、心得，以及沿途收集的资源。">
+  <div class="wrap">
+    <div class="hero">
       <h1>格致</h1>
-      <p>M1 骨架已上线 —— 发布链路贯通，内容渲染将在 M3 到位。</p>
-    </main>
-  </body>
-</html>
+      <p class="sub">一份正在生长的个人知识库。这里存放我学习 <b>AI / Agent</b> 与 <b>全栈开发</b> 的笔记、心得，以及沿途收集的资源。</p>
+      <p class="meta-line">所有内容以 Markdown 书写 · 展示最新版本</p>
+    </div>
+
+    <div class="domains">
+      {Object.values(DOMAINS).map((d) => (
+        <a class={`cover ${d.key}`} href={`${base}${d.key}/`}>
+          <div class="dom-name">{d.name}</div>
+          <div class="dom-desc">{d.desc}</div>
+          <div class="dom-count">{articleCount[d.key]} 篇笔记 · {resCount[d.key]} 张资源卡</div>
+          <div class="glyph">{d.glyph}</div>
+        </a>
+      ))}
+    </div>
+
+    <div class="sect">
+      <div class="sect-head"><h2>子主题</h2><span class="hint">由标签自动生成，随内容生长</span></div>
+      <div class="portal">
+        {Object.entries(DOMAINS).map(([key, d]) => (
+          <div>
+            <h3><span class="dot" style={`background:var(--${key})`}></span>{d.name}</h3>
+            <div class="tagcloud">
+              {domainTags[key].map((tag) => {
+                const n = countByTag[key][tag];
+                return n > 0 ? (
+                  <a class={`tagchip c-${key}`} href={`${base}${key}/#${encodeURIComponent(tag)}`}>
+                    {tag}<span class="n">{n}</span>
+                  </a>
+                ) : (
+                  <span class={`tagchip c-${key} zero`}>{tag}<span class="n">0</span></span>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+      {isEmpty && (
+        <div class="empty-hint" style="margin-top:22px">
+          <div class="big">还没有子主题</div>
+          写下第一篇笔记并打上标签，这里就会长出第一个子主题。
+        </div>
+      )}
+    </div>
+
+    <div class="sect">
+      <div class="sect-head"><h2>最近更新</h2><span class="hint">笔记与资源卡混排</span></div>
+      {recent.length === 0 ? (
+        <div class="empty-hint">
+          <div class="big">还没有任何内容</div>
+          第一篇笔记会出现在这里。
+        </div>
+      ) : (
+        <ul class="recent">
+          {recent.map((item) => (
+            <li>
+              <a href={item.url}>
+                <span class="r-date">{formatShortDate(item.date)}</span>
+                <span class={`r-kind kind-${item.kind}`}>{item.kind === 'note' ? '笔记' : '资源'}</span>
+                <span class="r-dom">{DOMAINS[item.dom].short}</span>
+                <span class="r-title">{item.title}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </div>
+</Layout>

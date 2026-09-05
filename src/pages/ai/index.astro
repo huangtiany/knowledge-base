@@ -1,0 +1,8 @@
+---
+import { getCollection } from 'astro:content';
+import ColumnArticles from '../../components/ColumnArticles.astro';
+
+const articles = await getCollection('ai');
+const resources = await getCollection('aiResources');
+---
+<ColumnArticles dom="ai" articles={articles} resCount={resources.length} />

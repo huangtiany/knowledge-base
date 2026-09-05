@@ -1,0 +1,57 @@
+---
+// 资源收藏页：外链卡时间流，按收藏日期倒序；source 缺省时从 url 提取域名。
+import Layout from '../layouts/Layout.astro';
+import { DOMAINS, type DomainKey } from '../lib/domains';
+import { formatShortDate } from '../lib/format';
+
+interface Props {
+  dom: DomainKey;
+  resources: any[];
+}
+const { dom, resources } = Astro.props;
+const meta = DOMAINS[dom];
+const base = import.meta.env.BASE_URL;
+
+const sorted = [...resources].sort((a, b) => +b.data.date - +a.data.date);
+const hostOf = (url: string) => {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return url;
+  }
+};
+---
+<Layout title={`资源收藏 · ${meta.name} · 格致`} description={`收集的 ${meta.name} 领域外部资源：链接 + 一句话摘要。`} dom={dom} active={dom}>
+  <div class="wrap">
+    <div class="colhead">
+      <div class="crumb"><a href={base}>首页</a> / <a href={`${base}${dom}/`}>{meta.name}</a> / 资源收藏</div>
+      <h1>资源收藏 · {meta.name}</h1>
+      <p class="desc">外链 + 一句话摘要。只收真正读过的，链接可能失效，摘要帮我决定要不要再点开。</p>
+      <div class="colstats">{sorted.length} 张 · 按收集时间倒序</div>
+    </div>
+    <div class="subtabs">
+      <a href={`${base}${dom}/`}>文章</a>
+      <a class="on" href={`${base}${dom}/resources/`}>资源收藏</a>
+    </div>
+
+    {sorted.length === 0 ? (
+      <div class="empty-hint">
+        <div class="big">还没有收藏任何资源</div>
+        往 content/{dom}/resources.yaml 里加一张卡，这里就会出现第一格。
+      </div>
+    ) : (
+      <ul class="reslist">
+        {sorted.map((r) => (
+          <li class="rescard">
+            <div class="res-head">
+              <a class="res-title" href={r.data.url} target="_blank" rel="noopener noreferrer">{r.data.title}</a>
+              <span class="res-src">{r.data.source ?? hostOf(r.data.url)}</span>
+            </div>
+            <p class="res-sum">{r.data.summary}</p>
+            <div class="res-date">收藏于 {formatShortDate(r.data.date)}</div>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+</Layout>
