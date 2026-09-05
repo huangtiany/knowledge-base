@@ -1,0 +1,19 @@
+---
+// M1 占位首页：只验证构建与 base 路径，M4 将替换为真正的首页。
+const favicon = `${import.meta.env.BASE_URL}favicon.svg`;
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href={favicon} />
+    <title>格致 · 个人知识库</title>
+  </head>
+  <body>
+    <main style="font-family: sans-serif; padding: 48px;">
+      <h1>格致</h1>
+      <p>M1 骨架已上线 —— 发布链路贯通，内容渲染将在 M3 到位。</p>
+    </main>
+  </body>
+</html>
