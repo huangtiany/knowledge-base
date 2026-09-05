@@ -49,7 +49,7 @@ QLoRA = **底座量化到 4bit（NF4）+ LoRA 增量保持 bf16 训练**。7B �
 
 1. **问题能用 prompt 解决吗**：few-shot + 结构化输出（见[结构化输出](../llm-basics/04-structured-output-internals.md)）能解决的不微调——微调是重投入，且一旦改行为就是改"脾气"
 2. **要改的是知识还是行为**：新事实/新文档 → RAG（见[RAG 章](../rag/01-chunking-strategies.md)）；固定格式、风格、领域话术、稳定流程 → 微调
-3. **有几百条以上高质量样本吗**：数据少于百条，收益大概率盖不住过拟合风险（数据准备见[数据集准备](02-dataset-preparation.md)）
+3. **有几百条以上高质量样本吗**：数据少于百条，收益大概率盖不住过拟合风险（数据准备见[数据集准备](03-dataset-preparation.md)）
 4. **评测基线建好了吗**：微调前后跑同一把尺子（见[评测先行](../evaluation/01-evaluation-first.md)），否则"感觉变好"无从验证
 
 ## 参考与延伸

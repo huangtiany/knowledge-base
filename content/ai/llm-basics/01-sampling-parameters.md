@@ -45,7 +45,7 @@ top_p 不看 token 数量，看**累计概率**：把 token 按概率降序排�
 
 ## max_tokens 与 stop：硬性控制
 
-- `max_tokens`：输出 token 硬上限。到了就截断，**截断的 JSON 解析必挂**（见[结构化输出](12-pydantic-structured-output.md)的坑清单），结构化调用宁可放宽
+- `max_tokens`：输出 token 硬上限。到了就截断，**截断的 JSON 解析必挂**（见[结构化输出](../python/12-pydantic-structured-output.md)的坑清单），结构化调用宁可放宽
 - `stop`：遇到这些字符串就提前停。最实用的场景： few-shot 输出后用分隔符截断，防止模型"续写示例"
 
 ## 一个被高估、一个被低估
