@@ -1,5 +1,10 @@
 # AI / Agent 领域资源收藏卡（中文优先，英文只收公认精品）
 # 排序 = 知识地图章节顺序；同日卡片在资源页按本文件录入顺序并列。
+- title: Learn X in Y Minutes · Python（中文）
+  url: https://learnxinyminutes.com/zh-cn/python/
+  summary: 一页带注释的代码流速览 Python 全部核心语法，十几分钟建立整体印象——正式入门前先扫一遍，知道"这门语言有哪些东西"再看教程。
+  date: 2026-09-06
+  source: learnxinyminutes.com
 - title: Python 官方教程（中文）
   url: https://docs.python.org/zh-cn/3/tutorial/
   summary: 基础段五篇的总根据地，官方中文版质量稳定；先读 3-5 章（数据结构/控制流），asyncio 等标准库文档同站可达。
