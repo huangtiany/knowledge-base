@@ -160,6 +160,101 @@
   summary: 收录质量最高的 MCP Server 清单（官方中文 README，符合"好的 awesome 收"标准）；找现成 Server 的第一站。
   date: 2026-09-05
   source: github.com
+- title: OpenHands（原 OpenDevin）
+  url: https://github.com/All-Hands-AI/OpenHands
+  summary: 开源编程 Agent 顶流，事件流架构 + 容器沙箱，SWE-bench 常客；编程 Agent 篇的主角，源码值得按事件类型读起。
+  date: 2026-09-05
+  source: github.com
+- title: SWE-agent
+  url: https://github.com/SWE-agent/SWE-agent
+  summary: 普林斯顿出品的编程 Agent，提出 Agent-Computer Interface（ACI）概念——工具接口设计本身是研究贡献，读它的工具返回格式设计。
+  date: 2026-09-05
+  source: github.com
+- title: Aider
+  url: https://github.com/Aider-AI/aider
+  summary: 终端结对编程 Agent，repo map 与 git 原生集成是两个教科书级设计；上下文工程的最佳案例库。
+  date: 2026-09-05
+  source: github.com
+- title: Cline
+  url: https://github.com/cline/cline
+  summary: VS Code 内的编程 Agent，plan/act 双模式与逐步确认是可控性范本；早期 MCP 客户端支持者。
+  date: 2026-09-05
+  source: github.com
+- title: Codex CLI（OpenAI 官方开源外壳）
+  url: https://github.com/openai/codex
+  summary: OpenAI 编程 Agent 的开源 CLI：本地/云端双形态、审批模式分级；外壳层被多个后来者移植借鉴，读它看"官方 harness 怎么做"。
+  date: 2026-09-05
+  source: github.com
+- title: OpenCode
+  url: https://github.com/anomalyco/opencode
+  summary: 供应商中立的终端编程 Agent（MIT，约 20 万星）：任意模型即插即用，build/plan 双内置 Agent 一键切换是模式切换的干净设计。
+  date: 2026-09-05
+  source: github.com
+- title: Pi Agent Harness
+  url: https://github.com/earendil-works/pi
+  summary: 极简 harness 哲学的代表作（MIT，约 10 万星）：pi-ai/pi-agent-core/pi-tui 各自独立成库，无内置权限系统（交给沙箱）+ 供应链加固清单；读源码学 Agent 结构的首选标本。
+  date: 2026-09-05
+  source: github.com
+- title: Grok Build
+  url: https://github.com/xai-org/grok-build
+  summary: xAI 官方终端编程 Agent（Rust，Apache-2.0）：TUI/无头/ACP 三形态，MCP + skills + hooks 扩展；README 自述工具实现移植自 codex 与 opencode——harness 公共底盘化的活证据。
+  date: 2026-09-05
+  source: github.com
+- title: DeepSeek Harness
+  url: https://github.com/deepseek-ai/deepseek-harness
+  summary: DeepSeek 官方 Agent harness（dsh），"一切皆插件"架构；模型厂商下场争夺 Agent 运行时层的标志性事件。
+  date: 2026-09-05
+  source: github.com
+- title: Open Interpreter
+  url: https://github.com/OpenInterpreter/open-interpreter
+  summary: 代码即动作思想的鼻祖：本地执行 LLM 写的代码来操作电脑；通用 Agent 里 code as action 路线的源头。
+  date: 2026-09-05
+  source: github.com
+- title: browser-use
+  url: https://github.com/browser-use/browser-use
+  summary: 把浏览器操作变成 Agent 工具的库（Playwright 之上语义化元素树），浏览器内任务的工程优选；几行代码起一个浏览器 Agent。
+  date: 2026-09-05
+  source: github.com
+- title: OpenManus
+  url: https://github.com/FoundationAgents/OpenManus
+  summary: MetaGPT 团队数小时复刻 Manus 的开源实现——证明通用 Agent = 循环 + 工具集 + 环境隔离，本质不神秘；拆解练习的好标本。
+  date: 2026-09-05
+  source: github.com
+- title: MetaGPT
+  url: https://github.com/FoundationAgents/MetaGPT
+  summary: AI 软件公司式多智能体框架（约 70k stars，ICLR 口头报告）：SOP 编码进流水线、结构化文档即接口；读 metagpt/roles/ 目录学角色分工。
+  date: 2026-09-05
+  source: github.com
+- title: ChatDev
+  url: https://github.com/OpenBMB/ChatDev
+  summary: 轻量版"AI 软件公司"，聊天链驱动的多 Agent 开发；代码量小，一个下午读完整个多 Agent 链路的教学标本。
+  date: 2026-09-05
+  source: github.com
+- title: gpt-researcher
+  url: https://github.com/assafelovic/gpt-researcher
+  summary: 深度研究 Agent 的开源代表：规划-检索-交叉验证-成文的完整流水线，研究型 Agent 的架构参考。
+  date: 2026-09-05
+  source: github.com
+- title: Dify
+  url: https://github.com/langgenius/dify
+  summary: 开源 LLMOps 平台标杆：编排/模型网关/RAG/发布全模块，看懂它的模块划分等于拿到 LLM 应用平台最小完备集清单。
+  date: 2026-09-05
+  source: github.com
+- title: Coze Studio（扣子开源版）
+  url: https://github.com/coze-dev/coze-studio
+  summary: 字节 2025-07 开源的扣子核心引擎（Apache 2.0）：工业级可视化 Agent 开发平台，配套 Coze Loop 做评测观测；国内平台层自建的现实起点。
+  date: 2026-09-05
+  source: github.com
+- title: FastGPT
+  url: https://github.com/labring/FastGPT
+  summary: 中文知识库问答平台，RAG 质量调优面板做得很深（分段/检索测试/引用标注）；"格致问答"原型验证的候选。
+  date: 2026-09-05
+  source: github.com
+- title: n8n
+  url: https://github.com/n8n-io/n8n
+  summary: 老牌自动化工作流平台的 AI 化路线：触发器思维 + AI 判断节点——提醒我们很多"Agent 应用"本质是自动化工作流。
+  date: 2026-09-05
+  source: github.com
 - title: RAGAS 文档
   url: https://docs.ragas.io/
   summary: RAG 评测标准指标（faithfulness/precision/recall）的官方文档，RAGAS 一篇的工具本体。

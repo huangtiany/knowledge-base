@@ -145,6 +145,39 @@ summary: AI/Agent 模块的知识体系与学习主线——每个主题对应�
 - [modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers) —— 官方 Server 合集
 - [awesome-mcp-servers（中文版）](https://github.com/punkpeye/awesome-mcp-servers) —— Server 清单
 
+## Agent 生态（热门项目）
+
+标签：`Agent生态`。看别人怎么做 Agent——先有[设计模式](agent/01-workflow-vs-agent.md)与[手写循环](agent/03-minimal-agent-loop.md)的底子，拆热门项目才有味道：
+
+- [Agent 生态全景：产品、框架与平台](agents/01-agent-landscape.md)
+- [编程 Agent：OpenHands、SWE-agent、Aider 与 Cline](agents/02-coding-agents.md)
+- [通用与计算机操作 Agent：Manus、Open Interpreter 与 browser-use](agents/03-computer-use-agents.md)
+- [多智能体应用：MetaGPT 与 ChatDev](agents/04-multi-agent-apps.md)
+- [平台与低代码：Dify、Coze Studio、FastGPT 与 n8n](agents/05-agent-platforms.md)
+- [CLI 编程 Agent 浪潮：Claude Code、Codex、OpenCode、pi 与 Grok Build](agents/06-cli-agents.md)
+
+### 本章资源
+
+- [OpenHands](https://github.com/All-Hands-AI/OpenHands) —— 编程 Agent 顶流
+- [SWE-agent](https://github.com/SWE-agent/SWE-agent) —— 工具接口研究
+- [Aider](https://github.com/Aider-AI/aider) —— 终端结对编程
+- [Cline](https://github.com/cline/cline) —— IDE 内 Agent
+- [Codex CLI](https://github.com/openai/codex) —— OpenAI 官方开源外壳
+- [OpenCode](https://github.com/anomalyco/opencode) —— 供应商中立旗手
+- [Pi Agent Harness](https://github.com/earendil-works/pi) —— 极简 harness 标本
+- [Grok Build](https://github.com/xai-org/grok-build) —— xAI 官方（Rust）
+- [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) —— 一切皆插件
+- [Open Interpreter](https://github.com/OpenInterpreter/open-interpreter) —— 代码即动作
+- [browser-use](https://github.com/browser-use/browser-use) —— 浏览器 Agent 库
+- [OpenManus](https://github.com/FoundationAgents/OpenManus) —— Manus 开源复现
+- [MetaGPT](https://github.com/FoundationAgents/MetaGPT) —— 多智能体软件公司
+- [ChatDev](https://github.com/OpenBMB/ChatDev) —— 轻量多智能体标本
+- [gpt-researcher](https://github.com/assafelovic/gpt-researcher) —— 深度研究 Agent
+- [Dify](https://github.com/langgenius/dify) —— 开源 LLMOps 平台
+- [Coze Studio](https://github.com/coze-dev/coze-studio) —— 扣子开源版
+- [FastGPT](https://github.com/labring/FastGPT) —— 中文知识库问答
+- [n8n](https://github.com/n8n-io/n8n) —— 自动化工作流
+
 ## 评测与可观测
 
 标签：`评测与可观测`。横切章——RAG 和 Agent 的笔记会反复指回来：
