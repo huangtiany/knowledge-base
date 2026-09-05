@@ -51,6 +51,12 @@ const domStyle = dom ? `--dom:var(--${dom});--dom-soft:var(--${dom}-soft)` : und
       </div>
     </footer>
 
+    <button id="to-top" class="to-top" aria-label="回到顶部" title="回到顶部">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M8 13V3M8 3L3.5 7.5M8 3l4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+
     <script>
       // 站内搜索：只搜文章标题，构建期生成 search-index.json，前端子串匹配
       const input = document.getElementById('site-search') as HTMLInputElement;
@@ -95,6 +101,22 @@ const domStyle = dom ? `--dom:var(--${dom});--dom-soft:var(--${dom}-soft)` : und
 
       document.addEventListener('click', (e) => {
         if (!(e.target as HTMLElement).closest('.search')) box.hidden = true;
+      });
+    </script>
+
+    <script>
+      // 回到顶部：滚过约 0.6 屏出现；尊重 prefers-reduced-motion
+      const toTop = document.getElementById('to-top') as HTMLButtonElement;
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const toggleToTop = () => {
+        toTop.classList.toggle('show', window.scrollY > window.innerHeight * 0.6);
+      };
+      toggleToTop();
+      window.addEventListener('scroll', toggleToTop, { passive: true });
+
+      toTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
       });
     </script>
   </body>

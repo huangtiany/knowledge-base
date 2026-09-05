@@ -194,3 +194,10 @@ footer { border-top: 1px solid var(--line); margin-top: 40px; }
 .recent li > a,
 .relbox li > a { display: flex; flex: 1; align-items: baseline; gap: inherit; min-width: 0; }
 .taggroup h2 { scroll-margin-top: 76px; }
+
+/* ---------- 回到顶部（全局固定按钮，设计稿未画出，取最简形态） ---------- */
+.to-top { position: fixed; right: 22px; bottom: 30px; z-index: 15; width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 18px rgba(27, 39, 51, .10); opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity .2s, transform .2s, visibility .2s, border-color .15s, color .15s; }
+.to-top.show { opacity: 1; visibility: visible; transform: none; }
+.to-top:hover { border-color: var(--ink); color: var(--ink); }
+.to-top:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+@media(max-width:760px) { .to-top { right: 14px; bottom: 16px; width: 36px; height: 36px; } }
