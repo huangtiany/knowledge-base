@@ -26,7 +26,8 @@ function loadTagList() {
 const TAGS = loadTagList();
 const TAG_SET = new Set([...TAGS.ai, ...TAGS.stack]);
 
-// 文章 frontmatter 最小集：title / date / tags 必填，summary 可选
+// 文章 frontmatter 最小集：title / date / tags 必填，summary 可选；
+// related: false 表示不渲染文末「相关笔记」框（路线图这类枢纽页互链太多，渲染出来是噪音）
 const articleSchema = z.object({
   title: z.string().min(1, 'title 必填'),
   date: z.coerce.date(),
@@ -37,6 +38,7 @@ const articleSchema = z.object({
       message: `存在 tags.yaml 清单外的标签（可用：${[...TAG_SET].join('、')}）`,
     }),
   summary: z.string().optional(),
+  related: z.boolean().optional(),
 });
 
 // 资源卡：title / url / summary / date 必填，source 可选（缺省由页面从 url 提取域名）
