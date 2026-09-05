@@ -1,15 +1,11 @@
 import { formatShortDate } from './format';
+import { posixJoin, type EntryLike } from './interlinks';
 
 // 文内互链解析：从文章 Markdown 正文提取指向本站 .md 的相对链接，
 // 按写作约定解析为目标文章，供文章页 relbox（相关笔记）渲染。
 const MD_LINK = /\[[^\]]*\]\(([^)\s]+\.md)\)/g;
 
-interface EntryLike {
-  collection: string;
-  id: string;
-  body?: string;
-  data: { title: string; date: Date };
-}
+export type { EntryLike };
 
 export interface RelatedNote {
   title: string;
@@ -37,20 +33,4 @@ export function extractRelated(entry: EntryLike, allEntries: EntryLike[], base: 
     });
   }
   return related;
-}
-
-function posixJoin(dir: string, rel: string): string | null {
-  // 只接受站内相对路径；拒绝外链、锚点与越出内容根的路径
-  if (/^(https?:)?\/\//.test(rel) || rel.startsWith('/') || rel.includes('#')) return null;
-  const segments = [...dir.split('/'), ...rel.split('/')];
-  const out: string[] = [];
-  for (const seg of segments) {
-    if (seg === '' || seg === '.') continue;
-    if (seg === '..') {
-      out.pop();
-      continue;
-    }
-    out.push(seg);
-  }
-  return out.length ? out.join('/') : null;
 }

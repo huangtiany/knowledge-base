@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import { extractRelated } from '../lib/related';
+import { rewriteInterlinks } from '../lib/interlinks';
 import { formatFullDate } from '../lib/format';
 
 export async function getStaticPaths() {
@@ -13,18 +14,24 @@ export async function getStaticPaths() {
     props: {
       entry,
       dom: entry.collection,
+      all,
       related: extractRelated(entry, all, import.meta.env.BASE_URL),
     },
   }));
 }
 
-const { entry, dom, related } = Astro.props;
+const { entry, dom, all, related } = Astro.props;
 const base = import.meta.env.BASE_URL;
-const { Content, headings } = await render(entry);
+const { headings } = await render(entry);
+// 正文互链在页面层改写为绝对路由并校验目标存在（渲染管线拿不到源文件路径，见 lib/interlinks.ts）
+if (entry.body && !entry.rendered?.html) {
+  throw new Error(`[article] ${entry.collection}/${entry.id} 没有预渲染产物，正文会静默丢失，拒绝构建`);
+}
+const bodyHtml = rewriteInterlinks(entry.rendered?.html ?? '', entry, all, base);
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const domName = dom === 'ai' ? 'AI / Agent' : '全栈开发';
 ---
-<Layout title={`${entry.data.title} · 格致`} description={entry.data.summary} dom={dom} active={dom}>
+<Layout title={`${entry.data.title} · 格致`} description={entry.data.summary} dom={dom} active={dom} ogType="article">
   <div class="wrap">
     <div class="art-layout">
       <div>
@@ -40,7 +47,7 @@ const domName = dom === 'ai' ? 'AI / Agent' : '全栈开发';
         </div>
 
         <div class="art-body">
-          <Content />
+          <Fragment set:html={bodyHtml} />
           {
             related.length > 0 && (
               <div class="relbox">
