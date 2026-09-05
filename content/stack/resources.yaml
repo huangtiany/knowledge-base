@@ -1,2 +1,112 @@
-# 全栈开发领域资源收藏卡
-[]
+# 全栈开发领域资源收藏卡（中文优先，英文只收官方与公认精品）
+# 排序 = 知识地图章节顺序；同日卡片在资源页按本文件录入顺序并列。
+- title: 菜鸟教程 · Java 教程
+  url: https://www.runoob.com/java/java-tutorial.html
+  summary: 中文 Java 基础速查站，Java基础章五篇的语法备查源；卡壳的语法点按目录直接跳。
+  date: 2026-09-05
+  source: runoob.com
+- title: Java 全栈知识体系（pdai）
+  url: https://pdai.tech/
+  summary: 中文最系统的 Java 自学站：基础/集合/并发/MySQL/Spring 全覆盖且带源码讲解；Java基础章的进阶配套。
+  date: 2026-09-05
+  source: pdai.tech
+- title: JavaGuide
+  url: https://github.com/Snailclimb/JavaGuide
+  summary: 中文开源 Java 学习 + 面试指南（GitHub 十万星级项目），集合/并发篇的进阶读物，面试期回头重点翻。
+  date: 2026-09-05
+  source: github.com
+- title: Oracle · The Java Tutorials
+  url: https://docs.oracle.com/javase/tutorial/
+  summary: Java 官方教程（英文），语言特性的权威出处；中文资料讲不清的细节回这里查。
+  date: 2026-09-05
+  source: docs.oracle.com
+- title: MySQL 8.0 Reference Manual
+  url: https://dev.mysql.com/doc/refman/8.0/en/
+  summary: 遇到索引与事务问题时的最终依据，比二手博客可靠；锁机制与 InnoDB 章节值得精读。
+  date: 2026-09-05
+  source: dev.mysql.com
+- title: 小林 coding · 图解 MySQL
+  url: https://xiaolincoding.com/mysql/
+  summary: 中文图解 MySQL 的标杆：索引、事务、MVCC、锁全用图讲透，数据库章三篇的深挖读物。
+  date: 2026-09-05
+  source: xiaolincoding.com
+- title: MyBatis 3 官方文档（简体中文）
+  url: https://mybatis.org/mybatis-3/zh_CN/
+  summary: 官方简中文档（v3.5+），动态 SQL 与映射器章节对应 MyBatis 两篇；入门读完入门节即可上手。
+  date: 2026-09-05
+  source: mybatis.org
+- title: PageHelper
+  url: https://github.com/pagehelper/Mybatis-PageHelper
+  summary: 国内最常用的 MyBatis 分页插件，中文 README；动态 SQL 与分页篇的工具本体。
+  date: 2026-09-05
+  source: github.com
+- title: 菜鸟教程 · Servlet 教程
+  url: https://www.runoob.com/servlet/servlet-tutorial.html
+  summary: Servlet 生命周期与 Session/Cookie 的中文速查；JavaWeb 两篇的语法备查源。
+  date: 2026-09-05
+  source: runoob.com
+- title: Spring Framework 官方文档
+  url: https://spring.io/projects/spring-framework
+  summary: IoC/AOP 的权威出处（英文），Spring 核心一篇的官方对照；Core 章节读 Overview 即够入门。
+  date: 2026-09-05
+  source: spring.io
+- title: Spring Boot 官方文档
+  url: https://spring.io/projects/spring-boot
+  summary: 自动配置与 starter 的官方说明（英文），Spring Boot 要点一篇的出处；Reference 的 Using 部分。
+  date: 2026-09-05
+  source: spring.io
+- title: Spring Cloud 官方文档
+  url: https://spring.io/projects/spring-cloud
+  summary: 注册发现/网关/调用的官方文档（英文），Spring Cloud 一篇的展开读物。
+  date: 2026-09-05
+  source: spring.io
+- title: Spring 中文社区（springdoc.cn）
+  url: https://springdoc.cn/
+  summary: 第三方维护的 Spring 中文文档与教程站（Boot/Cloud/Security 覆盖全），英文官方读吃力时的中文对照。
+  date: 2026-09-05
+  source: springdoc.cn
+- title: Redis 官方文档 · Commands
+  url: https://redis.io/docs/latest/commands/
+  summary: Redis 全部命令的官方参考（英文，可按类型筛选）；Redis 篇五种结构的命令查这里。
+  date: 2026-09-05
+  source: redis.io
+- title: 菜鸟教程 · Redis 教程
+  url: https://www.runoob.com/redis/redis-tutorial.html
+  summary: 中文 Redis 入门教程，五种数据类型与常用命令速查；配合 Redis 篇的缓存三件套。
+  date: 2026-09-05
+  source: runoob.com
+- title: RabbitMQ 官方教程
+  url: https://www.rabbitmq.com/tutorials
+  summary: 官方六个递进小教程（Hello World 到可靠性），配 Python/Java 代码；MQ 篇的官方展开。
+  date: 2026-09-05
+  source: rabbitmq.com
+- title: Nginx 官方文档
+  url: https://nginx.org/en/docs/
+  summary: Nginx 官方文档（英文），反向代理/负载均衡指令的权威出处；Nginx 篇三重身份的依据。
+  date: 2026-09-05
+  source: nginx.org
+- title: Maven 官方指南
+  url: https://maven.apache.org/guides/index.html
+  summary: 官方入门指南（英文），POM 与依赖机制两篇对应 Maven 篇的核心概念。
+  date: 2026-09-05
+  source: maven.apache.org
+- title: 阿里巴巴 Java 开发手册（p3c）
+  url: https://github.com/alibaba/p3c
+  summary: 行业事实标准的 Java 编码规范（免费电子版 + IDEA 扫描插件），编码规范要点篇的基准来源；装插件实时自检。
+  date: 2026-09-05
+  source: github.com
+- title: 图解设计模式
+  url: https://design-patterns.readthedocs.io/zh-cn/latest/
+  summary: 中文图解设计模式教程（16 个模式，图 + 代码 + 时序图），设计模式一篇想深挖的下一站。
+  date: 2026-09-05
+  source: readthedocs.io
+- title: JetBrains IDEA 官方文档
+  url: https://www.jetbrains.com/help/idea/
+  summary: IDEA 官方帮助（英文）；工具链篇的调试/重构细节官方出处。
+  date: 2026-09-05
+  source: jetbrains.com
+- title: 菜鸟教程 · Linux 教程
+  url: https://www.runoob.com/linux/linux-tutorial.html
+  summary: 中文 Linux 命令速查；工具链篇的查日志/权限/进程命令备查源。
+  date: 2026-09-05
+  source: runoob.com
