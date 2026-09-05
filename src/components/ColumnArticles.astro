@@ -17,7 +17,8 @@ const domainTags = loadTags()[dom];
 
 const byTag = new Map(domainTags.map((t) => [t, [] as any[]]));
 for (const a of articles) for (const t of a.data.tags) byTag.get(t)?.push(a);
-for (const list of byTag.values()) list.sort((a, b) => +b.data.date - +a.data.date);
+// 组内按文件名序号排（01-、02-… 即学习路径）；同批写就的笔记日期相同，按日期排会打乱学习顺序
+for (const list of byTag.values()) list.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
 
 const filled = domainTags.filter((t) => (byTag.get(t)?.length ?? 0) > 0);
 const waiting = domainTags.filter((t) => (byTag.get(t)?.length ?? 0) === 0);
