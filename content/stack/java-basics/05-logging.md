@@ -52,6 +52,22 @@ public class OrderService {
 2. **ERROR 必须带异常对象**（作为最后一个参数），没有堆栈的 ERROR 等于让人蒙眼排障
 3. **不打敏感信息**（密码、手机号明文、token）——日志会进采集系统，泄露面比代码大
 
+## MDC：把"哪次请求"写进每行日志
+
+并发服务里两个用户同时下单，日志交织在一起——只看 `orderId={}` 不知道整个请求链路经历了什么。**MDC（Mapped Diagnostic Context）**是日志框架提供的"线程级上下文"：入口处塞进一个 request-id，这条线程后续打的所有日志自动携带它，串起一次请求的全部日志：
+
+```java title="mdc.java"
+// Filter 入口：生成/接续 traceId，出口清理
+MDC.put("traceId", UUID.randomUUID().toString().substring(0, 8));
+try {
+    chain.doFilter(request, response);
+} finally {
+    MDC.clear();               // 线程复用，不清会串到下一个请求
+}
+```
+
+日志格式里加 `%X{traceId}` 即可输出。微服务时代它升级成链路追踪（traceId 跨服务传递，Sleuth/Micrometer Tracing 干的就是这件事），但单体的"一次请求一个 ID"现在就值得做——**排障时按 traceId 一 grep，请求全程尽收眼底**。
+
 ## 别用 System.out.println
 
 对照前端：`console.log` 调试完忘删顶多脏一点；后端的 `System.out.println` 是**同步阻塞 IO** 且无法被级别过滤、没有时间戳与上下文——高并发下拖垮性能。它是日志体系里的"alert() 调试"，生产环境出现即编码规范违规。IDEA 里可装检查插件自动标红。

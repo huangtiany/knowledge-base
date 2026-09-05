@@ -59,5 +59,5 @@ def render(state: TaskState) -> str:
 
 ## 参考与延伸
 
-- [Anthropic · Building Effective Agents](https://www.anthropic.com/research/building-effective-agents)（state 管理riff 部分）
+- [Anthropic · Building Effective Agents](https://www.anthropic.com/research/building-effective-agents)（状态管理部分的出处）
 - [LangGraph · Persistence 文档](https://langchain-ai.github.io/langgraph/concepts/persistence/)（框架化的状态持久化方案）

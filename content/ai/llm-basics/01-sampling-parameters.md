@@ -54,6 +54,12 @@ top_p 不看 token 数量，看**累计概率**：把 token 按概率降序排�
 
 **被低估**：`seed` + `temperature=0` 做评测对比时的"尽力复现"；以及很多本地推理框架暴露的 `repeat_penalty`（惩罚重复 token）——长文本循环复读时的第一调试旋钮。
 
+## 两个例外场景
+
+**惩罚参数（presence / frequency penalty）**：对"已出现过的 token"降权（presence 只判有无，frequency 按出现次数加重），是 OpenAI 风格 API 里对抗复读的官方旋钮，等价于本地框架的 repeat_penalty。注意它们同样**只是采样期手段**——要模型"别翻来覆去说同一件事"，改 prompt 结构比加惩罚更治本。
+
+**推理模型不吃这一套**：o1/R1 这类"先思考再作答"的模型，采样发生在内部推理与最终作答多个阶段，**API 层直接不接受（或忽略）temperature/top_p**——传了要么报错要么无效。用这类模型时把采样参数从调用代码里拿掉，控制"输出稳定性"的手段换成 prompt 约束。
+
 ## 参考与延伸
 
 - [OpenAI 文档 · Temperature 与 top_p](https://platform.openai.com/docs/api-reference/chat/create)

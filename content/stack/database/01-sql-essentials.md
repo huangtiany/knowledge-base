@@ -57,6 +57,23 @@ HAVING user_cnt > 100;              -- HAVING 过滤聚合结果（WHERE 过滤�
 
 铁律：**SELECT 里的非聚合列必须出现在 GROUP BY 里**（MySQL 宽松模式会放行但结果不可信）。`WHERE` 与 `HAVING` 的分工：前者过滤行（聚合前），后者过滤组（聚合后）。
 
+## 子查询与 CTE：业务 SQL 的日常
+
+真实业务很少一条平铺的 SELECT 走完，常要"先算出一批 id，再查明细"。两种写法：
+
+```sql
+-- 子查询：先查"有订单的用户"
+SELECT * FROM users WHERE id IN (SELECT user_id FROM orders WHERE amount > 1000);
+
+-- CTE（WITH，MySQL 8.0+）：给中间结果起名字，可读性和可复用性都更好
+WITH big_orders AS (
+    SELECT user_id, SUM(amount) AS total FROM orders GROUP BY user_id HAVING total > 10000
+)
+SELECT u.name, b.total FROM big_orders b JOIN users u ON u.id = b.user_id;
+```
+
+写复杂查询的习惯：**用 CTE 把"每一步算什么"起名拆开**，一步一验，比一条几百行的嵌套 SQL 好维护得多——和代码里"提取中间变量"是同一个道理。另外记住一个实战常用的 upsert：`INSERT ... ON DUPLICATE KEY UPDATE`（存在则更新，常用于计数器、配置项写入）。
+
 ## NULL：三值逻辑的陷阱
 
 JS 里 `null == undefined` 的宽松直觉在 SQL 会踩坑，因为 NULL 参与运算的结果还是 NULL（不是 true/false，是"未知"）：

@@ -18,7 +18,7 @@ RAG 管线的第一步是把文档切成 chunk（块）。一句话定位它的�
 
 **1. 固定大小切**：按字符/token 数硬切 + overlap 重叠。一句话哲学：nothing fancy，只当基线。`overlap`（相邻块重叠 10-20%）是为了语义连续性，代价是存储翻倍和检索重复。
 
-**2. 递归切分（recursiive character splitting，事实默认档）**：按分隔符层级递归——先按段落切，超长再按句子，再按字符。尽量保留自然边界。LangChain/LlamaIndex 的默认策略，**没有强理由时用这个**：
+**2. 递归切分（recursive character splitting，事实默认档）**：按分隔符层级递归——先按段落切，超长再按句子，再按字符。尽量保留自然边界。LangChain/LlamaIndex 的默认策略，**没有强理由时用这个**：
 
 ```python title="recursive-split.py"
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -40,6 +40,17 @@ chunks = splitter.split_text(long_text)
 - 分隔符列表里必须有中文标点（`。`、`；`），默认英文标点会让句子被拦腰斩断
 - 中文一个字 ≈ 1 token（见 [token 计算](../llm-basics/02-context-window-and-tokens.md)），chunk_size 按 token 定时直接用字数估
 - 中文术语密度高，同样的 512 token，中文信息量大于英文——chunk 可以略小
+
+## 标准解法：小块检索，大块生成（small-to-big）
+
+开头那个"服务两个主人"的矛盾，业界标准答案是**让两个主人解耦**：索引和检索用**小块**（语义聚焦，向量准），命中后喂给模型的却是它**所属的大块**（父章节、整节甚至整文档）——向量精度和上下文完整性各取所需。
+
+```python title="small-to-big.py"
+# 索引：小块（子 chunk）建向量，元数据里存父块 id
+# 检索：query 命中子 chunk → 按 parent_id 取回父块 → 喂给模型
+```
+
+[长上下文与 RAG](08-long-context-vs-rag.md)里"检索粒度放宽到文档"是这套思路的极端版：检索定位（准）+ 整节阅读（全）。几乎所有生产 RAG 都在这两个粒度之间取位置，纯"检索什么喂什么"反而是少数。
 
 ## 常见反模式
 

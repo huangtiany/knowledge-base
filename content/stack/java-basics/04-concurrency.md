@@ -54,6 +54,23 @@ class SafeCounter {
 
 **CAS**（Compare-And-Swap）是无锁方案：原子地"比较旧值，相等才更新"，`AtomicInteger` 等类基于它，计数这种简单场景比加锁更快。读到原子类知道它是"无锁的线程安全"即可。
 
+## ThreadLocal：每个线程一份自己的变量
+
+有时要的不是"保护共享变量"，而是"每个线程各有一份"——比如 Web 应用里，每个请求线程都要能随手拿到"当前登录用户"（呼应 [Servlet 的单例多线程](../javaweb/01-servlet-and-http.md)：实例字段不能存请求数据，request 对象又要层层传参）。**ThreadLocal** 给每个线程一个独立副本，互不干扰：
+
+```java title="threadlocal.java"
+static final ThreadLocal<User> CURRENT_USER = new ThreadLocal<>();
+
+// 请求入口（Filter）里塞入：只对当前线程可见
+CURRENT_USER.set(user);
+// 同一线程后续任何位置直接取——不用层层传参
+User u = CURRENT_USER.get();
+// 请求结束必须清理（见下）
+CURRENT_USER.remove();
+```
+
+一个不能省的纪律：**用完必须 `remove()`**。线程池的线程是复用的，不清理会串味（下一个请求读到上一个用户的数据）；另外 Entry 是弱引用，不清理可能造成内存泄漏。"set → 用 → finally remove"三步写全，是它的标准姿势。
+
 ## 死锁：两把锁互相等
 
 线程 A 持锁一等的锁二、线程 B 持锁二等锁一，互相等死。避免方法：**按固定顺序加锁**、尽量缩小锁范围、用 tryLock 带超时。日常业务代码锁用得少（线程池 + 数据库锁覆盖大部分场景），但读到 synchronized 要能识别。
