@@ -1,10 +1,2 @@
-# AI / Agent 领域资源收藏卡
-- title: Attention Is All You Need
-  url: https://arxiv.org/abs/1706.03762
-  summary: Transformer 开山论文。配合自己的 Attention 笔记重读，重点看 3.2 节缩放点积的动机。
-  date: 2026-08-28
-  source: arxiv.org
-- title: Building Effective Agents
-  url: https://www.anthropic.com/research/building-effective-agents
-  summary: 对"什么时候该上 Agent、什么时候普通工作流就够"讲得最清醒的一篇，反框架崇拜。
-  date: 2026-08-09
+# AI / Agent 领域资源收藏卡（GitHub 仓库与官方文档为主）
+[]
