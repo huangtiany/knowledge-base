@@ -1,0 +1,10 @@
+# 全栈开发领域资源收藏卡
+- title: MySQL 8.0 Reference Manual
+  url: https://dev.mysql.com/doc/refman/8.0/en/
+  summary: 遇到索引与事务问题时的最终依据，比二手博客可靠。锁机制章节值得精读。
+  date: 2026-08-26
+- title: Baeldung · Java Generics
+  url: https://www.baeldung.com/java-generics
+  summary: 通配符与 PECS 原则的例子最全，配我的泛型笔记食用。
+  date: 2026-08-03
+  source: baeldung.com
