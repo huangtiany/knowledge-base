@@ -1,0 +1,101 @@
+---
+import 'katex/dist/katex.min.css';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** 领域色作用域：ai / stack；首页与 About 不注入 */
+  dom?: 'ai' | 'stack';
+  /** 顶栏高亮的导航项 */
+  active?: 'ai' | 'stack' | 'about';
+}
+
+const { title, description, dom, active } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const domStyle = dom ? `--dom:var(--${dom});--dom-soft:var(--${dom}-soft)` : undefined;
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+  </head>
+  <body>
+    <header>
+      <div class="hwrap">
+        <a class="brand" href={base}>格致<i>.</i></a>
+        <nav class="main">
+          <a href={`${base}ai/`} class:list={[{ on: active === 'ai' }]}>AI / Agent</a>
+          <a href={`${base}stack/`} class:list={[{ on: active === 'stack' }]}>全栈开发</a>
+          <a href={`${base}about/`} class:list={[{ on: active === 'about' }]}>关于</a>
+        </nav>
+        <div class="search">
+          <input id="site-search" type="text" placeholder="搜索笔记…" autocomplete="off" />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page" style={domStyle} data-dom={dom}>
+      <slot />
+    </div>
+
+    <footer>
+      <div class="fwrap">
+        <span>© 2026 格致</span>
+        <span>Markdown · 本地书写 · 展示最新版</span>
+      </div>
+    </footer>
+
+    <script>
+      // 站内搜索：只搜文章标题，构建期生成 search-index.json，前端子串匹配
+      const input = document.getElementById('site-search') as HTMLInputElement;
+      const box = document.getElementById('search-results') as HTMLDivElement;
+
+      interface SearchItem { title: string; dom: string; url: string }
+      let index: SearchItem[] | null = null;
+
+      const escapeHtml = (s: string) =>
+        s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+      async function loadIndex(): Promise<SearchItem[]> {
+        if (!index) {
+          const res = await fetch(`${import.meta.env.BASE_URL}search-index.json`);
+          index = await res.json();
+        }
+        return index!;
+      }
+
+      function render(results: SearchItem[], query: string) {
+        if (!query) { box.hidden = true; box.innerHTML = ''; return; }
+        if (!results.length) {
+          box.innerHTML = '<div class="sr-empty">没有匹配的笔记</div>';
+        } else {
+          box.innerHTML = results
+            .map((r) => `<a href="${r.url}"><span class="sr-dom">${escapeHtml(r.dom)}</span>${escapeHtml(r.title)}</a>`)
+            .join('');
+        }
+        box.hidden = false;
+      }
+
+      input.addEventListener('input', async () => {
+        const q = input.value.trim().toLowerCase();
+        if (!q) { box.hidden = true; box.innerHTML = ''; return; }
+        const items = await loadIndex();
+        render(items.filter((it) => it.title.toLowerCase().includes(q)).slice(0, 8), q);
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { input.value = ''; box.hidden = true; box.innerHTML = ''; }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!(e.target as HTMLElement).closest('.search')) box.hidden = true;
+      });
+    </script>
+  </body>
+</html>

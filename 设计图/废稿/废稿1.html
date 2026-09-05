@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知识库 - 设计预览</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --card-bg: #ffffff;
+            --code-bg: #1e1e1e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .search-bar {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg);
+            width: 200px;
+            color: var(--text-muted);
+        }
+
+        /* 主体容器 */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* 页面切换逻辑 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 首页 Hero */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* 门户网格 */
+        .portal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .domain-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .domain-title {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--bg);
+        }
+
+        .tag-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .tag-group-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tag-group-title::before {
+            content: '#';
+            color: var(--primary);
+        }
+
+        .entry-list {
+            list-style: none;
+        }
+
+        .entry-list li {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* 标签小药丸 */
+        .badge {
+            display: inline-block;
+            padding: 0.1rem 0.5rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-left: 0.5rem;
+        }
+
+        /* 文章页布局 */
+        .article-layout {
+            display: grid;
+            grid-template-columns: 0px 1fr 250px;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .article-content {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .article-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .article-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .article-meta {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .prose h2 { margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+        .prose p { margin-bottom: 1.2rem; }
+        .prose pre {
+            background: var(--code-bg);
+            color: #d4d4d4;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.9rem;
+        }
+
+        .toc {
+            position: sticky;
+            top: 6rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--border);
+        }
+
+        .toc h4 {
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .toc ul {
+            list-style: none;
+            font-size: 0.85rem;
+        }
+
+        .toc li { margin-bottom: 0.75rem; }
+        .toc a { color: var(--text-muted); }
+        .toc a:hover, .toc a.active { color: var(--primary); }
+
+        /* 资源收藏页 */
+        .resource-timeline {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .resource-header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .resource-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .resource-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .resource-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .resource-meta {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部导航 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">Hty knowledge base</div>
+            <div class="nav-links">
+                <span class="nav-item active" onclick="switchPage('home')">首页</span>
+                <span class="nav-item" onclick="switchPage('article')">笔记示例 (文章页)</span>
+                <span class="nav-item" onclick="switchPage('resources')">资源收藏</span>
+                <span class="nav-item">About</span>
+                <div class="search-bar">🔍 搜索 (Ctrl+K)</div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        
+        <!-- 页面 1：首页 (动态门户) -->
+        <div id="page-home" class="page active">
+            <div class="hero">
+                <h1>个人知识库</h1>
+                <p>陪伴式记录 AI/Agent 与 全栈开发 的学习与构建之路。</p>
+            </div>
+
+            <div class="portal-grid">
+                <!-- AI/Agent 栏目 -->
+                <div class="domain-section">
+                    <h2 class="domain-title">🤖 AI/Agent</h2>
+                    
+                    <div class="tag-group">
+                        <div class="tag-group-title">LLM 基础</div>
+                        <ul class="entry-list">
+                            <li><a href="#" onclick="switchPage('article')">Transformer 架构极简拆解</a> <span class="badge">今日更新</span></li>
+                            <li><a href="#">Attention 机制的数学推导</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tag-group">
+                        <div class="tag-group-title">Agent 框架</div>
+                        <ul class="entry-list">
+                            <li><a href="#">LangChain vs LlamaIndex：什么时候用哪个？</a></li>
+                            <li><a href="#">AutoGen 多智能体协作初探</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="tag-group">
+                        <div class="tag-group-title">工具调用/MCP</div>
+                        <ul class="entry-list">
+                            <li><a href="#">Model Context Protocol (MCP) 核心概念解析</a> <span class="badge">精选</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 全栈开发 栏目 -->
+                <div class="domain-section">
+                    <h2 class="domain-title">💻 全栈开发</h2>
+                    
+                    <div class="tag-group">
+                        <div class="tag-group-title">Spring 生态</div>
+                        <ul class="entry-list">
+                            <li><a href="#">Spring Boot 3.0 AOT 编译踩坑实录</a></li>
+                            <li><a href="#">手写一个极简的 IoC 容器</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tag-group">
+                        <div class="tag-group-title">语言基础 (Java)</div>
+                        <ul class="entry-list">
+                            <li><a href="#">JUC 工具类底层原理解析：AQS</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="tag-group">
+                        <div class="tag-group-title">工程实践</div>
+                        <ul class="entry-list">
+                            <li><a href="#">从零搭建基于 Docker 的 CI/CD 流水线</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面 2：文章页 -->
+        <div id="page-article" class="page">
+            <div class="article-layout">
+                <div></div> <!-- 左侧留白 -->
+                
+                <div class="article-content">
+                    <div class="article-header">
+                        <h1>Transformer 架构极简拆解</h1>
+                        <div class="article-meta">
+                            <span>所属栏目：AI/Agent</span>
+                            <span>标签：<span class="badge">LLM基础</span> <span class="badge">深度学习</span></span>
+                            <span>最后更新：2026-09-05</span>
+                        </div>
+                    </div>
+                    
+                    <div class="prose">
+                        <p>这篇文章记录了我重新推导 Transformer 架构的过程。在之前的学习中，我总是对注意力机制的缩放因子感到困惑，今天终于理顺了。</p>
+                        
+                        <h2>1. 为什么需要 Self-Attention？</h2>
+                        <p>在 RNN 时代，序列信息的传递是串行的，这导致了两个致命缺陷：无法并行计算，以及长距离依赖的梯度消失问题。Self-Attention 的本质是让序列中的每一个 Token 直接与所有其他 Token 计算相关性。</p>
+
+                        <h2>2. Q, K, V 的本质理解</h2>
+                        <p>打个比方，你去图书馆找书：</p>
+                        <ul>
+                            <li><strong>Query (Q)</strong>：你的搜索意图（比如：“找一本关于机器学习的书”）</li>
+                            <li><strong>Key (K)</strong>：每本书书脊上的标签（“计算机科学”、“人工智能”）</li>
+                            <li><strong>Value (V)</strong>：这本书的具体内容</li>
+                        </ul>
+
+                        <h2>3. 核心代码实现</h2>
+                        <p>下面是缩放点积注意力（Scaled Dot-Product Attention）的精简 PyTorch 实现：</p>
+<pre><code>import torch
+import torch.nn.functional as F
+import math
+
+def attention(query, key, value, mask=None):
+    # query shape: (batch_size, num_heads, seq_len, d_k)
+    d_k = query.size(-1)
+    
+    # 1. 计算注意力分数 Q * K^T / sqrt(d_k)
+    scores = torch.matmul(query, key.transpose(-2, -1)) / math.sqrt(d_k)
+    
+    if mask is not None:
+        scores = scores.masked_fill(mask == 0, -1e9)
+        
+    # 2. Softmax 归一化
+    p_attn = F.softmax(scores, dim=-1)
+    
+    # 3. 乘以 Value
+    return torch.matmul(p_attn, value), p_attn</code></pre>
+                        
+                        <h2>4. 下一步</h2>
+                        <p>参考相关笔记：<a href="#">《Attention 机制的数学推导》</a>中关于 $d_k$ 为什么需要开根号的证明。</p>
+                    </div>
+                </div>
+
+                <!-- 侧边目录 (TOC) -->
+                <div class="toc">
+                    <h4>目录</h4>
+                    <ul>
+                        <li><a href="#">1. 为什么需要 Self-Attention？</a></li>
+                        <li><a href="#">2. Q, K, V 的本质理解</a></li>
+                        <li><a href="#" class="active">3. 核心代码实现</a></li>
+                        <li><a href="#">4. 下一步</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面 3：资源收藏页 -->
+        <div id="page-resources" class="page">
+            <div class="resource-timeline">
+                <div class="resource-header">
+                    <h2>📚 资源收藏：AI/Agent</h2>
+                    <p style="color: var(--text-muted); margin-top: 0.5rem;">日常阅读遇到的优质外部链接，仅作索引，不做正文存储。</p>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-title">
+                        <a href="#" target="_blank">LlamaIndex 官方文档：Agents 模块介绍 ↗</a>
+                    </div>
+                    <div class="resource-desc">
+                        极佳的 Agent 概念入门教程，解释了 ReAct 循环是如何在底层驱动 LLM 调用工具的。
+                    </div>
+                    <div class="resource-meta">
+                        添加于: 2026-09-02 • 标签: #Agent框架
+                    </div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-title">
+                        <a href="#" target="_blank">Anthropic: MCP Specification 1.0 ↗</a>
+                    </div>
+                    <div class="resource-desc">
+                        Model Context Protocol 的官方协议规范，写类似工具调用的底层必读，重点看 Server 端的生命周期管理。
+                    </div>
+                    <div class="resource-meta">
+                        添加于: 2026-08-28 • 标签: #工具调用/MCP
+                    </div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-title">
+                        <a href="#" target="_blank">The Illustrated Transformer by Jay Alammar ↗</a>
+                    </div>
+                    <div class="resource-desc">
+                        神级图解教程，把 QKV 矩阵乘法画得非常直观。每次忘细节的时候我都会回来看一遍。
+                    </div>
+                    <div class="resource-meta">
+                        添加于: 2026-08-15 • 标签: #LLM基础
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // 极简的前端路由逻辑，仅作演示用
+        function switchPage(pageId) {
+            // 隐藏所有 page
+            document.querySelectorAll('.page').forEach(el => {
+                el.classList.remove('active');
+            });
+            // 取消导航激活状态
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // 激活指定的 page
+            document.getElementById('page-' + pageId).classList.add('active');
+            
+            // 激活对应的导航栏按钮
+            const navItems = document.querySelectorAll('.nav-item');
+            if(pageId === 'home') navItems[0].classList.add('active');
+            if(pageId === 'article') navItems[1].classList.add('active');
+            if(pageId === 'resources') navItems[2].classList.add('active');
+            
+            // 滚动到顶部
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>

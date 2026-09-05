@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>格致 · 个人知识库 — 设计稿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F8F5;
+  --ink:#1B2733;
+  --muted:#6B7480;
+  --line:#E4E7E0;
+  --ai:#5A4FBF;        /* AI/Agent 领域色 */
+  --ai-soft:#EDEBF9;
+  --stack:#1F6F5C;     /* 全栈开发领域色 */
+  --stack-soft:#E6F1EC;
+  --code-bg:#1E2530;
+  --code-ink:#D7DEE8;
+  --serif:"Noto Serif SC","Songti SC","SimSun",serif;
+  --sans:-apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.85}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* ---------- 设计稿提示条 ---------- */
+.mockbar{background:var(--ink);color:#B9C2CC;font-size:12px;padding:5px 24px;text-align:center;font-family:var(--mono)}
+.mockbar b{color:#fff;font-weight:600}
+
+/* ---------- 顶栏 ---------- */
+header{position:sticky;top:0;z-index:10;background:rgba(247,248,245,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.hwrap{max-width:1080px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:28px;height:58px}
+.brand{font-family:var(--serif);font-weight:900;font-size:21px;letter-spacing:.06em;cursor:pointer;flex-shrink:0}
+.brand i{font-style:normal;color:var(--ai)}
+nav.main{display:flex;gap:4px;flex:1}
+nav.main a{font-size:14px;color:var(--muted);padding:6px 12px;border-radius:6px;cursor:pointer;transition:.15s}
+nav.main a:hover{color:var(--ink);background:#EDEFEA}
+nav.main a.on{color:var(--ink);font-weight:600;background:#EDEFEA}
+.search{flex-shrink:0}
+.search input{width:190px;border:1px solid var(--line);background:#fff;border-radius:6px;padding:6px 12px;font-size:13px;font-family:var(--sans);color:var(--ink);outline:none;transition:.15s}
+.search input:focus{border-color:#B9C2CC;width:230px}
+@media(max-width:760px){nav.main a{padding:6px 8px}.search{display:none}}
+
+/* ---------- 页面切换 ---------- */
+.page{display:none;animation:fadein .25s ease}
+.page.on{display:block}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- 首页 ---------- */
+.hero{padding:88px 0 56px}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(46px,8vw,84px);line-height:1.1;letter-spacing:.02em}
+.hero .sub{margin-top:20px;font-size:17px;color:var(--muted);max-width:34em}
+.hero .meta-line{margin-top:10px;font-size:13px;font-family:var(--mono);color:#9AA3AD}
+.empty-toggle{margin-top:26px;display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;user-select:none;border:1px dashed #C9CFC6;border-radius:999px;padding:5px 14px;background:#fff}
+.empty-toggle input{accent-color:var(--ai)}
+
+.domains{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:8px 0 64px}
+@media(max-width:700px){.domains{grid-template-columns:1fr}}
+.cover{border-radius:10px;padding:34px 30px 28px;color:#fff;cursor:pointer;position:relative;overflow:hidden;min-height:210px;display:flex;flex-direction:column;transition:transform .18s ease}
+.cover:hover{transform:translateY(-3px)}
+.cover.ai{background:linear-gradient(150deg,#4E44B0,#6C61D6)}
+.cover.stack{background:linear-gradient(150deg,#175949,#25806A)}
+.cover .dom-name{font-family:var(--serif);font-weight:900;font-size:30px;letter-spacing:.03em}
+.cover .dom-desc{margin-top:8px;font-size:13.5px;opacity:.85;line-height:1.7}
+.cover .dom-count{margin-top:auto;font-family:var(--mono);font-size:13px;opacity:.9}
+.cover .glyph{position:absolute;right:18px;bottom:6px;font-family:var(--serif);font-size:110px;font-weight:900;opacity:.12;line-height:1}
+
+.sect{margin:0 0 64px}
+.sect-head{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid var(--ink);padding-bottom:10px;margin-bottom:22px}
+.sect-head h2{font-family:var(--serif);font-weight:900;font-size:22px}
+.sect-head .hint{font-size:12.5px;color:var(--muted)}
+
+.portal{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+@media(max-width:700px){.portal{grid-template-columns:1fr}}
+.portal h3{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.portal h3 .dot{width:9px;height:9px;border-radius:2px;display:inline-block}
+.tagcloud{display:flex;flex-wrap:wrap;gap:10px}
+.tagchip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 14px;font-size:13.5px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:7px}
+.tagchip:hover{border-color:var(--ink)}
+.tagchip .n{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.tagchip.c-ai:hover{border-color:var(--ai);color:var(--ai)}
+.tagchip.c-stack:hover{border-color:var(--stack);color:var(--stack)}
+.tagchip.zero{border-style:dashed;color:#AEB5BC;background:transparent;cursor:default}
+.tagchip.zero:hover{border-color:#C9CFC6;color:#AEB5BC}
+
+.recent{list-style:none}
+.recent li{display:flex;align-items:baseline;gap:16px;padding:11px 4px;border-bottom:1px solid var(--line);font-size:15px;cursor:pointer}
+.recent li:hover .r-title{color:var(--ai)}
+.recent .r-date{font-family:var(--mono);font-size:12.5px;color:var(--muted);flex-shrink:0;width:84px}
+.recent .r-kind{font-size:11px;padding:1px 8px;border-radius:4px;flex-shrink:0}
+.kind-note{background:var(--ai-soft);color:var(--ai)}
+.kind-res{background:var(--stack-soft);color:var(--stack)}
+.recent .r-dom{font-size:12px;color:var(--muted);flex-shrink:0}
+.recent .r-title{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:.15s}
+.empty-hint{border:1px dashed #C9CFC6;border-radius:10px;padding:38px 24px;text-align:center;color:#9AA3AD;font-size:14px;background:#FBFBF9}
+.empty-hint .big{font-family:var(--serif);font-size:19px;color:var(--muted);margin-bottom:8px}
+
+/* ---------- 栏目页 ---------- */
+.colhead{padding:56px 0 30px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.colhead .crumb{font-size:13px;color:var(--muted);margin-bottom:14px}
+.colhead .crumb a{cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.colhead h1{font-family:var(--serif);font-weight:900;font-size:clamp(32px,5vw,44px);display:flex;align-items:center;gap:14px}
+.colhead h1::before{content:"";width:14px;height:38px;border-radius:3px;background:var(--dom,var(--ai))}
+.colhead .desc{margin-top:12px;color:var(--muted);font-size:15px;max-width:36em}
+.colstats{margin-top:16px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.subtabs{display:flex;gap:2px;margin:0 0 34px;border-bottom:1px solid var(--line)}
+.subtabs a{padding:10px 18px;font-size:14.5px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.subtabs a.on{color:var(--ink);font-weight:600;border-bottom-color:var(--dom,var(--ai))}
+
+.taggroup{margin-bottom:44px}
+.taggroup h2{font-size:16.5px;font-weight:600;display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.taggroup h2 .cnt{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:400}
+.taggroup .rule{height:1px;background:var(--line);margin-bottom:4px}
+.artlist{list-style:none}
+.artlist li{display:flex;align-items:baseline;gap:18px;padding:13px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+.artlist li:hover .a-title{color:var(--dom,var(--ai))}
+.artlist .a-date{font-family:var(--mono);font-size:12.5px;color:var(--muted);width:84px;flex-shrink:0}
+.artlist .a-title{flex:1;font-size:15.5px;transition:.15s}
+.artlist .a-sub{flex:1.4;color:var(--muted);font-size:13.5px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:700px){.artlist .a-sub{display:none}}
+.tag-wait{color:#AEB5BC;font-size:14px;font-style:normal;padding:14px 4px;border-bottom:1px solid var(--line)}
+
+/* ---------- 资源收藏 ---------- */
+.reslist{list-style:none;position:relative;padding-left:26px}
+.reslist::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:1px;background:var(--line)}
+.reslist li{position:relative;padding:16px 0 18px;border-bottom:1px solid var(--line)}
+.reslist li::before{content:"";position:absolute;left:-23px;top:26px;width:9px;height:9px;border-radius:50%;background:#fff;border:2px solid var(--dom,var(--stack))}
+.rescard .res-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.rescard .res-title{font-size:15.5px;font-weight:600;text-decoration:underline;text-underline-offset:4px;text-decoration-color:#B9C2CC;cursor:pointer}
+.rescard .res-title:hover{text-decoration-color:var(--dom,var(--stack))}
+.rescard .res-src{font-size:12px;color:var(--muted);font-family:var(--mono)}
+.rescard .res-sum{margin-top:4px;color:#4A545F;font-size:14px;max-width:44em}
+.rescard .res-date{font-family:var(--mono);font-size:11.5px;color:#9AA3AD;margin-top:6px}
+
+/* ---------- 文章页 ---------- */
+.art-layout{display:grid;grid-template-columns:minmax(0,1fr) 218px;gap:64px;padding:56px 0 40px}
+@media(max-width:900px){.art-layout{grid-template-columns:1fr}.toc{display:none}}
+.art-meta .crumb{font-size:13px;color:var(--muted);margin-bottom:16px}
+.art-meta .crumb a{cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.art-meta h1{font-family:var(--serif);font-weight:900;font-size:clamp(28px,4.4vw,40px);line-height:1.35}
+.art-meta .artline{margin-top:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.artline .date{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.mini-tag{font-size:12px;padding:2px 10px;border-radius:999px;background:var(--ai-soft);color:var(--ai);cursor:pointer}
+.mini-tag:hover{background:#DFDBF4}
+.art-body{margin-top:34px;font-size:16px;line-height:2;color:#24303C;max-width:46em}
+.art-body h2{font-family:var(--serif);font-weight:900;font-size:22px;margin:44px 0 14px;scroll-margin-top:76px}
+.art-body h2 .hno{font-family:var(--mono);font-weight:400;font-size:13px;color:#9AA3AD;margin-right:12px;vertical-align:2px}
+.art-body p{margin-bottom:14px}
+.art-body blockquote{border-left:3px solid var(--ai);background:var(--ai-soft);padding:12px 18px;border-radius:0 8px 8px 0;margin:18px 0;font-size:14.5px;color:#3A3560}
+.formula{background:#fff;border:1px solid var(--line);border-radius:8px;padding:22px;margin:20px 0;text-align:center;font-family:"STIX Two Text","Times New Roman",var(--serif);font-style:italic;font-size:19px;letter-spacing:.02em}
+.formula .rm{font-style:normal}
+.codeblock{background:var(--code-bg);border-radius:10px;margin:22px 0;overflow:hidden}
+.codeblock .cb-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:#171D26;font-family:var(--mono);font-size:12px;color:#8B97A5}
+.codeblock pre{padding:16px 18px;overflow-x:auto;font-family:var(--mono);font-size:13.5px;line-height:1.75;color:var(--code-ink)}
+.tk-k{color:#C792EA}.tk-s{color:#9ECE8C}.tk-c{color:#5D6B7C;font-style:italic}.tk-f{color:#82AAFF}.tk-n{color:#F0A45D}
+figure.ph{margin:24px 0;border:1.5px dashed #C4CBC2;border-radius:10px;background:repeating-linear-gradient(45deg,#F2F3EF,#F2F3EF 12px,#EFF1EC 12px,#EFF1EC 24px);padding:56px 20px;text-align:center;color:#9AA3AD;font-size:13.5px}
+figure.ph figcaption{margin-top:6px;font-size:12px}
+.relbox{margin:40px 0 0;border:1px solid var(--line);border-radius:10px;background:#fff;padding:20px 22px}
+.relbox h3{font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.relbox h3 svg{flex-shrink:0}
+.relbox ul{list-style:none}
+.relbox li{padding:7px 0;border-bottom:1px dashed var(--line);font-size:14.5px;cursor:pointer}
+.relbox li:last-child{border-bottom:none}
+.relbox li:hover{color:var(--ai)}
+.relbox li span{font-family:var(--mono);font-size:11.5px;color:#9AA3AD;margin-right:10px}
+.toc{position:sticky;top:82px;align-self:start;border-left:1px solid var(--line);padding-left:18px;font-size:13px}
+.toc .toc-t{font-size:11.5px;color:#9AA3AD;margin-bottom:10px;font-family:var(--mono)}
+.toc a{display:block;color:var(--muted);padding:4.5px 0;cursor:pointer;transition:.15s}
+.toc a:hover{color:var(--ai)}
+.toc a.l2{padding-left:14px}
+
+/* ---------- 关于 ---------- */
+.about{max-width:560px;padding:72px 0 60px}
+.about h1{font-family:var(--serif);font-weight:900;font-size:38px;margin-bottom:26px}
+.about p{margin-bottom:16px;color:#24303C}
+.about .links{margin-top:30px;display:flex;gap:14px}
+.about .links a{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 18px;font-size:14px;transition:.15s}
+.about .links a:hover{border-color:var(--ink)}
+.about .note{margin-top:38px;border-top:1px solid var(--line);padding-top:18px;font-size:13px;color:var(--muted)}
+
+/* ---------- 页脚 ---------- */
+footer{border-top:1px solid var(--line);margin-top:40px}
+.fwrap{max-width:1080px;margin:0 auto;padding:26px 24px 40px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);font-family:var(--mono)}
+
+/* ---------- 空站模式 ---------- */
+.empty-only{display:none}
+body.empty .full-only{display:none!important}
+body.empty .empty-only{display:block}
+</style>
+</head>
+<body>
+
+<div class="mockbar">设计预览稿 · 页面与链接均可点击 · <b>所有内容均为示例</b></div>
+
+<header>
+  <div class="hwrap">
+    <a class="brand" data-go="home">格致<i>.</i></a>
+    <nav class="main">
+      <a data-go="col-ai" id="nav-ai">AI / Agent</a>
+      <a data-go="col-stack" id="nav-stack">全栈开发</a>
+      <a data-go="about" id="nav-about">关于</a>
+    </nav>
+    <div class="search"><input type="text" placeholder="搜索笔记…" title="设计稿示意"></div>
+  </div>
+</header>
+
+<!-- ================= 首页 ================= -->
+<section class="page" id="page-home">
+  <div class="wrap">
+    <div class="hero">
+      <h1>格致</h1>
+      <p class="sub">一份正在生长的个人知识库。这里存放我学习 <b>AI / Agent</b> 与 <b>全栈开发</b> 的笔记、心得，以及沿途收集的资源。</p>
+      <p class="meta-line">所有内容以 Markdown 书写 · 展示最新版本</p>
+      <label class="empty-toggle"><input type="checkbox" id="emptyMode">预览：刚上线、还没有内容的空站状态</label>
+    </div>
+
+    <div class="domains">
+      <div class="cover ai" data-go="col-ai">
+        <div class="dom-name">AI / Agent</div>
+        <div class="dom-desc">大模型原理、Agent 框架、RAG、微调与工具调用</div>
+        <div class="dom-count">
+          <span class="full-only">7 篇笔记 · 6 张资源卡</span>
+          <span class="empty-only">0 篇笔记 · 0 张资源卡</span>
+        </div>
+        <div class="glyph">智</div>
+      </div>
+      <div class="cover stack" data-go="col-stack">
+        <div class="dom-name">全栈开发</div>
+        <div class="dom-desc">Java 语言、Spring 生态、数据库、中间件与工程实践</div>
+        <div class="dom-count">
+          <span class="full-only">5 篇笔记 · 5 张资源卡</span>
+          <span class="empty-only">0 篇笔记 · 0 张资源卡</span>
+        </div>
+        <div class="glyph">工</div>
+      </div>
+    </div>
+
+    <div class="sect">
+      <div class="sect-head"><h2>子主题</h2><span class="hint">由标签自动生成，随内容生长</span></div>
+      <div class="portal">
+        <div>
+          <h3><span class="dot" style="background:var(--ai)"></span>AI / Agent</h3>
+          <div class="tagcloud">
+            <span class="tagchip c-ai">LLM基础<span class="n">2</span></span>
+            <span class="tagchip c-ai">RAG<span class="n">2</span></span>
+            <span class="tagchip c-ai">Agent框架<span class="n">2</span></span>
+            <span class="tagchip c-ai">工具调用/MCP<span class="n">1</span></span>
+            <span class="tagchip c-ai zero">微调<span class="n">0</span></span>
+            <span class="tagchip c-ai zero">项目实战<span class="n">0</span></span>
+          </div>
+        </div>
+        <div>
+          <h3><span class="dot" style="background:var(--stack)"></span>全栈开发</h3>
+          <div class="tagcloud">
+            <span class="tagchip c-stack">语言基础<span class="n">2</span></span>
+            <span class="tagchip c-stack">Spring生态<span class="n">1</span></span>
+            <span class="tagchip c-stack">数据库<span class="n">2</span></span>
+            <span class="tagchip c-stack">工程实践<span class="n">1</span></span>
+            <span class="tagchip c-stack zero">JVM<span class="n">0</span></span>
+            <span class="tagchip c-stack zero">中间件<span class="n">0</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="empty-only">
+        <div class="empty-hint" style="margin-top:22px">
+          <div class="big">还没有子主题</div>
+          写下第一篇笔记并打上标签，这里就会长出第一个子主题。
+        </div>
+      </div>
+    </div>
+
+    <div class="sect">
+      <div class="sect-head"><h2>最近更新</h2><span class="hint">笔记与资源卡混排</span></div>
+      <ul class="recent full-only">
+        <li data-go="article"><span class="r-date">08-28</span><span class="r-kind kind-note">笔记</span><span class="r-dom">AI</span><span class="r-title">从零理解 Attention：一篇写给自己的笔记</span></li>
+        <li><span class="r-date">08-26</span><span class="r-kind kind-res">资源</span><span class="r-dom">全栈</span><span class="r-title">MySQL 8.0 Reference Manual（收藏）</span></li>
+        <li><span class="r-date">08-21</span><span class="r-kind kind-note">笔记</span><span class="r-dom">AI</span><span class="r-title">LangGraph 状态机心智模型</span></li>
+        <li><span class="r-date">08-18</span><span class="r-kind kind-note">笔记</span><span class="r-dom">全栈</span><span class="r-title">MySQL 索引失效的七种场景</span></li>
+        <li><span class="r-date">08-12</span><span class="r-kind kind-note">笔记</span><span class="r-dom">AI</span><span class="r-title">Transformer 结构拆解</span></li>
+        <li><span class="r-date">08-09</span><span class="r-kind kind-res">资源</span><span class="r-dom">AI</span><span class="r-title">Building Effective Agents（Anthropic 博客，收藏）</span></li>
+        <li><span class="r-date">08-05</span><span class="r-kind kind-note">笔记</span><span class="r-dom">AI</span><span class="r-title">第一次让模型调用本地工具</span></li>
+        <li><span class="r-date">08-02</span><span class="r-kind kind-note">笔记</span><span class="r-dom">全栈</span><span class="r-title">Java 泛型通配符笔记</span></li>
+      </ul>
+      <div class="empty-only">
+        <div class="empty-hint">
+          <div class="big">还没有任何内容</div>
+          第一篇笔记会出现在这里。
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AI/Agent 栏目页 ================= -->
+<section class="page" id="page-col-ai" style="--dom:var(--ai)">
+  <div class="wrap">
+    <div class="colhead">
+      <div class="crumb"><a data-go="home">首页</a> / AI / Agent</div>
+      <h1>AI / Agent</h1>
+      <p class="desc">大模型原理、Agent 框架、RAG、微调与工具调用。这是我接下来一年的主攻方向之一。</p>
+      <div class="colstats">7 篇笔记 · 6 张资源卡 · 最近更新 08-28</div>
+    </div>
+    <div class="subtabs">
+      <a class="on">文章</a>
+      <a data-go="res-ai">资源收藏</a>
+    </div>
+
+    <div class="taggroup">
+      <h2 style="color:var(--ai)">LLM基础 <span class="cnt">2 篇</span></h2>
+      <div class="rule"></div>
+      <ul class="artlist">
+        <li data-go="article"><span class="a-date">08-28</span><span class="a-title">从零理解 Attention：一篇写给自己的笔记</span><span class="a-sub">Q、K、V 的直觉，缩放点积为什么除以 √dk</span></li>
+        <li><span class="a-date">08-12</span><span class="a-title">Transformer 结构拆解</span><span class="a-sub">逐层走一遍：嵌入、位置编码、前馈与残差</span></li>
+      </ul>
+    </div>
+    <div class="taggroup">
+      <h2 style="color:var(--ai)">RAG <span class="cnt">2 篇</span></h2>
+      <div class="rule"></div>
+      <ul class="artlist">
+        <li><span class="a-date">08-24</span><span class="a-title">RAG 中的分块策略实验</span><span class="a-sub">固定长度 vs 语义分块，召回率对比记录</span></li>
+        <li><span class="a-date">08-15</span><span class="a-title">Embedding 模型选型速记</span><span class="a-sub">bge / m3e / openai，中文场景下的取舍</span></li>
+      </ul>
+    </div>
+    <div class="taggroup">
+      <h2 style="color:var(--ai)">Agent框架 <span class="cnt">2 篇</span></h2>
+      <div class="rule"></div>
+      <ul class="artlist">
+        <li><span class="a-date">08-21</span><span class="a-title">LangGraph 状态机心智模型</span><span class="a-sub">把图、节点、边翻译成自己能记住的话</span></li>
+        <li><span class="a-date">08-14</span><span class="a-title">ReAct 循环的最小实现</span><span class="a-sub">不加框架，一百行代码跑通思考-行动-观察</span></li>
+      </ul>
+    </div>
+    <div class="taggroup">
+      <h2 style="color:var(--ai)">工具调用/MCP <span class="cnt">1 篇</span></h2>
+      <div class="rule"></div>
+      <ul class="artlist">
+        <li><span class="a-date">08-05</span><span class="a-title">第一次让模型调用本地工具</span><span class="a-sub">function calling 的参数 schema 与报错处理</span></li>
+      </ul>
+    </div>
+    <div class="taggroup">
+      <h2 style="color:#AEB5BC">微调 <span class="cnt">待学习</span></h2>
+      <div class="rule"></div>
+      <div class="tag-wait">还没有内容——计划中，学到这里时会补上。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 全栈开发 栏目页 ================= -->
+<section class="page" id="page-col-stack" style="--dom:var(--stack)">
+  <div class="wrap">
+    <div class="colhead">
+      <div class="crumb"><a data-go="home">首页</a> / 全栈开发</div>
+      <h1>全栈开发</h1>
+      <p class="desc">Java 语言、Spring 生态、数据库、中间件与工程实践。夯实后端基本功，向全栈走。</p>
+      <div class="colstats">5 篇笔记 · 5 张资源卡 · 最近更新 08-18</div>
+    </div>
+    <div class="subtabs">
+      <a class="on">文章</a>
+      <a data-go="res-stack">资源收藏</a>
+    </div>
+
+    <div class="taggroup">
+      <h2 style="color:var(--stack)">语言基础 <span class="cnt">2 篇</span></h2>
+      <div class="rule"></div>
+      <ul class="artlist">
+        <li><span class="a-date">08-02</span><span class="a-title">Java 泛型通配符笔记</span><span class="a-sub">extends 与 super 到底谁能读谁能写</span></li>
+        <li><span class="a-date">07-26</span><span class="a-title">HashMap 扩容机制手记</span><span class="a-sub">负载因子为什么是 0.75，树化阈值在哪触发</span></li>
+      </ul>
+    </div>
+    <div class="taggroup">
+      <h2 style="color:var(--stack)">Spring生态 <span class="cnt">1 篇</span></h2>
+      <div class="rule"></div>
+      <ul class="artlist">
+        <li><span class="a-date">08-08</span><span class="a-title">Spring Bean 生命周期速记</span><span class="a-sub">从实例化到销毁，中间插着哪些回调</span></li>
+      </ul>
+    </div>
+    <div class="taggroup">
+      <h2 style="color:var(--stack)">数据库 <span class="cnt">2 篇</span></h2>
+      <div class="rule"></div>
+      <ul class="artlist">
+        <li><span class="a-date">08-18</span><span class="a-title">MySQL 索引失效的七种场景</span><span class="a-sub">用 explain 逐一验证网上的说法</span></li>
+        <li><span class="a-date">07-30</span><span class="a-title">事务隔离级别实验记录</span><span class="a-sub">在两个终端里亲手复现脏读与幻读</span></li>
+      </ul>
+    </div>
+    <div class="taggroup">
+      <h2 style="color:var(--stack)">工程实践 <span class="cnt">1 篇</span></h2>
+      <div class="rule"></div>
+      <ul class="artlist">
+        <li><span class="a-date">07-22</span><span class="a-title">Git rebase 与 merge 的选择</span><span class="a-sub">什么场景下我给自己定了什么规矩</span></li>
+      </ul>
+    </div>
+    <div class="taggroup">
+      <h2 style="color:#AEB5BC">JVM <span class="cnt">待学习</span></h2>
+      <div class="rule"></div>
+      <div class="tag-wait">还没有内容——计划中，学到这里时会补上。</div>
+    </div>
+    <div class="taggroup">
+      <h2 style="color:#AEB5BC">中间件 <span class="cnt">待学习</span></h2>
+      <div class="rule"></div>
+      <div class="tag-wait">还没有内容——计划中，学到这里时会补上。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 资源收藏（AI） ================= -->
+<section class="page" id="page-res-ai" style="--dom:var(--ai)">
+  <div class="wrap">
+    <div class="colhead">
+      <div class="crumb"><a data-go="home">首页</a> / <a data-go="col-ai">AI / Agent</a> / 资源收藏</div>
+      <h1>资源收藏 · AI / Agent</h1>
+      <p class="desc">外链 + 一句话摘要。只收真正读过的，链接可能失效，摘要帮我决定要不要再点开。</p>
+      <div class="colstats">6 张 · 按收集时间倒序</div>
+    </div>
+    <div class="subtabs">
+      <a data-go="col-ai">文章</a>
+      <a class="on">资源收藏</a>
+    </div>
+    <ul class="reslist">
+      <li class="rescard"><div class="res-head"><span class="res-title">Attention Is All You Need</span><span class="res-src">arxiv.org</span></div><p class="res-sum">Transformer 开山论文。配合自己的 Attention 笔记重读，重点看 3.2 节缩放点积的动机。</p><div class="res-date">收藏于 08-28</div></li>
+      <li class="rescard"><div class="res-head"><span class="res-title">Building Effective Agents</span><span class="res-src">anthropic.com</span></div><p class="res-sum">对"什么时候该上 Agent、什么时候普通工作流就够"讲得最清醒的一篇，反框架崇拜。</p><div class="res-date">收藏于 08-09</div></li>
+      <li class="rescard"><div class="res-head"><span class="res-title">LangGraph 官方文档</span><span class="res-src">langchain-ai.github.io</span></div><p class="res-sum">状态机式 Agent 编排，文档质量高。配我的 LangGraph 心智模型笔记一起看。</p><div class="res-date">收藏于 08-21</div></li>
+      <li class="rescard"><div class="res-head"><span class="res-title">Model Context Protocol 规范</span><span class="res-src">modelcontextprotocol.io</span></div><p class="res-sum">工具接入的标准化协议，之后做 MCP 相关实践前先通读一遍。</p><div class="res-date">收藏于 08-06</div></li>
+      <li class="rescard"><div class="res-head"><span class="res-title">OpenAI Function Calling 指南</span><span class="res-src">platform.openai.com</span></div><p class="res-sum">参数 schema 设计与并行工具调用的官方说明，例子可以直接改造成练习。</p><div class="res-date">收藏于 08-05</div></li>
+      <li class="rescard"><div class="res-head"><span class="res-title">RAG From Scratch（课程）</span><span class="res-src">youtube.com</span></div><p class="res-sum">十二个短视频把 RAG 全链路走了一遍，适合建立整体地图后再深入每一环。</p><div class="res-date">收藏于 08-13</div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= 资源收藏（全栈） ================= -->
+<section class="page" id="page-res-stack" style="--dom:var(--stack)">
+  <div class="wrap">
+    <div class="colhead">
+      <div class="crumb"><a data-go="home">首页</a> / <a data-go="col-stack">全栈开发</a> / 资源收藏</div>
+      <h1>资源收藏 · 全栈开发</h1>
+      <p class="desc">外链 + 一句话摘要。只收真正读过的，链接可能失效，摘要帮我决定要不要再点开。</p>
+      <div class="colstats">5 张 · 按收集时间倒序</div>
+    </div>
+    <div class="subtabs">
+      <a data-go="col-stack">文章</a>
+      <a class="on">资源收藏</a>
+    </div>
+    <ul class="reslist">
+      <li class="rescard"><div class="res-head"><span class="res-title">MySQL 8.0 Reference Manual</span><span class="res-src">dev.mysql.com</span></div><p class="res-sum">遇到索引与事务问题时的最终依据，比二手博客可靠。锁机制章节值得精读。</p><div class="res-date">收藏于 08-26</div></li>
+      <li class="rescard"><div class="res-head"><span class="res-title">Spring Framework 官方文档 · Core</span><span class="res-src">docs.spring.io</span></div><p class="res-sum">IoC 容器与 Bean 生命周期的一手资料，写得比大多数教程清楚。</p><div class="res-date">收藏于 08-08</div></li>
+      <li class="rescard"><div class="res-head"><span class="res-title">Baeldung · Java Generics</span><span class="res-src">baeldung.com</span></div><p class="res-sum">通配符与 PECS 原则的例子最全，配我的泛型笔记食用。</p><div class="res-date">收藏于 08-03</div></li>
+      <li class="rescard"><div class="res-head"><span class="res-title">Java Language Specification</span><span class="res-src">docs.oracle.com</span></div><p class="res-sum">有争议的语法问题以这里为准，查过泛型擦除和 switch 语义两回。</p><div class="res-date">收藏于 07-27</div></li>
+      <li class="rescard"><div class="res-head"><span class="res-title">Pro Git（中文版）</span><span class="res-src">git-scm.com</span></div><p class="res-sum">第 3 章分支模型讲透了 rebase 与 merge 的区别，工程实践笔记的出处。</p><div class="res-date">收藏于 07-22</div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= 文章页 ================= -->
+<section class="page" id="page-article" style="--dom:var(--ai)">
+  <div class="wrap">
+    <div class="art-layout">
+      <div>
+        <div class="art-meta">
+          <div class="crumb"><a data-go="home">首页</a> / <a data-go="col-ai">AI / Agent</a> / LLM基础</div>
+          <h1>从零理解 Attention：一篇写给自己的笔记</h1>
+          <div class="artline">
+            <span class="date">2026-08-28</span>
+            <span class="mini-tag">LLM基础</span>
+            <span class="mini-tag">RAG</span>
+          </div>
+        </div>
+
+        <div class="art-body">
+          <h2 id="s1"><span class="hno">§ 1</span>注意力到底在解决什么问题</h2>
+          <p>读一个长句子时，并不是每个词都同等重要。"它"指代的是谁，往往要到几个词之前去找。注意力机制做的事，就是让模型在处理每个位置时，<b>按需回头查看其他位置</b>，并给相关的位置更高的话语权。</p>
+          <blockquote>一句话版本：Attention 是一次"带权重的查表"——用查询去匹配所有的键，按匹配程度加权取回值。</blockquote>
+
+          <h2 id="s2"><span class="hno">§ 2</span>Q、K、V 三个矩阵</h2>
+          <p>每个 token 的向量经过三个不同的投影，得到三份副本：<b>Query</b>（我在找什么）、<b>Key</b>（我能提供什么线索）、<b>Value</b>（我实际携带的信息）。匹配发生在 Q 和 K 之间，信息从 V 取出。</p>
+
+          <div class="formula">
+            <span class="rm">Attention(</span>Q, K, V<span class="rm">) = softmax</span>
+            <span class="rm">(</span>QK<sup>T</sup> / √d<sub>k</sub><span class="rm">)</span> V
+          </div>
+
+          <h2 id="s3"><span class="hno">§ 3</span>缩放因子为什么是 √dk</h2>
+          <p>维度越高，点积的方差越大，softmax 容易被推到饱和区，梯度几乎为零。除以 √d<sub>k</sub> 把方差拉回 1，这是它在数学上的全部作用。用代码验证一遍比看十遍公式有效：</p>
+
+          <div class="codeblock">
+            <div class="cb-bar"><span>attention_demo.py</span><span>python</span></div>
+            <pre><span class="tk-k">import</span> numpy <span class="tk-k">as</span> np
+
+<span class="tk-k">def</span> <span class="tk-f">softmax</span>(x):
+    e = np.<span class="tk-f">exp</span>(x - x.<span class="tk-f">max</span>(axis=-<span class="tk-n">1</span>, keepdims=<span class="tk-k">True</span>))
+    <span class="tk-k">return</span> e / e.<span class="tk-f">sum</span>(axis=-<span class="tk-n">1</span>, keepdims=<span class="tk-k">True</span>)
+
+<span class="tk-k">def</span> <span class="tk-f">attention</span>(Q, K, V):
+    d_k = Q.shape[-<span class="tk-n">1</span>]
+    scores = Q @ K.T / np.<span class="tk-f">sqrt</span>(d_k)   <span class="tk-c"># 缩放点积：方差拉回 1</span>
+    <span class="tk-k">return</span> <span class="tk-f">softmax</span>(scores) @ V
+
+Q, K, V = (np.random.randn(<span class="tk-n">4</span>, <span class="tk-n">64</span>) <span class="tk-k">for</span> _ <span class="tk-k">in</span> <span class="tk-f">range</span>(<span class="tk-n">3</span>))
+<span class="tk-f">print</span>(<span class="tk-f">attention</span>(Q, K, V).shape)      <span class="tk-c"># (4, 64)</span></pre>
+          </div>
+
+          <h2 id="s4"><span class="hno">§ 4</span>多头：并行地关注不同关系</h2>
+          <p>单个注意力头只能表达一种"关注模式"。把 Q、K、V 切成 h 份分别计算再拼接，每一头可以专注不同的语言现象——有的头盯语法依存，有的头盯指代链。多头不增加太多计算量，却让表达力成倍上升。</p>
+
+          <figure class="ph">
+            <div>架构图占位</div>
+            <figcaption>多头注意力示意图 · 在本地画好后随 Markdown 一起发布</figcaption>
+          </figure>
+
+          <h2 id="s5"><span class="hno">§ 5</span>和 RAG 有什么关系</h2>
+          <p>RAG 里的"相似度检索"用的是另一套注意力：query 向量与文档向量的点积。理解了缩放点积，向量检索的余弦相似度、重排序的打分，都在同一个数学框架里，没有新东西。</p>
+
+          <div class="relbox">
+            <h3><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>相关笔记（文内互链）</h3>
+            <ul>
+              <li><span>08-12</span>Transformer 结构拆解</li>
+              <li><span>08-15</span>Embedding 模型选型速记</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <aside class="toc">
+        <div class="toc-t">目录 / TOC</div>
+        <a href="#s1">注意力到底在解决什么问题</a>
+        <a href="#s2">Q、K、V 三个矩阵</a>
+        <a href="#s3">缩放因子为什么是 √dk</a>
+        <a href="#s4">多头：并行地关注不同关系</a>
+        <a href="#s5">和 RAG 有什么关系</a>
+        <a class="l2" href="#s5">相关笔记</a>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 关于 ================= -->
+<section class="page" id="page-about">
+  <div class="wrap">
+    <div class="about">
+      <h1>关于</h1>
+      <p>你好，我是这个站的主人。目前在学习两条主线：<b>AI / Agent</b> 和<b>全栈开发</b>。</p>
+      <p>这个站是我的个人知识库：学习过程中写下的笔记、心得，以及收集到的资料都放在这里。内容以 Markdown 在本地书写，这里展示最新版本。</p>
+      <div class="links">
+        <a href="#" onclick="return false">GitHub</a>
+        <a href="#" onclick="return false">掘金</a>
+      </div>
+      <p class="note">笔记主要用于整理自己的理解，表述未必严谨；若其中内容恰好帮到了你，那是它的荣幸。</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fwrap">
+    <span>© 2026 格致</span>
+    <span>Markdown · 本地书写 · 展示最新版</span>
+  </div>
+</footer>
+
+<script>
+const pages = {
+  home:      {el:'page-home',      nav:null},
+  'col-ai':  {el:'page-col-ai',    nav:'nav-ai'},
+  'col-stack':{el:'page-col-stack',nav:'nav-stack'},
+  'res-ai':  {el:'page-res-ai',    nav:'nav-ai'},
+  'res-stack':{el:'page-res-stack',nav:'nav-stack'},
+  article:   {el:'page-article',   nav:'nav-ai'},
+  about:     {el:'page-about',     nav:'nav-about'},
+};
+function go(key){
+  const p = pages[key]; if(!p) return;
+  document.querySelectorAll('.page').forEach(s=>s.classList.remove('on'));
+  document.getElementById(p.el).classList.add('on');
+  document.querySelectorAll('nav.main a').forEach(a=>a.classList.remove('on'));
+  if(p.nav) document.getElementById(p.nav).classList.add('on');
+  history.replaceState(null,'','#'+key);
+  window.scrollTo({top:0,behavior:'instant'});
+}
+document.addEventListener('click',e=>{
+  const t = e.target.closest('[data-go]');
+  if(t){ e.preventDefault(); go(t.dataset.go); }
+});
+document.getElementById('emptyMode').addEventListener('change',e=>{
+  document.body.classList.toggle('empty', e.target.checked);
+});
+window.addEventListener('hashchange',()=>{
+  const k = location.hash.slice(1);
+  if(pages[k]) go(k);
+});
+go(pages[location.hash.slice(1)] ? location.hash.slice(1) : 'home');
+</script>
+</body>
+</html>

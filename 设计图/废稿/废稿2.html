@@ -1,0 +1,2157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>双径 · 个人知识库 (Twin-Stem Digital Garden) — 设计稿</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================================================
+       设计系统 Tokens (遵循 frontend-design 规范：去模版化、高对比克制、双轨架构)
+       ========================================================================== */
+    :root {
+      /* 基础画板与界面层 */
+      --bg-page: #F8F9FA;
+      --bg-surface: #FFFFFF;
+      --bg-surface-elevated: #FFFFFF;
+      --bg-subtle: #F1F3F5;
+      --bg-sunken: #E9ECEF;
+
+      /* 墨线与边界 */
+      --border-light: #E9ECEF;
+      --border-base: #DEE2E6;
+      --border-strong: #CED4DA;
+      --border-focus: #111827;
+
+      /* 文字层级（墨质层次，拒绝纯黑的高频眩光） */
+      --ink-primary: #111827;
+      --ink-secondary: #4B5563;
+      --ink-tertiary: #6B7280;
+      --ink-quaternary: #9CA3AF;
+
+      /* 双主线专属标识色（严禁使用俗套渐变与 Anthropic 暖土红） */
+      /* 主线 1：AI / Agent（数理智能·深邃克莱因蓝） */
+      --ai-primary: #1D4ED8;
+      --ai-surface: #EFF6FF;
+      --ai-border: #BFDBFE;
+      --ai-badge-text: #1E40AF;
+
+      /* 主线 2：全栈开发（系统构建·工整冷杉墨绿） */
+      --stack-primary: #0F766E;
+      --stack-surface: #F0FDFA;
+      --stack-border: #99F6E4;
+      --stack-badge-text: #115E59;
+
+      /* 代码与技术沉浸容器 */
+      --code-bg: #0F172A;
+      --code-border: #1E293B;
+      --code-text: #E2E8F0;
+
+      /* 排印系统 */
+      --font-display: "Noto Serif SC", Georgia, "Songti SC", serif;
+      --font-body: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      --font-mono: "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+
+      /* 阴影（极其克制，用线框结构代替模糊阴影） */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+      --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+      --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+      /* 动画时间 */
+      --transition-fast: 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* 基础重置 */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--ink-primary);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    /* 全局容器约束 */
+    .container {
+      width: 100%;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ==========================================================================
+       顶部原型控制条 (Interactive Prototype Toolbar)
+       ========================================================================== */
+    .prototype-bar {
+      background: #111827;
+      color: #9CA3AF;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      padding: 8px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1F2937;
+      position: relative;
+      z-index: 100;
+    }
+    .prototype-status {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .prototype-dot {
+      width: 7px;
+      height: 7px;
+      background: #10B981;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #10B981;
+    }
+    .prototype-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .prototype-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #1F2937;
+      padding: 3px 10px;
+      border-radius: 4px;
+      color: #E5E7EB;
+      cursor: pointer;
+      user-select: none;
+      transition: background var(--transition-fast);
+    }
+    .prototype-toggle:hover {
+      background: #374151;
+    }
+    .prototype-toggle input {
+      accent-color: #3B82F6;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       网站主导航栏 (Global Header)
+       ========================================================================== */
+    .site-header {
+      background: rgba(248, 249, 250, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-light);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .header-inner {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+    .brand-stem-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      gap: 4px;
+      align-items: flex-end;
+    }
+    .brand-stem-icon span:first-child {
+      width: 4px;
+      height: 20px;
+      background: var(--ai-primary);
+      border-radius: 2px;
+    }
+    .brand-stem-icon span:last-child {
+      width: 4px;
+      height: 14px;
+      background: var(--stack-primary);
+      border-radius: 2px;
+    }
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      color: var(--ink-primary);
+    }
+    .brand-tagline {
+      font-size: 12px;
+      color: var(--ink-tertiary);
+      border-left: 1px solid var(--border-base);
+      padding-left: 10px;
+      font-family: var(--font-mono);
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-btn {
+      padding: 7px 14px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink-secondary);
+      border-radius: 6px;
+      transition: all var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-btn:hover {
+      color: var(--ink-primary);
+      background: var(--bg-subtle);
+    }
+    .nav-btn.active {
+      color: var(--ink-primary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      box-shadow: var(--shadow-sm);
+    }
+    .nav-btn .dot-ind {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .nav-btn.ai-btn .dot-ind { background: var(--ai-primary); }
+    .nav-btn.stack-btn .dot-ind { background: var(--stack-primary); }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .search-trigger {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 13px;
+      color: var(--ink-tertiary);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+    .search-trigger:hover {
+      border-color: var(--border-strong);
+      color: var(--ink-primary);
+    }
+    .kbd-chip {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-base);
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: var(--ink-secondary);
+    }
+
+    /* ==========================================================================
+       视图调度器 (SPA View System)
+       ========================================================================== */
+    .view-container {
+      flex: 1;
+      padding-top: 32px;
+      padding-bottom: 72px;
+    }
+    .view-pane {
+      display: none;
+      animation: viewFadeIn 0.2s ease;
+    }
+    .view-pane.active {
+      display: block;
+    }
+    @keyframes viewFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==========================================================================
+       1. 首页视图 (Home Portal View)
+       ========================================================================== */
+    .home-hero {
+      padding: 40px 0 48px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink-secondary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 20px;
+      padding: 4px 14px;
+      margin-bottom: 20px;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(34px, 5.5vw, 48px);
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      color: var(--ink-primary);
+      margin-bottom: 18px;
+    }
+    .hero-lead {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--ink-secondary);
+      max-width: 720px;
+      margin-bottom: 24px;
+    }
+    .hero-specs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      font-size: 13px;
+      color: var(--ink-tertiary);
+      font-family: var(--font-mono);
+      padding-top: 16px;
+      border-top: 1px solid var(--border-light);
+    }
+    .hero-specs span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hero-specs strong {
+      color: var(--ink-primary);
+      font-weight: 600;
+    }
+
+    /* 双主线入口门户卡片 (Twin-Stem Gateways) */
+    .dual-gateways {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    .gateway-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 12px;
+      padding: 32px 28px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+    }
+    .gateway-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card);
+    }
+    .gateway-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: 12px 12px 0 0;
+    }
+    .gateway-card.ai-gateway::before { background: var(--ai-primary); }
+    .gateway-card.stack-gateway::before { background: var(--stack-primary); }
+
+    .gateway-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .gateway-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--ink-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .gateway-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+    }
+    .ai-gateway .gateway-indicator { background: var(--ai-primary); }
+    .stack-gateway .gateway-indicator { background: var(--stack-primary); }
+
+    .gateway-count {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--ink-tertiary);
+    }
+    .gateway-desc {
+      font-size: 14px;
+      color: var(--ink-secondary);
+      line-height: 1.6;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+    .gateway-tag-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+    .tag-badge {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      transition: all var(--transition-fast);
+    }
+    .tag-badge.ai-tag {
+      background: var(--ai-surface);
+      color: var(--ai-badge-text);
+      border-color: var(--ai-border);
+    }
+    .tag-badge.stack-tag {
+      background: var(--stack-surface);
+      color: var(--stack-badge-text);
+      border-color: var(--stack-border);
+    }
+    .tag-badge:hover {
+      filter: brightness(0.95);
+    }
+    .gateway-footer-links {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-light);
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .gateway-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--ink-secondary);
+    }
+    .gateway-link:hover {
+      color: var(--ink-primary);
+    }
+    .ai-gateway .gateway-link.primary { color: var(--ai-primary); font-weight: 600; }
+    .stack-gateway .gateway-link.primary { color: var(--stack-primary); font-weight: 600; }
+
+    /* 受控标签衍生子主题 (Controlled Taxonomy Section) */
+    .section-block {
+      margin-bottom: 56px;
+    }
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-base);
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink-primary);
+    }
+    .section-meta {
+      font-size: 12px;
+      color: var(--ink-tertiary);
+      font-family: var(--font-mono);
+    }
+
+    .taxonomy-cluster {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 10px;
+      padding: 24px 28px;
+    }
+    .cluster-col-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cluster-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .cluster-chip {
+      background: var(--bg-page);
+      border: 1px solid var(--border-base);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 13px;
+      color: var(--ink-primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .cluster-chip:hover {
+      border-color: var(--ink-primary);
+      background: var(--bg-surface);
+    }
+    .cluster-chip .count {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-tertiary);
+      background: var(--bg-subtle);
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+
+    /* 最近更新流 (Recent Updates Stream) */
+    .stream-list {
+      list-style: none;
+      border: 1px solid var(--border-base);
+      border-radius: 10px;
+      background: var(--bg-surface);
+      overflow: hidden;
+    }
+    .stream-item {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-light);
+      transition: background var(--transition-fast);
+      cursor: pointer;
+    }
+    .stream-item:last-child {
+      border-bottom: none;
+    }
+    .stream-item:hover {
+      background: var(--bg-subtle);
+    }
+    .stream-date {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink-tertiary);
+      width: 88px;
+      flex-shrink: 0;
+    }
+    .stream-type {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      padding: 2px 7px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      border: 1px solid transparent;
+    }
+    .type-note { background: #F3E8FF; color: #7E22CE; }
+    .type-res { background: #FEF3C7; color: #B45309; }
+
+    .stream-domain-pill {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      flex-shrink: 0;
+      font-weight: 500;
+    }
+    .domain-ai-pill { background: var(--ai-surface); color: var(--ai-badge-text); border: 1px solid var(--ai-border); }
+    .domain-stack-pill { background: var(--stack-surface); color: var(--stack-badge-text); border: 1px solid var(--stack-border); }
+
+    .stream-title {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--ink-primary);
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .stream-tag {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--ink-tertiary);
+      flex-shrink: 0;
+    }
+
+    /* 零内容初始状态 (Empty State Representation) */
+    .empty-state-notice {
+      display: none;
+      background: var(--bg-surface);
+      border: 2px dashed var(--border-strong);
+      border-radius: 12px;
+      padding: 56px 32px;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .empty-state-notice.active {
+      display: block;
+    }
+    .empty-state-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+    .empty-state-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .empty-state-desc {
+      font-size: 14px;
+      color: var(--ink-secondary);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ==========================================================================
+       2. 栏目页 (Column View: AI/Agent & Full-Stack)
+       ========================================================================== */
+    .column-header {
+      padding: 28px 0 24px;
+      border-bottom: 1px solid var(--border-base);
+      margin-bottom: 32px;
+    }
+    .breadcrumb-nav {
+      font-size: 13px;
+      color: var(--ink-tertiary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb-nav a:hover {
+      color: var(--ink-primary);
+      text-decoration: underline;
+    }
+    .column-title-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .column-title {
+      font-family: var(--font-display);
+      font-size: 34px;
+      font-weight: 900;
+      color: var(--ink-primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .column-stripe {
+      width: 6px;
+      height: 32px;
+      border-radius: 3px;
+    }
+    .ai-stripe { background: var(--ai-primary); }
+    .stack-stripe { background: var(--stack-primary); }
+
+    .column-desc {
+      font-size: 15px;
+      color: var(--ink-secondary);
+      margin-top: 8px;
+      max-width: 760px;
+    }
+    .column-subnav {
+      display: flex;
+      gap: 4px;
+      margin-top: 24px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .subnav-link {
+      padding: 9px 16px;
+      font-size: 14px;
+      color: var(--ink-tertiary);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .subnav-link:hover {
+      color: var(--ink-primary);
+    }
+    .subnav-link.active {
+      color: var(--ink-primary);
+      font-weight: 600;
+      border-bottom-color: var(--ink-primary);
+    }
+
+    /* 栏目受控标签分组展示 */
+    .taxonomy-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+    .group-block {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .group-block-header {
+      background: var(--bg-page);
+      border-bottom: 1px solid var(--border-light);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .group-tag-name {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .group-tag-name::before {
+      content: "#";
+      color: var(--ink-quaternary);
+    }
+    .group-count {
+      font-size: 12px;
+      color: var(--ink-tertiary);
+      font-family: var(--font-mono);
+    }
+
+    .article-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 16px;
+    }
+    @media(max-width: 768px) {
+      .article-cards-grid { grid-template-columns: 1fr; }
+    }
+    .article-snippet-card {
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 18px 20px;
+      background: var(--bg-surface);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+    .article-snippet-card:hover {
+      border-color: var(--border-strong);
+      background: var(--bg-subtle);
+    }
+    .snippet-title {
+      font-size: 15.5px;
+      font-weight: 600;
+      color: var(--ink-primary);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .snippet-excerpt {
+      font-size: 13.5px;
+      color: var(--ink-secondary);
+      line-height: 1.6;
+      margin-bottom: 14px;
+      flex-grow: 1;
+    }
+    .snippet-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--ink-tertiary);
+      font-family: var(--font-mono);
+      padding-top: 10px;
+      border-top: 1px dashed var(--border-light);
+    }
+
+    /* ==========================================================================
+       3. 资源收藏页 (Resource Collections View)
+       ========================================================================== */
+    .resource-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .resource-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 10px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      transition: all var(--transition-fast);
+    }
+    .resource-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-sm);
+    }
+    .resource-date-badge {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink-tertiary);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-base);
+      border-radius: 6px;
+      padding: 4px 10px;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .resource-body {
+      flex: 1;
+    }
+    .resource-title-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .resource-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+    .resource-domain-tag {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--ink-tertiary);
+    }
+    .resource-summary {
+      font-size: 14px;
+      color: var(--ink-secondary);
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+    .resource-external-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--ai-primary);
+      text-decoration: none;
+    }
+    .resource-external-link:hover {
+      text-decoration: underline;
+    }
+
+    /* ==========================================================================
+       4. 文章详情页 (Deep Markdown Reader View)
+       ========================================================================== */
+    .article-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 240px;
+      gap: 48px;
+      align-items: start;
+    }
+    @media(max-width: 900px) {
+      .article-layout { grid-template-columns: 1fr; }
+      .article-toc-sidebar { display: none; }
+    }
+
+    .article-header {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-base);
+    }
+    .article-headline {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 36px);
+      font-weight: 900;
+      line-height: 1.3;
+      color: var(--ink-primary);
+      margin: 12px 0 16px;
+    }
+    .article-meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+      font-size: 13px;
+      font-family: var(--font-mono);
+      color: var(--ink-tertiary);
+    }
+
+    /* 真实 Markdown 排版规制 */
+    .markdown-body {
+      font-size: 15.5px;
+      line-height: 1.85;
+      color: var(--ink-primary);
+    }
+    .markdown-body p {
+      margin-bottom: 20px;
+    }
+    .markdown-body h2 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      margin: 40px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .markdown-body h2 .section-symbol {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      color: var(--ink-quaternary);
+      font-weight: 400;
+    }
+    .markdown-body h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 28px 0 12px;
+    }
+    .markdown-body blockquote {
+      border-left: 3px solid var(--ink-primary);
+      padding: 12px 20px;
+      background: var(--bg-surface);
+      border-radius: 0 6px 6px 0;
+      margin: 24px 0;
+      font-size: 15px;
+      color: var(--ink-secondary);
+      box-shadow: var(--shadow-sm);
+    }
+    .markdown-body .callout {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin: 24px 0;
+    }
+    .markdown-body .callout-title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ai-primary);
+    }
+
+    /* LaTeX 公式块渲染 */
+    .math-block {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 8px;
+      padding: 24px 20px;
+      margin: 28px 0;
+      text-align: center;
+      font-family: "Noto Serif SC", serif;
+      font-size: 17px;
+      color: var(--ink-primary);
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+    .math-var { font-style: italic; }
+    .math-fn { font-family: var(--font-mono); font-size: 15px; }
+
+    /* 专业代码块容器与语法高亮 */
+    .code-container {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      margin: 28px 0;
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+    }
+    .code-header {
+      background: #0B1120;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1E293B;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #94A3B8;
+    }
+    .code-content {
+      padding: 20px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: var(--code-text);
+    }
+    .tok-kw { color: #F472B6; font-weight: 600; }
+    .tok-fn { color: #60A5FA; }
+    .tok-str { color: #34D399; }
+    .tok-num { color: #FBBF24; }
+    .tok-comment { color: #64748B; font-style: italic; }
+
+    /* 架构图 / 原理示意框 */
+    .schematic-diagram {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 8px;
+      padding: 24px;
+      margin: 28px 0;
+      text-align: center;
+    }
+    .schematic-caption {
+      font-size: 12.5px;
+      color: var(--ink-tertiary);
+      font-family: var(--font-mono);
+      margin-top: 10px;
+    }
+
+    /* 文内互链模块 (Backlinks & Interlinks) */
+    .backlinks-box {
+      margin-top: 48px;
+      padding: 20px 24px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 8px;
+    }
+    .backlinks-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .backlinks-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .backlink-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      color: var(--ai-primary);
+      cursor: pointer;
+    }
+    .backlink-item:hover {
+      text-decoration: underline;
+    }
+
+    /* TOC 悬浮目录侧边栏 */
+    .article-toc-sidebar {
+      position: sticky;
+      top: 96px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .toc-title {
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--ink-tertiary);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      letter-spacing: 0.05em;
+    }
+    .toc-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 13px;
+    }
+    .toc-link {
+      color: var(--ink-secondary);
+      border-left: 2px solid transparent;
+      padding-left: 10px;
+      transition: all var(--transition-fast);
+    }
+    .toc-link:hover {
+      color: var(--ink-primary);
+      border-left-color: var(--border-strong);
+    }
+    .toc-link.active {
+      color: var(--ink-primary);
+      font-weight: 600;
+      border-left-color: var(--ai-primary);
+    }
+    .toc-link.indent {
+      padding-left: 20px;
+      font-size: 12px;
+    }
+
+    /* ==========================================================================
+       5. About 视图 (Pure Display Identity View)
+       ========================================================================== */
+    .about-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 12px;
+      padding: 48px 40px;
+      max-width: 680px;
+      margin: 20px auto;
+      box-shadow: var(--shadow-sm);
+    }
+    .about-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 24px;
+    }
+    .about-prose {
+      font-size: 15.5px;
+      line-height: 1.8;
+      color: var(--ink-secondary);
+    }
+    .about-prose p {
+      margin-bottom: 16px;
+    }
+    .about-rules {
+      background: var(--bg-page);
+      border: 1px solid var(--border-base);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 24px 0;
+      font-size: 13.5px;
+    }
+    .about-links {
+      display: flex;
+      gap: 16px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-light);
+      margin-top: 24px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+    .about-link {
+      color: var(--ink-primary);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* ==========================================================================
+       6. 站内搜索模态框 (Search Modal Overlay)
+       ========================================================================== */
+    .search-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 150;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 15vh;
+    }
+    .search-modal-backdrop.open {
+      display: flex;
+    }
+    .search-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 580px;
+      box-shadow: var(--shadow-modal);
+      overflow: hidden;
+      animation: modalSlide 0.15s ease-out;
+    }
+    @keyframes modalSlide {
+      from { transform: translateY(-8px) scale(0.98); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .search-input-wrap {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-base);
+      gap: 12px;
+    }
+    .search-input-wrap input {
+      flex: 1;
+      font-size: 16px;
+      border: none;
+      outline: none;
+      font-family: var(--font-body);
+      color: var(--ink-primary);
+      background: transparent;
+    }
+    .search-results-list {
+      max-height: 360px;
+      overflow-y: auto;
+      list-style: none;
+      padding: 8px 0;
+    }
+    .search-result-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      transition: background var(--transition-fast);
+    }
+    .search-result-item:hover, .search-result-item.selected {
+      background: var(--bg-subtle);
+    }
+    .search-result-title {
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--ink-primary);
+    }
+    .search-result-tag {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--ink-tertiary);
+    }
+    .search-modal-footer {
+      background: var(--bg-page);
+      padding: 10px 20px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--ink-tertiary);
+    }
+
+    /* ==========================================================================
+       页脚 (Footer)
+       ========================================================================== */
+    .site-footer {
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-light);
+      padding: 32px 0;
+      margin-top: auto;
+      font-size: 13px;
+      color: var(--ink-tertiary);
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-specs {
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= 原型控制条 ================= -->
+  <div class="prototype-bar">
+    <div class="prototype-status">
+      <span class="prototype-dot"></span>
+      <span>双径知识库 · 高保真概念设计图 (v2.0)</span>
+      <span style="opacity:0.6">|</span>
+      <span>遵循 DESIGN.md 规范与去模板化设计语言</span>
+    </div>
+    <div class="prototype-controls">
+      <label class="prototype-toggle" title="模拟建站初期空仓库与内容丰富时的排版表现">
+        <input type="checkbox" id="toggleZeroState">
+        <span>模拟：零内容初始态</span>
+      </label>
+      <span style="opacity:0.6">|</span>
+      <span>按 <kbd class="kbd-chip">⌘K</kbd> 呼出搜索</span>
+    </div>
+  </div>
+
+  <!-- ================= 网站顶栏 ================= -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand-mark" onclick="switchView('home')">
+        <div class="brand-stem-icon">
+          <span></span>
+          <span></span>
+        </div>
+        <div>
+          <div class="brand-title">双径</div>
+        </div>
+        <div class="brand-tagline">AI/Agent × 全栈工程</div>
+      </div>
+
+      <nav class="main-nav">
+        <button class="nav-btn ai-btn" id="nav-ai" onclick="switchView('col-ai')">
+          <span class="dot-ind"></span>
+          <span>AI / Agent</span>
+        </button>
+        <button class="nav-btn stack-btn" id="nav-stack" onclick="switchView('col-stack')">
+          <span class="dot-ind"></span>
+          <span>全栈开发</span>
+        </button>
+        <button class="nav-btn" id="nav-about" onclick="switchView('about')">
+          <span>关于</span>
+        </button>
+      </nav>
+
+      <div class="header-actions">
+        <button class="search-trigger" onclick="openSearchModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>搜索知识库...</span>
+          <span class="kbd-chip">⌘K</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= 主视图容器 ================= -->
+  <main class="view-container">
+    <div class="container">
+
+      <!-- ================= 视图 1：首页门户 (Home) ================= -->
+      <section class="view-pane active" id="view-home">
+        
+        <!-- Hero 介绍 -->
+        <div class="home-hero">
+          <div class="hero-badge">纯展示型 · 本地 Markdown 驱动</div>
+          <h1 class="hero-title">随思随记，自如生长。</h1>
+          <p class="hero-lead">
+            这是我的个人知识库。内容全部在本地以 Markdown 编写，网站是沉淀文件的展示门面——没有管理后台，没有在线编辑，没有互动噪音。陪伴我在 <strong>AI/Agent</strong> 与 <strong>全栈开发</strong> 两条主线的学习探索，从零开始自然生长。
+          </p>
+          <div class="hero-specs">
+            <span>主线架构：<strong>双一级栏目</strong></span>
+            <span>分类方式：<strong>受控标签矩阵</strong></span>
+            <span>内容类型：<strong>Markdown长文 + 外部资源卡</strong></span>
+            <span>更新策略：<strong>本地文件改完同步即更新</strong></span>
+          </div>
+        </div>
+
+        <!-- 零内容空状态提示（由顶部 Toggle 动态控制） -->
+        <div class="empty-state-notice" id="homeZeroNotice">
+          <div class="empty-state-icon">🌱</div>
+          <h3 class="empty-state-title">双书架已立，虚位以待</h3>
+          <p class="empty-state-desc">
+            此时知识库刚建立，尚无任何 Markdown 文件。首页仅呈现“AI / Agent”与“全栈开发”两个领域初始入口。随着本地笔记与资源卡的写入，下方的子主题门户与更新流将自动生长出来。
+          </p>
+        </div>
+
+        <!-- 双主线门户卡片 (Twin-Stem Gateways) -->
+        <div class="dual-gateways">
+          <!-- 领域 1：AI / Agent -->
+          <div class="gateway-card ai-gateway" onclick="switchView('col-ai')">
+            <div class="gateway-header">
+              <h2 class="gateway-title">
+                <span class="gateway-indicator"></span>
+                AI / Agent
+              </h2>
+              <span class="gateway-count dynamic-count">18 篇笔记 · 12 条资源</span>
+            </div>
+            <p class="gateway-desc">
+              大语言模型原理、Agent 认知架构、RAG 向量检索工程与 MCP 工具协议的系统化沉淀与实验记录。
+            </p>
+            <div class="gateway-tag-preview">
+              <span class="tag-badge ai-tag">LLM基础</span>
+              <span class="tag-badge ai-tag">Agent框架</span>
+              <span class="tag-badge ai-tag">RAG</span>
+              <span class="tag-badge ai-tag">微调</span>
+              <span class="tag-badge ai-tag">工具调用/MCP</span>
+              <span class="tag-badge ai-tag">项目实战</span>
+            </div>
+            <div class="gateway-footer-links">
+              <span class="gateway-link primary">进入栏目文章库</span>
+              <span class="gateway-link" onclick="event.stopPropagation(); switchView('res-ai')">资源收藏 →</span>
+            </div>
+          </div>
+
+          <!-- 领域 2：全栈开发 -->
+          <div class="gateway-card stack-gateway" onclick="switchView('col-stack')">
+            <div class="gateway-header">
+              <h2 class="gateway-title">
+                <span class="gateway-indicator"></span>
+                全栈开发
+              </h2>
+              <span class="gateway-count dynamic-count">24 篇笔记 · 19 条资源</span>
+            </div>
+            <p class="gateway-desc">
+              现代 Java/JVM 生态、Spring 响应式架构、分布式中间件设计及高可用高并发工程实战。
+            </p>
+            <div class="gateway-tag-preview">
+              <span class="tag-badge stack-tag">语言基础</span>
+              <span class="tag-badge stack-tag">JVM</span>
+              <span class="tag-badge stack-tag">Spring生态</span>
+              <span class="tag-badge stack-tag">数据库</span>
+              <span class="tag-badge stack-tag">中间件</span>
+              <span class="tag-badge stack-tag">工程实践</span>
+            </div>
+            <div class="gateway-footer-links">
+              <span class="gateway-link primary">进入栏目文章库</span>
+              <span class="gateway-link" onclick="event.stopPropagation(); switchView('res-stack')">资源收藏 →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 动态门户：受控标签衍生子主题 (Grown Content Only) -->
+        <div class="section-block dynamic-content-section">
+          <div class="section-header">
+            <h3 class="section-title">动态子主题门户</h3>
+            <span class="section-meta">由本地受控标签表自动聚类生成</span>
+          </div>
+          <div class="taxonomy-cluster">
+            <div>
+              <div class="cluster-col-title">
+                <span style="color:var(--ai-primary)">●</span> AI / Agent 领域焦点
+              </div>
+              <div class="cluster-chips">
+                <div class="cluster-chip" onclick="switchView('col-ai')"><span>LLM基础</span><span class="count">6</span></div>
+                <div class="cluster-chip" onclick="switchView('col-ai')"><span>Agent框架</span><span class="count">4</span></div>
+                <div class="cluster-chip" onclick="switchView('col-ai')"><span>RAG</span><span class="count">5</span></div>
+                <div class="cluster-chip" onclick="switchView('col-ai')"><span>微调</span><span class="count">2</span></div>
+                <div class="cluster-chip" onclick="switchView('col-ai')"><span>工具调用/MCP</span><span class="count">3</span></div>
+                <div class="cluster-chip" onclick="switchView('col-ai')"><span>项目实战</span><span class="count">2</span></div>
+              </div>
+            </div>
+            <div>
+              <div class="cluster-col-title">
+                <span style="color:var(--stack-primary)">●</span> 全栈工程焦点
+              </div>
+              <div class="cluster-chips">
+                <div class="cluster-chip" onclick="switchView('col-stack')"><span>JVM</span><span class="count">5</span></div>
+                <div class="cluster-chip" onclick="switchView('col-stack')"><span>Spring生态</span><span class="count">7</span></div>
+                <div class="cluster-chip" onclick="switchView('col-stack')"><span>数据库</span><span class="count">4</span></div>
+                <div class="cluster-chip" onclick="switchView('col-stack')"><span>中间件</span><span class="count">4</span></div>
+                <div class="cluster-chip" onclick="switchView('col-stack')"><span>工程实践</span><span class="count">3</span></div>
+                <div class="cluster-chip" onclick="switchView('col-stack')"><span>项目实战</span><span class="count">1</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 最近更新流 (Grown Content Only) -->
+        <div class="section-block dynamic-content-section">
+          <div class="section-header">
+            <h3 class="section-title">最近更新</h3>
+            <span class="section-meta">双主线时间合流 · 按修改时间倒序</span>
+          </div>
+          <ul class="stream-list">
+            <li class="stream-item" onclick="switchView('article')">
+              <span class="stream-date">2026-08-28</span>
+              <span class="stream-type type-note">文章</span>
+              <span class="stream-domain-pill domain-ai-pill">AI/Agent</span>
+              <span class="stream-title">从零理解 Attention 与 Transformer 投影矩阵</span>
+              <span class="stream-tag">#LLM基础</span>
+            </li>
+            <li class="stream-item" onclick="switchView('res-ai')">
+              <span class="stream-date">2026-08-26</span>
+              <span class="stream-type type-res">资源</span>
+              <span class="stream-domain-pill domain-ai-pill">AI/Agent</span>
+              <span class="stream-title">Anthropic Model Context Protocol (MCP) 规范草案</span>
+              <span class="stream-tag">#工具调用/MCP</span>
+            </li>
+            <li class="stream-item" onclick="switchView('col-stack')">
+              <span class="stream-date">2026-08-22</span>
+              <span class="stream-type type-note">文章</span>
+              <span class="stream-domain-pill domain-stack-pill">全栈开发</span>
+              <span class="stream-title">Spring Boot 3.3 虚拟线程高并发压测实录</span>
+              <span class="stream-tag">#Spring生态</span>
+            </li>
+            <li class="stream-item" onclick="switchView('col-ai')">
+              <span class="stream-date">2026-08-19</span>
+              <span class="stream-type type-note">文章</span>
+              <span class="stream-domain-pill domain-ai-pill">AI/Agent</span>
+              <span class="stream-title">混合检索（Dense + Sparse）在 RAG 系统中的评测与调优</span>
+              <span class="stream-tag">#RAG</span>
+            </li>
+            <li class="stream-item" onclick="switchView('res-stack')">
+              <span class="stream-date">2026-08-15</span>
+              <span class="stream-type type-res">资源</span>
+              <span class="stream-domain-pill domain-stack-pill">全栈开发</span>
+              <span class="stream-title">PostgreSQL 索引底层原理与 EXPLAIN ANALYZE 完全图解</span>
+              <span class="stream-tag">#数据库</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ================= 视图 2：AI / Agent 栏目页 ================= -->
+      <section class="view-pane" id="view-col-ai">
+        <div class="column-header">
+          <div class="breadcrumb-nav">
+            <a href="javascript:void(0)" onclick="switchView('home')">首页</a>
+            <span>/</span>
+            <span>AI / Agent 栏目</span>
+          </div>
+          <div class="column-title-row">
+            <h1 class="column-title">
+              <span class="column-stripe ai-stripe"></span>
+              AI / Agent
+            </h1>
+            <span class="hero-badge">共 18 篇 Markdown 笔记</span>
+          </div>
+          <p class="column-desc">
+            涵盖大语言模型基础、Prompt 编排、Agent 自主框架、向量数据库与外挂检索增强，以及端到端模型落地实战。
+          </p>
+          <div class="column-subnav">
+            <span class="subnav-link active">文章库（按标签分组）</span>
+            <span class="subnav-link" onclick="switchView('res-ai')">资源收藏库 (12)</span>
+          </div>
+        </div>
+
+        <div class="taxonomy-groups">
+          <!-- 标签分组 1：LLM基础 -->
+          <div class="group-block">
+            <div class="group-block-header">
+              <span class="group-tag-name">LLM基础</span>
+              <span class="group-count">6 篇</span>
+            </div>
+            <div class="article-cards-grid">
+              <div class="article-snippet-card" onclick="switchView('article')">
+                <h4 class="snippet-title">从零理解 Attention 与 Transformer 投影矩阵</h4>
+                <p class="snippet-excerpt">用单行点积推导 Scaled Dot-Product，解析缩放因子为什么是根号 dk，以及多头注意力的并行投影机制。</p>
+                <div class="snippet-meta">
+                  <span>2026-08-28</span>
+                  <span>12 min 读</span>
+                </div>
+              </div>
+              <div class="article-snippet-card" onclick="switchView('article')">
+                <h4 class="snippet-title">RoPE 旋转位置编码数学几何推导</h4>
+                <p class="snippet-excerpt">复数平面旋转与点积保角性的直观理解，外推与内插算法的本质差异。</p>
+                <div class="snippet-meta">
+                  <span>2026-08-10</span>
+                  <span>9 min 读</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 标签分组 2：RAG -->
+          <div class="group-block">
+            <div class="group-block-header">
+              <span class="group-tag-name">RAG</span>
+              <span class="group-count">5 篇</span>
+            </div>
+            <div class="article-cards-grid">
+              <div class="article-snippet-card" onclick="switchView('article')">
+                <h4 class="snippet-title">混合检索（Dense + Sparse）在 RAG 系统中的评测与调优</h4>
+                <p class="snippet-excerpt">BGE-M3 与 BM25 的加权打分策略，以及基于 Cohere Rerank 的两阶段重排工程落地。</p>
+                <div class="snippet-meta">
+                  <span>2026-08-19</span>
+                  <span>15 min 读</span>
+                </div>
+              </div>
+              <div class="article-snippet-card" onclick="switchView('article')">
+                <h4 class="snippet-title">文本分块策略对召回率的影响实测</h4>
+                <p class="snippet-excerpt">固定滑窗分块 vs 语义断句分块的边界丢失对比，Parent-Child 分层索引的构建思路。</p>
+                <div class="snippet-meta">
+                  <span>2026-07-28</span>
+                  <span>11 min 读</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 标签分组 3：工具调用/MCP -->
+          <div class="group-block">
+            <div class="group-block-header">
+              <span class="group-tag-name">工具调用/MCP</span>
+              <span class="group-count">3 篇</span>
+            </div>
+            <div class="article-cards-grid">
+              <div class="article-snippet-card" onclick="switchView('article')">
+                <h4 class="snippet-title">基于 MCP 协议构建标准上下文连接器</h4>
+                <p class="snippet-excerpt">梳理 Anthropic MCP 的三层架构（Prompts、Resources、Tools），实现安全且跨宿主的工具调用服务。</p>
+                <div class="snippet-meta">
+                  <span>2026-08-14</span>
+                  <span>14 min 读</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 视图 3：全栈开发 栏目页 ================= -->
+      <section class="view-pane" id="view-col-stack">
+        <div class="column-header">
+          <div class="breadcrumb-nav">
+            <a href="javascript:void(0)" onclick="switchView('home')">首页</a>
+            <span>/</span>
+            <span>全栈开发 栏目</span>
+          </div>
+          <div class="column-title-row">
+            <h1 class="column-title">
+              <span class="column-stripe stack-stripe"></span>
+              全栈开发
+            </h1>
+            <span class="hero-badge">共 24 篇 Markdown 笔记</span>
+          </div>
+          <p class="column-desc">
+            专注于现代 JVM 生态系统、高可用后端服务、数据库事务内幕及稳固的工程设计模式。
+          </p>
+          <div class="column-subnav">
+            <span class="subnav-link active">文章库（按标签分组）</span>
+            <span class="subnav-link" onclick="switchView('res-stack')">资源收藏库 (19)</span>
+          </div>
+        </div>
+
+        <div class="taxonomy-groups">
+          <!-- 标签分组 1：Spring生态 -->
+          <div class="group-block">
+            <div class="group-block-header">
+              <span class="group-tag-name">Spring生态</span>
+              <span class="group-count">7 篇</span>
+            </div>
+            <div class="article-cards-grid">
+              <div class="article-snippet-card" onclick="switchView('article')">
+                <h4 class="snippet-title">Spring Boot 3.3 虚拟线程高并发压测实录</h4>
+                <p class="snippet-excerpt">JDK 21 Virtual Threads 与传统线程池吞吐量实测，Pinned 线程与 synchronized 关键字的踩坑避障指南。</p>
+                <div class="snippet-meta">
+                  <span>2026-08-22</span>
+                  <span>18 min 读</span>
+                </div>
+              </div>
+              <div class="article-snippet-card" onclick="switchView('article')">
+                <h4 class="snippet-title">Spring Data JPA 批量更新性能瓶颈排查</h4>
+                <p class="snippet-excerpt">从 Hibernate 一级缓存机制到 JDBC Batch Rewrite，解决高负载下的内存暴涨与慢 SQL。</p>
+                <div class="snippet-meta">
+                  <span>2026-07-30</span>
+                  <span>10 min 读</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 标签分组 2：数据库 -->
+          <div class="group-block">
+            <div class="group-block-header">
+              <span class="group-tag-name">数据库</span>
+              <span class="group-count">4 篇</span>
+            </div>
+            <div class="article-cards-grid">
+              <div class="article-snippet-card" onclick="switchView('article')">
+                <h4 class="snippet-title">MySQL 8.0 事务隔离级别与不可重复读的物理实现</h4>
+                <p class="snippet-excerpt">基于 Undo Log 链条与 ReadView 视图创建时机，彻底剖析 MVCC 机制在 RC 与 RR 下的区别。</p>
+                <div class="snippet-meta">
+                  <span>2026-08-05</span>
+                  <span>13 min 读</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 视图 4：AI 资源收藏页 ================= -->
+      <section class="view-pane" id="view-res-ai">
+        <div class="column-header">
+          <div class="breadcrumb-nav">
+            <a href="javascript:void(0)" onclick="switchView('home')">首页</a>
+            <span>/</span>
+            <a href="javascript:void(0)" onclick="switchView('col-ai')">AI / Agent</a>
+            <span>/</span>
+            <span>资源收藏</span>
+          </div>
+          <div class="column-title-row">
+            <h1 class="column-title">
+              <span class="column-stripe ai-stripe"></span>
+              AI / Agent 资源收藏
+            </h1>
+            <span class="hero-badge">外部链接 + 一句话摘要 (不存原文)</span>
+          </div>
+          <div class="column-subnav">
+            <span class="subnav-link" onclick="switchView('col-ai')">返回文章库</span>
+            <span class="subnav-link active">资源收藏时间流</span>
+          </div>
+        </div>
+
+        <div class="resource-stream">
+          <div class="resource-card">
+            <span class="resource-date-badge">2026-08-26</span>
+            <div class="resource-body">
+              <div class="resource-title-row">
+                <h3 class="resource-title">Anthropic Model Context Protocol (MCP) 官方标准</h3>
+                <span class="resource-domain-tag">modelcontextprotocol.io</span>
+              </div>
+              <p class="resource-summary">
+                开源协议规范：标准化大模型访问外部工具、文件与数据源的通讯接口，彻底规范 Client-Server-Host 的职责范畴。
+              </p>
+              <a href="javascript:void(0)" class="resource-external-link">直达原文链接 ↗</a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <span class="resource-date-badge">2026-08-16</span>
+            <div class="resource-body">
+              <div class="resource-title-row">
+                <h3 class="resource-title">Qwen2.5-Coder 技术报告与开源权重</h3>
+                <span class="resource-domain-tag">github.com/QwenLM</span>
+              </div>
+              <p class="resource-summary">
+                通义千问最新开源代码模型，在代码生成、调试及复杂指令遵循上表现极其优异，本地部署首选基模。
+              </p>
+              <a href="javascript:void(0)" class="resource-external-link">直达原文链接 ↗</a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <span class="resource-date-badge">2026-07-29</span>
+            <div class="resource-body">
+              <div class="resource-title-row">
+                <h3 class="resource-title">DSPy: Compiling Declarative Language Model Calls into State-of-the-Art Pipelines</h3>
+                <span class="resource-domain-tag">arxiv.org</span>
+              </div>
+              <p class="resource-summary">
+                斯坦福提出的将 Prompt 编写转为程序化编译与自动调优的框架，跳过脆弱的手工 Prompt Engineering。
+              </p>
+              <a href="javascript:void(0)" class="resource-external-link">直达原文链接 ↗</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 视图 5：全栈开发 资源收藏页 ================= -->
+      <section class="view-pane" id="view-res-stack">
+        <div class="column-header">
+          <div class="breadcrumb-nav">
+            <a href="javascript:void(0)" onclick="switchView('home')">首页</a>
+            <span>/</span>
+            <a href="javascript:void(0)" onclick="switchView('col-stack')">全栈开发</a>
+            <span>/</span>
+            <span>资源收藏</span>
+          </div>
+          <div class="column-title-row">
+            <h1 class="column-title">
+              <span class="column-stripe stack-stripe"></span>
+              全栈开发 资源收藏
+            </h1>
+            <span class="hero-badge">外部链接 + 一句话摘要</span>
+          </div>
+          <div class="column-subnav">
+            <span class="subnav-link" onclick="switchView('col-stack')">返回文章库</span>
+            <span class="subnav-link active">资源收藏时间流</span>
+          </div>
+        </div>
+
+        <div class="resource-stream">
+          <div class="resource-card">
+            <span class="resource-date-badge">2026-08-15</span>
+            <div class="resource-body">
+              <div class="resource-title-row">
+                <h3 class="resource-title">PostgreSQL 索引底层原理与 EXPLAIN ANALYZE 完全图解</h3>
+                <span class="resource-domain-tag">use-the-index-luke.com</span>
+              </div>
+              <p class="resource-summary">
+                不可多得的高质量 SQL 调优电子书，清晰剖析 B-Tree、GIN 索引在多列组合场景下的匹配策略与代价估算。
+              </p>
+              <a href="javascript:void(0)" class="resource-external-link">直达原文链接 ↗</a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <span class="resource-date-badge">2026-08-01</span>
+            <div class="resource-body">
+              <div class="resource-title-row">
+                <h3 class="resource-title">JDK 21 JEP 444: Virtual Threads (Final Release)</h3>
+                <span class="resource-domain-tag">openjdk.org</span>
+              </div>
+              <p class="resource-summary">
+                Java 官方虚拟线程 JEP 标准规范，详述虚拟线程与载体操作系统线程（Carrier Thread）的协同调度机制。
+              </p>
+              <a href="javascript:void(0)" class="resource-external-link">直达原文链接 ↗</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 视图 6：文章详情页 (Markdown Deep Reader) ================= -->
+      <section class="view-pane" id="view-article">
+        <div class="article-layout">
+          <!-- 左侧正文 -->
+          <div>
+            <div class="article-header">
+              <div class="breadcrumb-nav">
+                <a href="javascript:void(0)" onclick="switchView('home')">首页</a>
+                <span>/</span>
+                <a href="javascript:void(0)" onclick="switchView('col-ai')">AI / Agent</a>
+                <span>/</span>
+                <span>LLM基础</span>
+              </div>
+              <h1 class="article-headline">从零理解 Attention 与 Transformer 投影矩阵</h1>
+              <div class="article-meta-bar">
+                <span>发表于 2026-08-28</span>
+                <span>·</span>
+                <span>约 3200 字</span>
+                <span>·</span>
+                <span>阅读时间 12 分钟</span>
+                <span>·</span>
+                <span class="tag-badge ai-tag">LLM基础</span>
+                <span class="tag-badge ai-tag">RAG</span>
+              </div>
+            </div>
+
+            <article class="markdown-body">
+              <p>
+                在阅读复杂的自然语言处理论文或长上下文工程实现时，注意力机制（Attention）往往被赋予许多神秘的数学色彩。但如果从软件工程师“键值索引”的直觉出发，Attention 的本质就是一次<strong>连续的、带权重的查表过程</strong>。
+              </p>
+
+              <blockquote>
+                一句话直觉：Query 是“我想查什么”，Key 是“各位置的索引标签”，Value 是“实际存的内容”。匹配发生在 Q 与 K 之间，取出的则是 V 的加权组合。
+              </blockquote>
+
+              <h2 id="sec-1"><span class="section-symbol">§ 1</span> Q、K、V 三个投影矩阵的作用</h2>
+              <p>
+                每个 token 的初始向量（Embedding）进入注意力层后，会分别与三个参数矩阵 $W^Q$、$W^K$、$W^V$ 相乘，得到三种用途截然不同的向量副本：
+              </p>
+              <p>
+                1. <strong>Query (Q)</strong>：当前位置在向整句话发问时持有的搜索关键词向量；<br>
+                2. <strong>Key (K)</strong>：当前位置可被其他人检索的标签线索；<br>
+                3. <strong>Value (V)</strong>：当前位置真正包含并准备向下游传递的信息特征。
+              </p>
+
+              <!-- LaTeX 数学公式渲染展示 -->
+              <div class="math-block">
+                <span class="math-fn">Attention</span>(Q, K, V) = <span class="math-fn">softmax</span>
+                <span style="font-size:1.2em">(</span> 
+                <span class="math-var">Q</span> <span class="math-var">K</span><sup>T</sup> / &radic;<span class="math-var">d<sub>k</sub></span> 
+                <span style="font-size:1.2em">)</span> 
+                <span class="math-var">V</span>
+              </div>
+
+              <h2 id="sec-2"><span class="section-symbol">§ 2</span> 缩放因子为什么必须是 &radic;dk</h2>
+              <p>
+                当向量维度 $d_k$ 很大时，点积结果的方差也会随之增大。如果不加限制直接送入 softmax，较大的数值会使输出迅速推向饱和区，导致反向传播时的梯度趋近于零（梯度消失）。除以 $\sqrt{d_k}$，正是通过尺度缩放将点积方差重新拉回为 1。
+              </p>
+
+              <!-- Python 代码块语法高亮展示 -->
+              <div class="code-container">
+                <div class="code-header">
+                  <span>scaled_dot_product_attention.py</span>
+                  <span>Python 3.11</span>
+                </div>
+                <pre class="code-content"><code><span class="tok-kw">import</span> numpy <span class="tok-kw">as</span> np
+
+<span class="tok-kw">def</span> <span class="tok-fn">softmax</span>(x):
+    e = np.<span class="tok-fn">exp</span>(x - np.<span class="tok-fn">max</span>(x, axis=-<span class="tok-num">1</span>, keepdims=<span class="tok-kw">True</span>))
+    <span class="tok-kw">return</span> e / e.<span class="tok-fn">sum</span>(axis=-<span class="tok-num">1</span>, keepdims=<span class="tok-kw">True</span>)
+
+<span class="tok-kw">def</span> <span class="tok-fn">scaled_attention</span>(Q, K, V):
+    <span class="tok-comment"># 获取键向量的维度 dk</span>
+    d_k = Q.shape[-<span class="tok-num">1</span>]
+    <span class="tok-comment"># 矩阵乘法点积后除以根号 dk 保持方差稳定</span>
+    scores = (Q @ K.T) / np.<span class="tok-fn">sqrt</span>(d_k)
+    weights = <span class="tok-fn">softmax</span>(scores)
+    <span class="tok-kw">return</span> weights @ V
+
+<span class="tok-comment"># 模拟 4 个 token，每个 token 向量维度为 64</span>
+Q, K, V = [np.random.<span class="tok-fn">randn</span>(<span class="tok-num">4</span>, <span class="tok-num">64</span>) <span class="tok-kw">for</span> _ <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-num">3</span>)]
+output = <span class="tok-fn">scaled_attention</span>(Q, K, V)
+<span class="tok-fn">print</span>(<span class="tok-str">"Output tensor shape:"</span>, output.shape)  <span class="tok-comment"># (4, 64)</span></code></pre>
+              </div>
+
+              <h2 id="sec-3"><span class="section-symbol">§ 3</span> 多头机制与工程架构</h2>
+              <p>
+                单头注意力只能关注一种语法或语义关系。多头注意力（Multi-Head Attention）通过将输入切分成 $h$ 个低维子空间分别计算，令各个头专注于不同的语意线索（例如一个头关注主谓宾搭配，另一个头关注代词指代链）。
+              </p>
+
+              <div class="schematic-diagram">
+                <svg width="360" height="110" viewBox="0 0 360 110" fill="none" style="margin:0 auto;display:block;">
+                  <rect x="10" y="35" width="70" height="40" rx="4" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
+                  <text x="45" y="60" fill="#1E40AF" font-family="var(--font-mono)" font-size="12" text-anchor="middle">Input X</text>
+                  
+                  <path d="M80 55 L130 55" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)"/>
+                  
+                  <rect x="130" y="15" width="85" height="28" rx="4" fill="#F8FAFC" stroke="#64748B" stroke-width="1"/>
+                  <text x="172" y="34" fill="#334155" font-family="var(--font-mono)" font-size="11" text-anchor="middle">Head 1 (QKV)</text>
+
+                  <rect x="130" y="48" width="85" height="28" rx="4" fill="#F8FAFC" stroke="#64748B" stroke-width="1"/>
+                  <text x="172" y="66" fill="#334155" font-family="var(--font-mono)" font-size="11" text-anchor="middle">Head 2 (QKV)</text>
+
+                  <rect x="130" y="80" width="85" height="25" rx="4" fill="#F8FAFC" stroke="#CBD5E1" stroke-dasharray="3 3"/>
+                  <text x="172" y="97" fill="#94A3B8" font-family="var(--font-mono)" font-size="10" text-anchor="middle">Head h...</text>
+
+                  <path d="M215 55 L265 55" stroke="#94A3B8" stroke-width="1.5"/>
+                  
+                  <rect x="265" y="35" width="85" height="40" rx="4" fill="#F0FDFA" stroke="#0D9488" stroke-width="1.5"/>
+                  <text x="307" y="60" fill="#115E59" font-family="var(--font-mono)" font-size="12" text-anchor="middle">Concat + W0</text>
+                </svg>
+                <div class="schematic-caption">图 1：多头拆分与最终线性投射示意图（本地绘制后伴随 Markdown 部署）</div>
+              </div>
+
+              <h2 id="sec-4"><span class="section-symbol">§ 4</span> 与全栈开发中线程/并发设计的触类旁通</h2>
+              <p>
+                在全栈工程实践中，高并发下虚拟线程或协程的设计，同样遵循类似的解耦原则：以最小的代价分配任务上下文，避免在阻塞等待上浪费物理资源。
+              </p>
+
+              <!-- Java 代码块高亮展示（验证多语言渲染需求） -->
+              <div class="code-container">
+                <div class="code-header">
+                  <span>VirtualThreadConcurrencyDemo.java</span>
+                  <span>Java 21</span>
+                </div>
+                <pre class="code-content"><code><span class="tok-kw">public</span> <span class="tok-kw">class</span> <span class="tok-fn">VirtualThreadConcurrencyDemo</span> {
+    <span class="tok-kw">public</span> <span class="tok-kw">static</span> <span class="tok-kw">void</span> <span class="tok-fn">main</span>(String[] args) <span class="tok-kw">throws</span> Exception {
+        <span class="tok-comment">// 使用虚拟线程执行器并行发起向量索引批量请求</span>
+        <span class="tok-kw">try</span> (<span class="tok-kw">var</span> executor = Executors.<span class="tok-fn">newVirtualThreadPerTaskExecutor</span>()) {
+            IntStream.<span class="tok-fn">range</span>(<span class="tok-num">0</span>, <span class="tok-num">100</span>).<span class="tok-fn">forEach</span>(i -> executor.<span class="tok-fn">submit</span>(() -> {
+                <span class="tok-comment">// 模拟轻量级非阻塞调用</span>
+                Thread.<span class="tok-fn">sleep</span>(Duration.<span class="tok-fn">ofMillis</span>(<span class="tok-num">50</span>));
+                System.out.<span class="tok-fn">println</span>(<span class="tok-str">"Indexed batch: "</span> + i);
+                <span class="tok-kw">return</span> i;
+            }));
+        }
+    }
+}</code></pre>
+              </div>
+
+              <!-- 文内互链模块 (DESIGN.md 明确要求) -->
+              <div class="backlinks-box">
+                <div class="backlinks-title">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                  <span>文内双向链接与相关笔记</span>
+                </div>
+                <ul class="backlinks-list">
+                  <li class="backlink-item" onclick="switchView('col-ai')">
+                    <span>[[RAG 向量检索工程落地与余弦相似度优化]]</span>
+                  </li>
+                  <li class="backlink-item" onclick="switchView('col-ai')">
+                    <span>[[RoPE 旋转位置编码数学几何推导]]</span>
+                  </li>
+                  <li class="backlink-item" onclick="switchView('col-stack')">
+                    <span>[[Spring Boot 3.3 虚拟线程高并发压测实录]]</span>
+                  </li>
+                </ul>
+              </div>
+            </article>
+          </div>
+
+          <!-- 右侧长文 TOC 悬浮目录 -->
+          <aside class="article-toc-sidebar">
+            <div class="toc-title">大纲目录 / TOC</div>
+            <nav class="toc-links">
+              <a href="#sec-1" class="toc-link active">§ 1 Q、K、V 投影矩阵</a>
+              <a href="#sec-2" class="toc-link">§ 2 缩放因子根号 dk</a>
+              <a href="#sec-3" class="toc-link">§ 3 多头机制与工程架构</a>
+              <a href="#sec-4" class="toc-link">§ 4 与并发设计触类旁通</a>
+              <a href="#view-article" class="toc-link indent">文内互链关系</a>
+            </nav>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ================= 视图 7：关于页面 (About View) ================= -->
+      <section class="view-pane" id="view-about">
+        <div class="about-card">
+          <h1 class="about-title">关于此知识库</h1>
+          <div class="about-prose">
+            <p>
+              你好，我是本站的主人。这是我用于记录 <strong>AI / Agent</strong> 与 <strong>全栈工程</strong> 两个主线领域的个人数字花园。
+            </p>
+            <p>
+              本站的内容全部在本地以 Markdown 格式编写并纳入版本控制。网站只扮演纯展示的角色——负责将本地文件组织好、排版清晰，方便我自己和任何顺便来访的朋友查阅。
+            </p>
+
+            <div class="about-rules">
+              <strong>关于本站的设计共识与边界约束：</strong>
+              <ul style="margin-top:8px;padding-left:18px;line-height:1.8;">
+                <li><strong>纯展示性质</strong>：本站无后台、无登录、无任何形式的在线编辑。</li>
+                <li><strong>受控标签治理</strong>：打标严格从预设受控清单中选择，兼作学习路线图。</li>
+                <li><strong>无评论区与互动</strong>：没有任何反馈弹窗或留言板，纯单向知识陈列。</li>
+                <li><strong>持续存在</strong>：不设成功标准，陪伴技术探索长期生长。</li>
+              </ul>
+            </div>
+
+            <p style="font-size:14px;color:var(--ink-tertiary)">
+              若文中的某篇笔记或某条资源卡恰好对你的工程开发有所启发，那是它最大的额外价值。
+            </p>
+          </div>
+
+          <div class="about-links">
+            <a href="https://github.com" target="_blank" class="about-link">GitHub 源码仓</a>
+            <a href="javascript:void(0)" class="about-link" onclick="switchView('home')">返回首页</a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ================= 站内搜索模态弹窗 (Cmd+K) ================= -->
+  <div class="search-modal-backdrop" id="searchModal" onclick="closeSearchModal(event)">
+    <div class="search-panel" onclick="event.stopPropagation()">
+      <div class="search-input-wrap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" color="var(--ink-tertiary)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="搜索知识库标题、受控标签、摘要 (输入 Attention, RAG, Spring...)" autocomplete="off">
+        <span class="kbd-chip">ESC 关闭</span>
+      </div>
+      <ul class="search-results-list" id="searchResults">
+        <li class="search-result-item selected" onclick="switchView('article'); closeSearchModal();">
+          <div>
+            <div class="search-result-title">从零理解 Attention 与 Transformer 投影矩阵</div>
+            <div style="font-size:12px;color:var(--ink-tertiary);margin-top:3px">用单行点积推导 Scaled Dot-Product...</div>
+          </div>
+          <span class="tag-badge ai-tag">#LLM基础</span>
+        </li>
+        <li class="search-result-item" onclick="switchView('col-stack'); closeSearchModal();">
+          <div>
+            <div class="search-result-title">Spring Boot 3.3 虚拟线程高并发压测实录</div>
+            <div style="font-size:12px;color:var(--ink-tertiary);margin-top:3px">JDK 21 Virtual Threads 与传统线程池对比...</div>
+          </div>
+          <span class="tag-badge stack-tag">#Spring生态</span>
+        </li>
+        <li class="search-result-item" onclick="switchView('res-ai'); closeSearchModal();">
+          <div>
+            <div class="search-result-title">Anthropic Model Context Protocol (MCP) 官方标准</div>
+            <div style="font-size:12px;color:var(--ink-tertiary);margin-top:3px">标准化大模型访问外部工具与资源...</div>
+          </div>
+          <span class="tag-badge ai-tag">#工具调用/MCP</span>
+        </li>
+      </ul>
+      <div class="search-modal-footer">
+        <span>使用 ↑ ↓ 导航</span>
+        <span>按 Enter 确认选择</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 页脚 ================= -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>双径 (Twin-Stem) · 个人技术知识库</div>
+      <div class="footer-specs">纯展示 · Markdown 本地书写 · 最新版同步展示</div>
+    </div>
+  </footer>
+
+  <!-- ================= 交互控制脚本 ================= -->
+  <script>
+    // 视图状态路由表
+    const views = {
+      'home':      { pane: 'view-home',      nav: null },
+      'col-ai':    { pane: 'view-col-ai',    nav: 'nav-ai' },
+      'col-stack': { pane: 'view-col-stack', nav: 'nav-stack' },
+      'res-ai':    { pane: 'view-res-ai',    nav: 'nav-ai' },
+      'res-stack': { pane: 'view-res-stack', nav: 'nav-stack' },
+      'article':   { pane: 'view-article',   nav: 'nav-ai' },
+      'about':     { pane: 'view-about',     nav: 'nav-about' }
+    };
+
+    function switchView(viewKey) {
+      const target = views[viewKey];
+      if (!target) return;
+
+      // 切换视图面板
+      document.querySelectorAll('.view-pane').forEach(el => el.classList.remove('active'));
+      const targetEl = document.getElementById(target.pane);
+      if (targetEl) targetEl.classList.add('active');
+
+      // 更新导航高亮状态
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      if (target.nav) {
+        const navBtn = document.getElementById(target.nav);
+        if (navBtn) navBtn.classList.add('active');
+      }
+
+      // 滚动到顶部
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // 同步 hash
+      history.replaceState(null, '', '#' + viewKey);
+    }
+
+    // 零内容初始状态模拟开关
+    const toggleZero = document.getElementById('toggleZeroState');
+    const homeZeroNotice = document.getElementById('homeZeroNotice');
+    const dynamicSections = document.querySelectorAll('.dynamic-content-section');
+    const dynamicCounts = document.querySelectorAll('.dynamic-count');
+
+    toggleZero.addEventListener('change', function() {
+      if (this.checked) {
+        // 进入零内容初始态
+        homeZeroNotice.classList.add('active');
+        dynamicSections.forEach(s => s.style.display = 'none');
+        dynamicCounts.forEach(c => c.textContent = '0 篇笔记 · 0 条资源');
+      } else {
+        // 恢复内容丰满态
+        homeZeroNotice.classList.remove('active');
+        dynamicSections.forEach(s => s.style.display = '');
+        dynamicCounts[0].textContent = '18 篇笔记 · 12 条资源';
+        dynamicCounts[1].textContent = '24 篇笔记 · 19 条资源';
+      }
+    });
+
+    // 搜索模态框逻辑
+    const searchModal = document.getElementById('searchModal');
+    const searchInput = document.getElementById('searchInput');
+
+    function openSearchModal() {
+      searchModal.classList.add('open');
+      setTimeout(() => searchInput.focus(), 50);
+    }
+
+    function closeSearchModal() {
+      searchModal.classList.remove('open');
+    }
+
+    // 全局快捷键：Cmd+K / Ctrl+K 打开搜索，Esc 关闭搜索
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        openSearchModal();
+      }
+      if (e.key === 'Escape' && searchModal.classList.contains('open')) {
+        closeSearchModal();
+      }
+    });
+
+    // 简易本地实时搜索过滤展示
+    searchInput.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      const items = document.querySelectorAll('.search-result-item');
+      items.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        if (text.includes(q)) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+
+    // 页面初始化时检查 hash
+    window.addEventListener('load', () => {
+      const hash = location.hash.replace('#', '');
+      if (views[hash]) {
+        switchView(hash);
+      }
+    });
+  </script>
+</body>
+</html>
