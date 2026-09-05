@@ -4,14 +4,17 @@
 产品设计见 `DESIGN.md`，技术选型见 `TECH-ARCHITECTURE.md`，开发计划见 `DEV-PLAN.md`。
 
 - 线上地址：https://huangtiany.github.io/knowledge-base/
+- RSS 订阅：https://huangtiany.github.io/knowledge-base/rss.xml
 - 日常写作循环：**改 Markdown → `npm run dev` 预览 → 满意 → push → 一两分钟后线上更新**
 
 ## 常用命令
 
 ```bash
 npm run dev       # 热更新预览（http://localhost:4321/knowledge-base/）
-npm run build     # 本地完整构建 + 内容校验（push 前自查用）
+npm run build     # 本地完整构建 + 内容校验 + 全站死链检查（push 前自查用）
 npm run preview   # 预览 dist 构建产物
+
+node scripts/check-external-links.mjs   # 资源卡/roadmap 外链体检（CI 每周自动跑）
 ```
 
 ## 写作约定速查

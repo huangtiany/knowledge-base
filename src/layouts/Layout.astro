@@ -9,11 +9,14 @@ interface Props {
   dom?: 'ai' | 'stack';
   /** 顶栏高亮的导航项 */
   active?: 'ai' | 'stack' | 'about';
+  /** og:type；文章页传 article */
+  ogType?: 'website' | 'article';
 }
 
-const { title, description, dom, active } = Astro.props;
+const { title, description, dom, active, ogType = 'website' } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const domStyle = dom ? `--dom:var(--${dom});--dom-soft:var(--${dom}-soft)` : undefined;
+const ogDescription = description ?? '本地书写 Markdown 的个人知识库：AI / Agent 与全栈开发的笔记与资料。';
 ---
 <!doctype html>
 <html lang="zh-CN">
@@ -21,8 +24,16 @@ const domStyle = dom ? `--dom:var(--${dom});--dom-soft:var(--${dom}-soft)` : und
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="alternate" type="application/rss+xml" title="格致" href={`${base}rss.xml`} />
+    <link rel="sitemap" type="application/xml" href={`${base}sitemap.xml`} />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="格致" />
+    <meta property="og:url" content={Astro.url.href} />
+    <meta name="twitter:card" content="summary" />
   </head>
   <body>
     <header>
@@ -58,11 +69,13 @@ const domStyle = dom ? `--dom:var(--${dom});--dom-soft:var(--${dom}-soft)` : und
     </button>
 
     <script>
-      // 站内搜索：只搜文章标题，构建期生成 search-index.json，前端子串匹配
+      // 站内搜索：标题 + 正文全文，构建期生成 search-index.json，前端子串匹配（中文无需分词）。
+      // 标题命中优先；正文命中附上下文摘要，命中片段 <mark> 高亮。
       const input = document.getElementById('site-search') as HTMLInputElement;
       const box = document.getElementById('search-results') as HTMLDivElement;
 
-      interface SearchItem { title: string; dom: string; url: string }
+      interface SearchItem { title: string; dom: string; url: string; text?: string }
+      interface SearchHit extends SearchItem { snip: string }
       let index: SearchItem[] | null = null;
 
       const escapeHtml = (s: string) =>
@@ -76,13 +89,40 @@ const domStyle = dom ? `--dom:var(--${dom});--dom-soft:var(--${dom}-soft)` : und
         return index!;
       }
 
-      function render(results: SearchItem[], query: string) {
+      // 取命中位置前后约 80 字作为上下文，命中片段加 <mark>
+      function snippet(text: string, pos: number, qLen: number): string {
+        const start = Math.max(0, pos - 30);
+        const end = Math.min(text.length, pos + qLen + 50);
+        const head = escapeHtml(text.slice(start, pos));
+        const hit = escapeHtml(text.slice(pos, pos + qLen));
+        const tail = escapeHtml(text.slice(pos + qLen, end));
+        return `${start > 0 ? '…' : ''}${head}<mark>${hit}</mark>${tail}${end < text.length ? '…' : ''}`;
+      }
+
+      function search(items: SearchItem[], q: string): SearchHit[] {
+        const hits: SearchHit[] = [];
+        const bodyHits: { it: SearchItem; pos: number }[] = [];
+        for (const it of items) {
+          if (it.title.toLowerCase().includes(q)) { hits.push({ ...it, snip: '' }); continue; }
+          if (!it.text) continue;
+          const pos = it.text.toLowerCase().indexOf(q);
+          if (pos >= 0) bodyHits.push({ it, pos });
+        }
+        for (const { it, pos } of bodyHits) {
+          if (hits.length >= 8) break;
+          hits.push({ ...it, snip: snippet(it.text!, pos, q.length) });
+        }
+        return hits.slice(0, 8);
+      }
+
+      function render(results: SearchHit[], query: string) {
         if (!query) { box.hidden = true; box.innerHTML = ''; return; }
         if (!results.length) {
           box.innerHTML = '<div class="sr-empty">没有匹配的笔记</div>';
         } else {
           box.innerHTML = results
-            .map((r) => `<a href="${r.url}"><span class="sr-dom">${escapeHtml(r.dom)}</span>${escapeHtml(r.title)}</a>`)
+            .map((r) =>
+              `<a href="${r.url}"><span class="sr-dom">${escapeHtml(r.dom)}</span><span class="sr-body"><span class="sr-t">${escapeHtml(r.title)}</span>${r.snip ? `<span class="sr-snip">${r.snip}</span>` : ''}</span></a>`)
             .join('');
         }
         box.hidden = false;
@@ -91,12 +131,15 @@ const domStyle = dom ? `--dom:var(--${dom});--dom-soft:var(--${dom}-soft)` : und
       input.addEventListener('input', async () => {
         const q = input.value.trim().toLowerCase();
         if (!q) { box.hidden = true; box.innerHTML = ''; return; }
-        const items = await loadIndex();
-        render(items.filter((it) => it.title.toLowerCase().includes(q)).slice(0, 8), q);
+        render(search(await loadIndex(), q), q);
       });
 
       input.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') { input.value = ''; box.hidden = true; box.innerHTML = ''; }
+        if (e.key === 'Enter') {
+          const first = box.querySelector('a') as HTMLAnchorElement | null;
+          if (first) first.click();
+        }
       });
 
       document.addEventListener('click', (e) => {

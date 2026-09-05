@@ -1,0 +1,22 @@
+name: Link health
+
+# 每周体检资源卡与 roadmap 外链；死链时任务失败，进 Actions 页查看报告。
+on:
+  schedule:
+    - cron: '17 3 * * 1' # 每周一 03:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node scripts/check-external-links.mjs

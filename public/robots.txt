@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://huangtiany.github.io/knowledge-base/sitemap.xml
