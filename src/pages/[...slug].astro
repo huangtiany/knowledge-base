@@ -61,7 +61,9 @@ const domName = dom === 'ai' ? 'AI / Agent' : '全栈开发';
 
       <aside class="toc">
         <div class="toc-t">目录 / TOC</div>
-        {toc.map((h) => <a class:list={[{ l2: h.depth === 3 }]} href={`#${h.slug}`}>{h.text}</a>)}
+        {toc.map((h) => (
+          <a class:list={[{ l2: h.depth === 3 }]} href={`#${h.slug}`}>{h.text.replace(/^§\s*\d+\s*/, '')}</a>
+        ))}
       </aside>
     </div>
   </div>
