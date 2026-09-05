@@ -42,7 +42,7 @@ const hostOf = (url: string) => {
     ) : (
       <ul class="reslist">
         {sorted.map((r) => (
-          <li class="rescard">
+          <li class="rescard" id={r.id}>
             <div class="res-head">
               <a class="res-title" href={r.data.url} target="_blank" rel="noopener noreferrer">{r.data.title}</a>
               <span class="res-src">{r.data.source ?? hostOf(r.data.url)}</span>

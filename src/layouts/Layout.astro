@@ -45,7 +45,7 @@ const ogDescription = description ?? '本地书写 Markdown 的个人知识库�
           <a href={`${base}about/`} class:list={[{ on: active === 'about' }]}>关于</a>
         </nav>
         <div class="search">
-          <input id="site-search" type="text" placeholder="搜索笔记…" autocomplete="off" />
+          <input id="site-search" type="text" placeholder="搜索笔记与资源…" autocomplete="off" />
           <div id="search-results" class="search-results" hidden></div>
         </div>
       </div>
@@ -71,12 +71,15 @@ const ogDescription = description ?? '本地书写 Markdown 的个人知识库�
     <script>
       // 站内搜索：标题 + 正文全文，构建期生成 search-index.json，前端子串匹配（中文无需分词）。
       // 标题命中优先；正文命中附上下文摘要，命中片段 <mark> 高亮。
+      // 命中全量渲染、不做条数截断；超长列表由下拉 max-height + 内部滚动承载。
+      // 输入防抖 500ms：停止输入后才检索；清空 / Escape / 点击外部立即收起并取消未触发的检索。
       const input = document.getElementById('site-search') as HTMLInputElement;
       const box = document.getElementById('search-results') as HTMLDivElement;
 
       interface SearchItem { title: string; dom: string; url: string; text?: string }
       interface SearchHit extends SearchItem { snip: string }
       let index: SearchItem[] | null = null;
+      let pending: number | undefined; // 防抖定时器；收起 / 清空 / 回车时取消
 
       const escapeHtml = (s: string) =>
         s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -109,16 +112,15 @@ const ogDescription = description ?? '本地书写 Markdown 的个人知识库�
           if (pos >= 0) bodyHits.push({ it, pos });
         }
         for (const { it, pos } of bodyHits) {
-          if (hits.length >= 8) break;
           hits.push({ ...it, snip: snippet(it.text!, pos, q.length) });
         }
-        return hits.slice(0, 8);
+        return hits;
       }
 
       function render(results: SearchHit[], query: string) {
         if (!query) { box.hidden = true; box.innerHTML = ''; return; }
         if (!results.length) {
-          box.innerHTML = '<div class="sr-empty">没有匹配的笔记</div>';
+          box.innerHTML = '<div class="sr-empty">没有匹配的笔记或资源</div>';
         } else {
           box.innerHTML = results
             .map((r) =>
@@ -128,22 +130,41 @@ const ogDescription = description ?? '本地书写 Markdown 的个人知识库�
         box.hidden = false;
       }
 
-      input.addEventListener('input', async () => {
+      // 收起下拉并取消尚未触发的防抖检索，供清空 / Escape / 点击外部复用
+      function hideResults() {
+        clearTimeout(pending);
+        pending = undefined;
+        box.hidden = true;
+        box.innerHTML = '';
+      }
+
+      input.addEventListener('input', () => {
         const q = input.value.trim().toLowerCase();
-        if (!q) { box.hidden = true; box.innerHTML = ''; return; }
-        render(search(await loadIndex(), q), q);
+        if (!q) { hideResults(); return; }
+        clearTimeout(pending);
+        pending = window.setTimeout(async () => {
+          pending = undefined;
+          render(search(await loadIndex(), q), q);
+        }, 500);
       });
 
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') { input.value = ''; box.hidden = true; box.innerHTML = ''; }
-        if (e.key === 'Enter') {
-          const first = box.querySelector('a') as HTMLAnchorElement | null;
-          if (first) first.click();
+      input.addEventListener('keydown', async (e) => {
+        if (e.key === 'Escape') { input.value = ''; hideResults(); return; }
+        if (e.key !== 'Enter') return;
+        if (pending !== undefined) {
+          // 停顿不足 500ms 就回车：立即检索本轮输入，避免跳进上一轮的旧结果
+          clearTimeout(pending);
+          pending = undefined;
+          const q = input.value.trim().toLowerCase();
+          if (!q) return;
+          render(search(await loadIndex(), q), q);
         }
+        const first = box.querySelector('a') as HTMLAnchorElement | null;
+        if (first) first.click();
       });
 
       document.addEventListener('click', (e) => {
-        if (!(e.target as HTMLElement).closest('.search')) box.hidden = true;
+        if (!(e.target as HTMLElement).closest('.search')) hideResults();
       });
     </script>
 
