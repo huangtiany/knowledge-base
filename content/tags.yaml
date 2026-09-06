@@ -2,7 +2,8 @@
 # 使用规则：打标只从清单选；想用新标签，先加进清单再使用。
 # 清单全集 − 文章实用 = "待学习"差集，构建期自动派生，不在此维护状态字段。
 # AI 组顺序：路线图入口 → 主线章 → 实战收尾 → 扩展方向。
-# stack 组顺序：路线图入口 → 学习主线（Java基础 → 数据库 → JavaWeb → Spring → 中间件 → 工程实践）→ 留白占位。
+# backend 组顺序：路线图入口 → 学习主线（Java基础 → 数据库 → JavaWeb → Spring → 中间件 → 工程实践）→ 留白占位。
+# front 组顺序：路线图入口 → 平台主线（HTML与CSS → JavaScript → TypeScript → 浏览器原理）→ 框架（Vue → React）→ 工程化与性能 → 留白占位。
 ai:
   - 路线图
   - Python
@@ -15,7 +16,7 @@ ai:
   - 评测与可观测
   - 项目实战
   - 微调
-stack:
+backend:
   - 路线图
   - Java基础
   - 数据库
@@ -25,3 +26,15 @@ stack:
   - 工程实践
   - 项目实战
   - JVM
+front:
+  - 路线图
+  - HTML与CSS
+  - JavaScript
+  - TypeScript
+  - 浏览器原理
+  - Vue生态
+  - React生态
+  - 工程化
+  - 性能优化
+  - 项目实战
+  - 移动与跨端

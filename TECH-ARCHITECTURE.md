@@ -43,16 +43,19 @@ content/
       attention-notes.md
       img/               # 文章图片就近存放，相对引用
     rag/
-  stack/                 # 全栈开发 栏目
+  backend/               # 后端 栏目
     resources.yaml
-    language/
-      java-generics.md
+    java-basics/
+      syntax-and-oop.md
+  front/                 # 前端 栏目
+    resources.yaml
+    html-css/
 ```
 
 - **目录不是分类**：内容组织只靠标签；子目录纯粹是文件整理，可随时重组
 - **图片**：与文章同目录 `img/`，Markdown 内相对引用（`![图](img/xxx.png)`），移动文章目录链接不断
 - **URL**：由文件路径生成，如 `/knowledge-base/ai/llm-basics/attention-notes/`；slug 用文件名（英文短横线），中文标题不进 URL
-- 栏目归属由目录决定（`ai/` 或 `stack/`），frontmatter 不重复写
+- 栏目归属由目录决定（`ai/`、`backend/` 或 `front/`），frontmatter 不重复写
 
 ## 写作约定
 
@@ -112,8 +115,8 @@ summary: Q、K、V 的直觉，缩放点积为什么除以 √dk   # 可选；�
 | 页面 | 路由 |
 |---|---|
 | 首页 | `/` |
-| 栏目页 | `/ai/`、`/stack/` |
-| 资源收藏页 | `/ai/resources/`、`/stack/resources/` |
+| 栏目页 | `/ai/`、`/backend/`、`/front/` |
+| 资源收藏页 | `/ai/resources/`、`/backend/resources/`、`/front/resources/` |
 | 文章页 | `/ai/<目录路径>/<slug>/` 等 |
 | About | `/about/` |
 | 全站搜索 | 站内组件（标题 + 正文全文匹配），非独立页面 |

@@ -1,4 +1,4 @@
-// 两个一级栏目的元信息（文案与设计稿一致）
+// 三个一级栏目的元信息（文案与设计稿一致）
 export const DOMAINS = {
   ai: {
     key: 'ai',
@@ -7,12 +7,19 @@ export const DOMAINS = {
     glyph: '智',
     short: 'AI',
   },
-  stack: {
-    key: 'stack',
-    name: '全栈开发',
-    desc: 'Java 语言、Spring 生态、数据库、中间件与工程实践。夯实后端基本功，向全栈走。',
+  backend: {
+    key: 'backend',
+    name: '后端',
+    desc: 'Java 语言、Spring 生态、数据库、中间件与工程实践。从前端出发补齐的服务端基本功。',
     glyph: '工',
-    short: '全栈',
+    short: '后端',
+  },
+  front: {
+    key: 'front',
+    name: '前端',
+    desc: 'HTML/CSS、JavaScript/TypeScript、浏览器原理、Vue 与 React、工程化与性能。吃饭的家伙，也成体系地整理。',
+    glyph: '页',
+    short: '前端',
   },
 } as const;
 

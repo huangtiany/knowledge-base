@@ -30,7 +30,7 @@ summary: Q、K、V 的直觉   # 可选；填了显示为栏目列表副标题�
 ---
 ```
 
-- 文章放 `content/ai/` 或 `content/stack/` 下任意子目录（目录只是文件整理，不承担分类），URL 由文件路径生成
+- 文章放 `content/ai/`、`content/backend/`、`content/front/` 下任意子目录（目录只是文件整理，不承担分类），URL 由文件路径生成
 - 文件名用英文短横线（如 `attention-notes.md`），中文标题只写在 frontmatter
 
 ### 标签规则
@@ -41,7 +41,7 @@ summary: Q、K、V 的直觉   # 可选；填了显示为栏目列表副标题�
 
 ### 内容约定
 
-- AI 域的知识体系与学习主线见《AI / Agent 知识地图》：规划中的笔记先在地图里以纯文本占位，写成后回地图替换为互链
+- 各域的知识体系与学习主线见对应知识地图（《AI / Agent 知识地图》《后端知识地图》《前端知识地图》）：规划中的笔记先在地图里以纯文本占位，写成后回地图替换为互链
 
 ### 代码块（文件名 + 语言标签条）
 
@@ -84,7 +84,7 @@ $$
 
 ### 资源卡
 
-编辑 `content/ai/resources.yaml` 或 `content/stack/resources.yaml`：
+编辑 `content/<域>/resources.yaml`（`ai` / `backend` / `front` 各一份）：
 
 ```yaml
 - title: Attention Is All You Need    # 必填

@@ -5,15 +5,18 @@ export async function GET() {
   const site = import.meta.env.SITE;
   const base = import.meta.env.BASE_URL;
   const ai = await getCollection('ai');
-  const stack = await getCollection('stack');
+  const backend = await getCollection('backend');
+  const front = await getCollection('front');
   const routes: { path: string; lastmod?: Date }[] = [
     { path: '' },
     { path: 'about/' },
     { path: 'ai/' },
-    { path: 'stack/' },
+    { path: 'backend/' },
+    { path: 'front/' },
     { path: 'ai/resources/' },
-    { path: 'stack/resources/' },
-    ...[...ai, ...stack].map((e) => ({ path: `${e.collection}/${e.id}/`, lastmod: e.data.date })),
+    { path: 'backend/resources/' },
+    { path: 'front/resources/' },
+    ...[...ai, ...backend, ...front].map((e) => ({ path: `${e.collection}/${e.id}/`, lastmod: e.data.date })),
   ];
   const urls = routes
     .map(({ path, lastmod }) => {

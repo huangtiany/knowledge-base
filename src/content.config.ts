@@ -10,10 +10,10 @@ function loadTagList() {
   const tagsPath = path.resolve(process.cwd(), 'content/tags.yaml');
   const raw = YAML.parse(fs.readFileSync(tagsPath, 'utf8'));
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
-    throw new Error('content/tags.yaml 必须是包含 ai / stack 两组的映射');
+    throw new Error('content/tags.yaml 必须是包含 ai / backend / front 三组的映射');
   }
   const groups = {};
-  for (const dom of ['ai', 'stack'] as const) {
+  for (const dom of ['ai', 'backend', 'front'] as const) {
     const list = raw[dom];
     if (!Array.isArray(list) || list.some((t) => typeof t !== 'string' || !t.trim())) {
       throw new Error(`tags.yaml 的 ${dom} 组必须是字符串数组`);
@@ -24,7 +24,7 @@ function loadTagList() {
 }
 
 const TAGS = loadTagList();
-const TAG_SET = new Set([...TAGS.ai, ...TAGS.stack]);
+const TAG_SET = new Set([...TAGS.ai, ...TAGS.backend, ...TAGS.front]);
 
 // 文章 frontmatter 最小集：title / date / tags 必填，summary 可选；
 // related: false 表示不渲染文末「相关笔记」框（路线图这类枢纽页互链太多，渲染出来是噪音）
@@ -57,13 +57,13 @@ const resourceSchema = z.object({
     .optional(),
 });
 
-const articles = (name: 'ai' | 'stack') =>
+const articles = (name: 'ai' | 'backend' | 'front') =>
   defineCollection({
     loader: glob({ pattern: '**/*.md', base: `./content/${name}` }),
     schema: articleSchema,
   });
 
-const resources = (name: 'ai' | 'stack') =>
+const resources = (name: 'ai' | 'backend' | 'front') =>
   defineCollection({
     loader: file(`./content/${name}/resources.yaml`, {
       parser: (text: string) => {
@@ -77,7 +77,9 @@ const resources = (name: 'ai' | 'stack') =>
 
 export const collections = {
   ai: articles('ai'),
-  stack: articles('stack'),
+  backend: articles('backend'),
+  front: articles('front'),
   aiResources: resources('ai'),
-  stackResources: resources('stack'),
+  backendResources: resources('backend'),
+  frontResources: resources('front'),
 };

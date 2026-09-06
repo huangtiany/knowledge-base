@@ -6,13 +6,15 @@ import { rewriteInterlinks } from '../lib/interlinks';
 import { formatFullDate } from '../lib/format';
 import { buildDomainChain, chainNeighbors } from '../lib/navigation';
 import { loadTags } from '../lib/tags';
+import { DOMAINS } from '../lib/domains';
 import ArticleNav from '../components/ArticleNav.astro';
 import NavDrawer from '../components/NavDrawer.astro';
 
 export async function getStaticPaths() {
   const ai = await getCollection('ai');
-  const stack = await getCollection('stack');
-  const all = [...ai, ...stack];
+  const backend = await getCollection('backend');
+  const front = await getCollection('front');
+  const all = [...ai, ...backend, ...front];
   return all.map((entry) => ({
     params: { slug: `${entry.collection}/${entry.id}` },
     props: {
@@ -33,7 +35,7 @@ if (entry.body && !entry.rendered?.html) {
 }
 const bodyHtml = rewriteInterlinks(entry.rendered?.html ?? '', entry, all, base);
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
-const domName = dom === 'ai' ? 'AI / Agent' : '全栈开发';
+const domName = DOMAINS[dom].name;
 // 左栏「全部笔记」与文末「上一篇 / 下一篇」共用同一条学习路径链（标签清单顺序 × 组内文件名序）
 const domainTags = loadTags()[dom];
 const domainArticles = all.filter((e) => e.collection === dom);

@@ -24,9 +24,11 @@ function toPlainText(body: string): string {
 
 export async function GET() {
   const ai = await getCollection('ai');
-  const stack = await getCollection('stack');
+  const backend = await getCollection('backend');
+  const front = await getCollection('front');
   const aiResources = await getCollection('aiResources');
-  const stackResources = await getCollection('stackResources');
+  const backendResources = await getCollection('backendResources');
+  const frontResources = await getCollection('frontResources');
   const base = import.meta.env.BASE_URL;
   // source 缺省时与资源页同规则从 url 提取域名，保证可被搜到
   const hostOf = (url: string) => {
@@ -36,7 +38,7 @@ export async function GET() {
       return url;
     }
   };
-  const resource = (dom: 'ai' | 'stack', items: typeof aiResources) =>
+  const resource = (dom: 'ai' | 'backend' | 'front', items: typeof aiResources) =>
     items.map((r) => ({
       title: r.data.title,
       dom: `${DOMAINS[dom].short} · 资源`,
@@ -46,9 +48,11 @@ export async function GET() {
     }));
   const items = [
     ...ai.map((e) => ({ title: e.data.title, dom: 'AI', url: `${base}ai/${e.id}/`, date: e.data.date, text: toPlainText(e.body ?? '') })),
-    ...stack.map((e) => ({ title: e.data.title, dom: '全栈', url: `${base}stack/${e.id}/`, date: e.data.date, text: toPlainText(e.body ?? '') })),
+    ...backend.map((e) => ({ title: e.data.title, dom: '后端', url: `${base}backend/${e.id}/`, date: e.data.date, text: toPlainText(e.body ?? '') })),
+    ...front.map((e) => ({ title: e.data.title, dom: '前端', url: `${base}front/${e.id}/`, date: e.data.date, text: toPlainText(e.body ?? '') })),
     ...resource('ai', aiResources),
-    ...resource('stack', stackResources),
+    ...resource('backend', backendResources),
+    ...resource('front', frontResources),
   ].sort((a, b) => +b.date - +a.date);
   return new Response(
     JSON.stringify(items.map(({ title, dom, url, text }) => ({ title, dom, url, text }))),

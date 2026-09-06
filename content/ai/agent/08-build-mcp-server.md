@@ -21,7 +21,7 @@ from pathlib import Path
 from mcp.server.fastmcp import FastMCP
 
 DOCS = Path(__file__).parent / "content"          # 指向本站 content/ 目录
-mcp = FastMCP("gezhi-kb", instructions="格致个人知识库：AI/Agent 与全栈开发笔记")
+mcp = FastMCP("gezhi-kb", instructions="格致个人知识库：AI/Agent、后端与前端笔记")
 
 @mcp.tool()
 def search_docs(query: str, top_k: int = 5) -> str:

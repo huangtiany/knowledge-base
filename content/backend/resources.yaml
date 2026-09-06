@@ -1,6 +1,6 @@
-# 全栈开发领域资源收藏卡（中文优先，英文只收官方与公认精品）
+# 后端领域资源收藏卡（中文优先，英文只收官方与公认精品）
 # 排序 = 知识地图章节顺序；同日卡片在资源页按本文件录入顺序并列。
-# tags：资源页按标签分组的依据，只从 content/tags.yaml 的 stack 清单选；未打标落「未分组」。
+# tags：资源页按标签分组的依据，只从 content/tags.yaml 的 backend 清单选；未打标落「未分组」。
 - title: 菜鸟教程 · Java 教程
   url: https://www.runoob.com/java/java-tutorial.html
   summary: 中文 Java 基础速查站，Java基础章五篇的语法备查源；卡壳的语法点按目录直接跳。

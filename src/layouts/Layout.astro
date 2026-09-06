@@ -5,10 +5,10 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
-  /** 领域色作用域：ai / stack；首页与 About 不注入 */
-  dom?: 'ai' | 'stack';
+  /** 领域色作用域：ai / backend / front；首页与 About 不注入 */
+  dom?: 'ai' | 'backend' | 'front';
   /** 顶栏高亮的导航项 */
-  active?: 'ai' | 'stack' | 'about';
+  active?: 'ai' | 'backend' | 'front' | 'about';
   /** og:type；文章页传 article */
   ogType?: 'website' | 'article';
 }
@@ -16,7 +16,7 @@ interface Props {
 const { title, description, dom, active, ogType = 'website' } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const domStyle = dom ? `--dom:var(--${dom});--dom-soft:var(--${dom}-soft)` : undefined;
-const ogDescription = description ?? '本地书写 Markdown 的个人知识库：AI / Agent 与全栈开发的笔记与资料。';
+const ogDescription = description ?? '本地书写 Markdown 的个人知识库：AI / Agent、后端与前端的笔记与资料。';
 ---
 <!doctype html>
 <html lang="zh-CN">
@@ -41,7 +41,8 @@ const ogDescription = description ?? '本地书写 Markdown 的个人知识库�
         <a class="brand" href={base}>格致<i>.</i></a>
         <nav class="main">
           <a href={`${base}ai/`} class:list={[{ on: active === 'ai' }]}>AI / Agent</a>
-          <a href={`${base}stack/`} class:list={[{ on: active === 'stack' }]}>全栈开发</a>
+          <a href={`${base}backend/`} class:list={[{ on: active === 'backend' }]}>后端</a>
+          <a href={`${base}front/`} class:list={[{ on: active === 'front' }]}>前端</a>
           <a href={`${base}about/`} class:list={[{ on: active === 'about' }]}>关于</a>
         </nav>
         <div class="search">

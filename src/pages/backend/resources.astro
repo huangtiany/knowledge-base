@@ -2,6 +2,6 @@
 import { getCollection } from 'astro:content';
 import ResourceList from '../../components/ResourceList.astro';
 
-const resources = await getCollection('stackResources');
+const resources = await getCollection('backendResources');
 ---
-<ResourceList dom="stack" resources={resources} />
+<ResourceList dom="backend" resources={resources} />

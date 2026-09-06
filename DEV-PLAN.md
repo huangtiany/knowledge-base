@@ -89,15 +89,15 @@ RSS / sitemap、自定义 404 页、暗色模式、评论与统计、自定义�
    - 公式：行内 `$...$`、块级 `$$...$$`
    - 图片：`![说明](img/xxx.png)`，图片放文章同目录 `img/`
    - 文内互链：`[标题](../子目录/文件名.md)`，相对路径指向 `.md` 源文件
-2. **建 `content/` 目录**（按 TECH-ARCHITECTURE 结构）：`content/tags.yaml`（按领域分组：`ai:` / `stack:` 两组标签，含"计划中"标签）、`content/ai/`、`content/stack/`，各领域一个 `resources.yaml`。
+2. **建 `content/` 目录**（按 TECH-ARCHITECTURE 结构）：`content/tags.yaml`（按领域分组：`ai:` / `backend:` 两组标签，含"计划中"标签）、`content/ai/`、`content/backend/`，各领域一个 `resources.yaml`。
 3. **Content Collections 与三件校验**（`src/content.config.ts`）：
-   - 文章 collection（glob loader；`ai/` 与 `stack/` 分开或合并均可，栏目归属由路径推导）：schema 校验 frontmatter 必填字段
+   - 文章 collection（glob loader；`ai/` 与 `backend/` 分开或合并均可，栏目归属由路径推导）：schema 校验 frontmatter 必填字段
    - `tags` 字段 `refine`：读取 `content/tags.yaml` 得清单全集，不在清单内 → 构建失败
    - 资源卡 collection：`title` / `url` / `summary` / `date` 必填，`source` 可选（不填构建期从 url 提域名）
    - 确认校验确实随构建触发（必要时占位首页显式 `getCollection()` 或 CI 加 `astro sync`）——校验没被触发等于没有校验
 4. **种子内容**（写作语法约定的第一个使用者）：
    - `content/ai/llm-basics/attention-notes.md`：Python 代码块（带 `title`）、KaTeX 块公式、h2+h3 多级标题、文内互链
-   - `content/stack/language/java-generics.md`：Java 代码块（带 `title`）、图片（`img/` 放占位图）
+   - `content/backend/language/java-generics.md`：Java 代码块（带 `title`）、图片（`img/` 放占位图）
    - 两个领域各 ≥ 1 张资源卡
    - **保留至少 2 个未使用的"计划中"标签**（如 `微调`、`JVM`、`中间件`），让"待学习"态在 M4 有真实数据可验
 5. **tags.yaml 对减逻辑**：本里程碑只保证数据成立——"清单全集 − 文章实用 = 待学习差集"由构建期派生，M3/M4 渲染时消费，内容里不手工维护状态字段。
@@ -115,7 +115,7 @@ RSS / sitemap、自定义 404 页、暗色模式、评论与统计、自定义�
 
 **任务清单（按依赖排序）**
 
-1. **设计 token 提取**：从设计稿 `:root` 提取 CSS 变量到 `src/styles/global.css`（`--paper / --ink / --muted / --line / --ai / --ai-soft / --stack / --stack-soft / --code-bg / --code-ink` + 三组字体栈）；排版基准（正文 16px、行高 2、serif 标题）一并落为全局样式。
+1. **设计 token 提取**：从设计稿 `:root` 提取 CSS 变量到 `src/styles/global.css`（`--paper / --ink / --muted / --line / --ai / --ai-soft / --backend / --backend-soft / --code-bg / --code-ink` + 三组字体栈）；排版基准（正文 16px、行高 2、serif 标题）一并落为全局样式。
 2. **Layout 骨架**（文章页的前置，M4 全部页面复用）：`Layout.astro` = 顶栏（logo、栏目导航、搜索框）+ 页脚 + 领域色作用域（页面级注入 `--dom`）；区块样式对照设计稿顶栏/页脚 CSS。
 3. **组件映射清单**：把设计稿文章页的类名逐一登记为实现项，作为本里程碑的对照物——`art-layout / art-meta（crumb、h1、artline）/ art-body（h2+hno、blockquote、formula、codeblock+cb-bar、figure）/ relbox / toc（toc-t、l2）`。
 4. **渲染管线**（`astro.config.mjs` markdown 配置）：
@@ -125,7 +125,7 @@ RSS / sitemap、自定义 404 页、暗色模式、评论与统计、自定义�
    - **自定义 rehype 插件①（cb-bar）**：解析代码块 info string 的 `title="..."` → 包 `.codeblock` + `.cb-bar`（左文件名、右语言）
    - **自定义 rehype 插件②（h2 编号）**：构建期给 h2 生成 `§ N` 编号
    - **互链改写**：先验证 Astro 对相对 `.md` 链接的自动改写行为；若不自动改写为路由 URL，则写 rehype 插件把 `.md` 后缀链接重写为 `/knowledge-base/...` 路由
-5. **文章页路由**：`src/pages/ai/[...slug].astro` 与 `src/pages/stack/[...slug].astro`（或参数化合一），`getStaticPaths` 从 collections 生成，slug = 文件路径，URL 形如 `/knowledge-base/ai/llm-basics/attention-notes/`。
+5. **文章页路由**：`src/pages/ai/[...slug].astro` 与 `src/pages/backend/[...slug].astro`（或参数化合一），`getStaticPaths` 从 collections 生成，slug = 文件路径，URL 形如 `/knowledge-base/ai/llm-basics/attention-notes/`。
 6. **TOC**：用渲染结果的 `headings`（过滤 h2/h3）生成右侧 sticky 目录，含二级缩进样式（`.l2`）。
 7. **relbox**：构建期提取正文中指向本站的互链，反查目标文章 `date` / `title`，渲染"相关笔记"盒子（svg 图标 + 日期 + 标题）。
 8. **图片验证**：验证相对引用 `img/xxx.png` 在 content collections 下的解析与产物路径（含 base 前缀）；不成立则启用风险表中的回退方案并记录定案。
@@ -148,13 +148,13 @@ RSS / sitemap、自定义 404 页、暗色模式、评论与统计、自定义�
 
 实现顺序按数据依赖排列：先做有列表与聚合数据的页面，最后做纯静态页与搜索组件。每页都复用 M3 的 Layout、样式与组件。
 
-**1. 栏目页 ×2**（`/ai/`、`/stack/`）
+**1. 栏目页 ×2**（`/ai/`、`/backend/`）
 
 - 数据源：本领域文章 collection + tags.yaml 差集
 - 要点：按标签分组的 `taggroup`（组标题 + 计数）、**灰色"待学习"分组**（"还没有内容——计划中"）、`colhead / colstats`（"x 篇笔记 · y 张资源卡"）、面包屑
 - 验收：对照设计稿 `page-col-ai` / `page-col-stack`；灰组内容来自真实差集（M2 预留的"计划中"标签）
 
-**2. 资源收藏页 ×2**（`/ai/resources/`、`/stack/resources/`）
+**2. 资源收藏页 ×2**（`/ai/resources/`、`/backend/resources/`）
 
 - 数据源：对应领域 `resources.yaml`
 - 要点：`rescard`（标题 + 域名 + 摘要 + 收藏日期），按 `date` 倒序，`source` 缺省时构建期从 url 提域名

@@ -10,32 +10,39 @@ const base = import.meta.env.BASE_URL;
 const domainTags = loadTags();
 
 const aiArticles = await getCollection('ai');
-const stackArticles = await getCollection('stack');
+const backendArticles = await getCollection('backend');
+const frontArticles = await getCollection('front');
 const aiResources = await getCollection('aiResources');
-const stackResources = await getCollection('stackResources');
+const backendResources = await getCollection('backendResources');
+const frontResources = await getCollection('frontResources');
 
-const articleCount = { ai: aiArticles.length, stack: stackArticles.length };
-const resCount = { ai: aiResources.length, stack: stackResources.length };
+const articleCount = { ai: aiArticles.length, backend: backendArticles.length, front: frontArticles.length };
+const resCount = { ai: aiResources.length, backend: backendResources.length, front: frontResources.length };
 
 // 最近更新：笔记与资源卡混排，按日期倒序取前 8
 const recent = [
   ...aiArticles.map((e) => ({ kind: 'note', dom: 'ai', date: e.data.date, title: e.data.title, url: `${base}ai/${e.id}/` })),
-  ...stackArticles.map((e) => ({ kind: 'note', dom: 'stack', date: e.data.date, title: e.data.title, url: `${base}stack/${e.id}/` })),
+  ...backendArticles.map((e) => ({ kind: 'note', dom: 'backend', date: e.data.date, title: e.data.title, url: `${base}backend/${e.id}/` })),
+  ...frontArticles.map((e) => ({ kind: 'note', dom: 'front', date: e.data.date, title: e.data.title, url: `${base}front/${e.id}/` })),
   ...aiResources.map((e) => ({ kind: 'res', dom: 'ai', date: e.data.date, title: e.data.title, url: e.data.url })),
-  ...stackResources.map((e) => ({ kind: 'res', dom: 'stack', date: e.data.date, title: e.data.title, url: e.data.url })),
+  ...backendResources.map((e) => ({ kind: 'res', dom: 'backend', date: e.data.date, title: e.data.title, url: e.data.url })),
+  ...frontResources.map((e) => ({ kind: 'res', dom: 'front', date: e.data.date, title: e.data.title, url: e.data.url })),
 ].sort((a, b) => +b.date - +a.date).slice(0, 8);
 
 const countByTag = {
   ai: Object.fromEntries(domainTags.ai.map((t) => [t, aiArticles.filter((a) => a.data.tags.includes(t)).length])),
-  stack: Object.fromEntries(domainTags.stack.map((t) => [t, stackArticles.filter((a) => a.data.tags.includes(t)).length])),
+  backend: Object.fromEntries(domainTags.backend.map((t) => [t, backendArticles.filter((a) => a.data.tags.includes(t)).length])),
+  front: Object.fromEntries(domainTags.front.map((t) => [t, frontArticles.filter((a) => a.data.tags.includes(t)).length])),
 };
-const isEmpty = articleCount.ai + articleCount.stack + resCount.ai + resCount.stack === 0;
+const isEmpty =
+  articleCount.ai + articleCount.backend + articleCount.front +
+  resCount.ai + resCount.backend + resCount.front === 0;
 ---
-<Layout title="格致 · 个人知识库" description="一份正在生长的个人知识库：学习 AI / Agent 与全栈开发的笔记、心得，以及沿途收集的资源。">
+<Layout title="格致 · 个人知识库" description="一份正在生长的个人知识库：前端、后端与 AI / Agent 的笔记、心得，以及沿途收集的资源。">
   <div class="wrap">
     <div class="hero">
       <h1>格致</h1>
-      <p class="sub">一份正在生长的个人知识库。这里存放我学习 <b>AI / Agent</b> 与 <b>全栈开发</b> 的笔记、心得，以及沿途收集的资源。</p>
+      <p class="sub">一份正在生长的个人知识库。这里存放我沉淀 <b>前端</b>、修炼 <b>后端</b> 与主攻 <b>AI / Agent</b> 的笔记、心得，以及沿途收集的资源。</p>
       <p class="meta-line">所有内容以 Markdown 书写 · 展示最新版本</p>
     </div>
 

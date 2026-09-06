@@ -1,6 +1,6 @@
 // 资源卡与 roadmap 外链体检：
 //   node scripts/check-external-links.mjs
-// 收集两个 resources.yaml 与两个 roadmap.md 里的所有 http(s) 链接，
+// 收集三个 resources.yaml 与三个 roadmap.md 里的所有 http(s) 链接，
 // HEAD（失败降级 GET）检测可达性，死链/超时输出报告并以非零码退出。
 // CI 里由 .github/workflows/link-health.yml 每周执行；本地也可随时手跑。
 import { readFileSync } from 'node:fs';
@@ -20,7 +20,7 @@ function collect() {
     if (!found.has(url)) found.set(url, { where: new Set(), title });
     found.get(url).where.add(where);
   };
-  for (const dom of ['ai', 'stack']) {
+  for (const dom of ['ai', 'backend', 'front']) {
     const cards = YAML.parse(readFileSync(resolve(root, `content/${dom}/resources.yaml`), 'utf8'));
     for (const card of cards) add(card.url, `${dom}/resources.yaml`, card.title);
     const md = readFileSync(resolve(root, `content/${dom}/roadmap.md`), 'utf8');

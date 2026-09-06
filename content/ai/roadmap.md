@@ -58,7 +58,7 @@ related: false
 - [pytest-chinese-doc](https://github.com/luizyao/pytest-chinese-doc) —— 中文 pytest 手册
 - [pydantic 文档](https://docs.pydantic.dev/) —— 校验中枢
 - [FastAPI 官方文档（中文）](https://fastapi.tiangolo.com/zh/) —— 服务化
-- [NumPy 中文文档](https://www.numpy.org.cn/) —— 向量运算
+- [NumPy 官方文档](https://numpy.org/doc/stable/) —— 向量运算
 - [joyful-pandas](https://github.com/datawhalechina/joyful-pandas) —— pandas 中文教程
 - [Thorough-Pytorch](https://github.com/datawhalechina/thorough-pytorch) —— PyTorch 中文教程
 - [HuggingFace Transformers 文档（中文）](https://huggingface.co/docs/transformers/zh) —— 模型库

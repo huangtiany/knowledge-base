@@ -19,7 +19,9 @@ export interface EntryLike {
   data: { title: string; date: Date };
 }
 
-// 互链目标按“解析出的 id”反查文章；同栏目优先，跨栏目歧义视为错误
+// 互链目标按“解析出的 id”反查文章；同栏目优先，跨栏目歧义视为错误。
+// 跨域链接按文件系统相对路径写（如 ../../backend/javaweb/02-session-cookie-filter.md），
+// 解析出的 id 首段恰为栏目名时按「栏目/域内路径」跨域解析。
 function findTarget(targetId: string, ownCollection: string, allEntries: EntryLike[]): EntryLike | null {
   let hit: EntryLike | null = null;
   let ambiguous = false;
@@ -29,8 +31,16 @@ function findTarget(targetId: string, ownCollection: string, allEntries: EntryLi
     if (hit) ambiguous = true;
     hit = e;
   }
+  if (hit && !ambiguous) return hit;
   if (ambiguous) throw new Error(`[interlinks] 互链目标歧义：id "${targetId}" 在多个栏目中存在，请在链接中写明唯一路径`);
-  return hit;
+  const slash = targetId.indexOf('/');
+  if (slash > 0) {
+    const dom = targetId.slice(0, slash);
+    const rest = targetId.slice(slash + 1);
+    const cross = allEntries.find((e) => e.collection === dom && e.id === rest);
+    if (cross) return cross;
+  }
+  return null;
 }
 
 export function posixJoin(dir: string, rel: string): string | null {

@@ -1,0 +1,133 @@
+---
+title: 前端知识地图
+date: 2026-09-06
+tags: [路线图]
+summary: 吃饭的家伙也要成体系——把散落的前端经验挂成树：每个主题对应一篇笔记，每章末尾挂本章资源。姊妹篇：《AI / Agent 知识地图》与《后端知识地图》。
+related: false
+---
+
+这张地图是前端域的知识体系。与前两个域不同，前端是我吃饭的家伙——这里写的不是「从零学习」，而是**体系自查**：把日常工作里散落的经验挂成一棵树，深挖那些天天在用却说不清原理的盲区。用 [roadmap.sh/frontend](https://roadmap.sh/frontend) 做外部校准，每个 h2 是一章，对应标签清单里的一个章级标签；章下面的小节是笔记主题，全部已写成互链（项目实战与移动与跨端两节留白）。
+
+## 定位与主线
+
+定位：**把「能干活」整理成「能讲清楚」**——经验向上收拢成体系，盲区向下钻到原理。
+
+依赖主线：
+
+- **HTML与CSS → JavaScript → TypeScript → 浏览器原理**：结构、行为、类型、宿主平台，四层地基一次理顺
+- **Vue生态 与 React生态** 双线并列：框架是主场武器，两个心智模型都值得吃透，先读选型对比再进各自核心
+- **工程化**（模块化构建 + 质量工具链）与 **性能优化**：从「写得出来」到「交付得好」
+- **项目实战**与 **移动与跨端** 留白：实战等真实项目沉淀，跨端是下一阶段的扩展方向
+
+## HTML 与 CSS
+
+标签：`HTML与CSS`。结构与表现的基本功——语义化决定文档的质量，现代布局决定实现的效率：
+
+- [HTML 语义化：结构即文档](html-css/01-semantic-html.md)
+- [现代 CSS 布局：Flex、Grid 与响应式](html-css/02-modern-css-layout.md)
+
+### 本章资源
+
+- [Can I Use](https://caniuse.com/) —— 兼容性查询
+- [Flexbox Froggy](https://flexboxfroggy.com/#zh-cn) —— Flex 闯关游戏
+- [MDN · CSS 参考](https://developer.mozilla.org/zh-CN/docs/Web/CSS) —— 属性权威出处
+
+## JavaScript
+
+标签：`JavaScript`。语言核心三件套：作用域/闭包/原型是底牌，ES6+ 是日常语法，异步是前端的心跳：
+
+- [作用域、闭包与原型链](javascript/01-scope-closure-prototype.md)
+- [ES6+ 与模块化](javascript/02-es6-plus-and-modules.md)
+- [异步与事件循环：Promise 到 async/await](javascript/03-async-and-event-loop.md)
+
+### 本章资源
+
+- [现代 JavaScript 教程](https://zh.javascript.info/) —— 中文最系统
+- [阮一峰 · ES6 入门教程](https://es6.ruanyifeng.com/) —— 语法速查
+- [MDN · JavaScript 指南](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide) —— 官方权威
+- [MDN · 使用 Promise](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Using_promises) —— 异步深挖
+
+## TypeScript
+
+标签：`TypeScript`。从「标注」到「体操」两级台阶——类型即文档，重构的信心来源：
+
+- [TypeScript 入门：类型标注与收窄](typescript/01-ts-basics.md)
+- [泛型与工具类型](typescript/02-generics-and-utility-types.md)
+
+### 本章资源
+
+- [TypeScript 官方文档（中文）](https://www.typescriptlang.org/zh/docs) —— 官方权威
+- [TypeScript 入门教程](https://ts.xcatliu.com/) —— 中文入门替代
+
+## 浏览器原理
+
+标签：`浏览器原理`。前端代码的宿主平台——渲染管线决定性能上限，HTTP 缓存决定加载下限：
+
+- [浏览器渲染原理：从 URL 到像素](browser/01-rendering-pipeline.md)
+- [HTTP 缓存与浏览器存储](browser/02-http-cache-and-storage.md)
+
+### 本章资源
+
+- [小林 coding · 图解网络](https://xiaolincoding.com/network/) —— 图解深挖
+- [MDN · HTTP 文档](https://developer.mozilla.org/zh-CN/docs/Web/HTTP) —— 字段权威
+
+## Vue 生态
+
+标签：`Vue生态`。主武器之一。选型对比与 React 共用一篇，从这里进：
+
+- [Vue 还是 React：框架选型对比](framework/00-vue-or-react.md)
+- [Vue 3 核心：响应式与组件化](vue/01-vue3-core.md)
+
+### 本章资源
+
+- [Vue.js 官方文档（中文）](https://cn.vuejs.org/) —— 权威出处
+- [Pinia 官方文档（中文）](https://pinia.vuejs.org/zh/) —— 状态管理
+
+## React 生态
+
+标签：`React生态`。另一个心智模型——不可变与重渲染的世界（选型对比见上一章）：
+
+- [React 核心：组件、JSX 与 Hooks](react/01-react-core-hooks.md)
+
+### 本章资源
+
+- [React 官方中文文档](https://zh-hans.react.dev/) —— Learn 区块质量极高
+
+## 工程化
+
+标签：`工程化`。从源码到交付物——构建工具解决模块、转译、优化，质量工具链把低级争论交给机器：
+
+- [模块化与构建：从 Webpack 到 Vite](engineering/01-modules-and-vite.md)
+- [代码质量工具链：ESLint、Prettier 与 pnpm](engineering/02-quality-toolchain.md)
+
+### 本章资源
+
+- [Vite 官方文档（中文）](https://cn.vite.dev/) —— 工具本体
+- [pnpm 官方文档（中文）](https://pnpm.io/zh/) —— 包管理器
+
+## 性能优化
+
+标签：`性能优化`。先度量再优化——Core Web Vitals 是指标语言，加载/渲染/资源三层是手段清单：
+
+- [性能优化：Core Web Vitals 与优化手段](performance/01-performance-metrics.md)
+
+### 本章资源
+
+- [web.dev · Core Web Vitals](https://web.dev/articles/vitals) —— 指标权威出处
+
+## 项目实战
+
+标签：`项目实战`。**留白**——按前两个域的先例，实战的价值在真实踩坑，预先编写没有意义。候选方向：
+
+- 本站的交互增强复盘（搜索防抖、目录 scroll-spy 都是现成素材）
+- 组件库 / 工程模板的沉淀笔记
+
+## 移动与跨端
+
+标签：`移动与跨端`。**留白**——当前路线未覆盖，作为下一阶段的扩展方向：响应式的移动端深化、小程序、React Native / Flutter 的选型认知。以 [roadmap.sh/frontend](https://roadmap.sh/frontend) 的对应分支为预备地图。
+
+## 进度点亮
+
+- 地图上的主题已全部成文互链；项目实战与移动与跨端两节留白，等真实进展后写成笔记回这里点亮
+- 每个章级标签：有笔记即点亮；前端域目前保持灰组的标签是 `项目实战` 与 `移动与跨端`
+- 每章末尾的「本章资源」与资源收藏页同源：卡片收在 `content/front/resources.yaml`，地图只做学习视角的精选

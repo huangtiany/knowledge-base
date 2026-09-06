@@ -49,11 +49,11 @@
   date: 2026-09-05
   source: fastapi.tiangolo.com
   tags: [Python]
-- title: NumPy 中文文档
-  url: https://www.numpy.org.cn/
-  summary: 社区维护的官方中文翻译；只重点读 broadcasting（广播）与线性代数两章，正好是向量运算一篇的底座。
+- title: NumPy 官方文档
+  url: https://numpy.org/doc/stable/
+  summary: NumPy 官方文档（英文，权威稳定）；只重点读 broadcasting（广播）与线性代数两章，正好是向量运算一篇的底座。原中文镜像 numpy.org.cn 已失稳。
   date: 2026-09-05
-  source: numpy.org.cn
+  source: numpy.org
   tags: [Python]
 - title: joyful-pandas（Datawhale 中文 pandas 教程）
   url: https://github.com/datawhalechina/joyful-pandas
