@@ -112,7 +112,7 @@ nav.main a.on { color: var(--ink); font-weight: 600; background: #EDEFEA; }
 
 /* 栏目页两栏：主列（页头 + 分组列表，1080px）+ 右侧标签目录（住进宽屏空白，sticky） */
 .col-layout { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 64px; align-items: start; }
-@media(max-width:900px) { .col-layout { grid-template-columns: 1fr; } }
+@media(max-width:900px) { .col-layout { grid-template-columns: 1fr; } .col-layout > .toc { display: none; } }
 .toc a { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .toc a .n { font-family: var(--mono); font-size: 11px; color: #9AA3AD; flex-shrink: 0; }
 .toc a[aria-current] { color: var(--dom, var(--ai)); }
@@ -145,10 +145,11 @@ nav.main a.on { color: var(--ink); font-weight: 600; background: #EDEFEA; }
 .rescard .res-date { font-family: var(--mono); font-size: 11.5px; color: #9AA3AD; margin-top: 6px; }
 
 /* ---------- 文章页 ---------- */
-/* 三栏：左「全部笔记」220px + 正文 + 右 TOC 218px；<1280 收左栏，<900 全收（与抽屉配合） */
+/* 三栏：左「全部笔记」220px + 正文 + 右 TOC 218px；<1280 收左栏，<900 全收（与抽屉配合）。
+   断点只隐藏网格内的侧栏本体（> 选择器），抽屉里的导航副本不受影响 */
 .art-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr) 218px; gap: 64px; padding: 56px 0 40px; }
-@media(max-width:1279px) { .art-layout { grid-template-columns: minmax(0, 1fr) 218px; } .art-nav { display: none; } }
-@media(max-width:900px) { .art-layout { grid-template-columns: 1fr; } .toc { display: none; } }
+@media(max-width:1279px) { .art-layout { grid-template-columns: minmax(0, 1fr) 218px; } .art-layout > .art-nav { display: none; } }
+@media(max-width:900px) { .art-layout { grid-template-columns: 1fr; } .art-layout > .toc { display: none; } }
 .art-meta .crumb { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
 .art-meta .crumb a { text-decoration: underline; text-underline-offset: 3px; }
 .art-meta h1 { font-family: var(--serif); font-weight: 900; font-size: clamp(28px, 4.4vw, 40px); line-height: 1.35; }
@@ -264,8 +265,9 @@ footer { border-top: 1px solid var(--line); margin-top: 40px; }
 .drawer-tabs button { flex: 1; padding: 10px 0; border: none; background: none; color: var(--muted); font-size: 13.5px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
 .drawer-tabs button.on { color: var(--dom, var(--ai)); font-weight: 600; border-bottom-color: var(--dom, var(--ai)); }
 .drawer-body { padding: 14px 16px 20px; overflow-y: auto; flex: 1; }
-/* 抽屉内的目录 / 全部笔记副本：去掉右栏的 sticky、边线与限高 */
+/* 抽屉内的目录 / 全部笔记副本：去掉右栏的 sticky、边线与限高；tab 已表意，内层小标题不再重复 */
 .drawer .toc, .drawer .art-nav { position: static; max-height: none; overflow: visible; border: none; padding: 0; font-size: 13.5px; }
+.drawer .toc .toc-t, .drawer .art-nav .toc-t { display: none; }
 
 /* ---------- 404（GitHub Pages 会以站点内任意未匹配路径渲染此页） ---------- */
 .not-found { max-width: 34em; margin: 0 auto; padding: 110px 0 90px; text-align: center; }

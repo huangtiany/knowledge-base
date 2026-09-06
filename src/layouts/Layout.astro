@@ -199,6 +199,7 @@ const ogDescription = description ?? '本地书写 Markdown 的个人知识库�
         const targets = [...links.keys()]
           .map((id) => document.getElementById(id))
           .filter((el): el is HTMLElement => !!el);
+        // setTimeout 节流：与 rAF 等效但更稳（后台标签页 / 无渲染帧环境也能跑）
         let ticking = false;
         const update = () => {
           ticking = false;
@@ -216,7 +217,7 @@ const ogDescription = description ?? '本地书写 Markdown 的个人知识库�
         const onScroll = () => {
           if (!ticking) {
             ticking = true;
-            requestAnimationFrame(update);
+            setTimeout(update, 80);
           }
         };
         window.addEventListener('scroll', onScroll, { passive: true });
