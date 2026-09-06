@@ -1,317 +1,381 @@
 # AI / Agent 领域资源收藏卡（中文优先，英文只收公认精品）
 # 排序 = 知识地图章节顺序；同日卡片在资源页按本文件录入顺序并列。
+# tags：资源页按标签分组的依据，只从 content/tags.yaml 的 ai 清单选；未打标落「未分组」。
 - title: Learn X in Y Minutes · Python（中文）
   url: https://learnxinyminutes.com/zh-cn/python/
   summary: 一页带注释的代码流速览 Python 全部核心语法，十几分钟建立整体印象——正式入门前先扫一遍，知道"这门语言有哪些东西"再看教程。
   date: 2026-09-06
   source: learnxinyminutes.com
+  tags: [Python]
 - title: Python 官方教程（中文）
   url: https://docs.python.org/zh-cn/3/tutorial/
   summary: 基础段五篇的总根据地，官方中文版质量稳定；先读 3-5 章（数据结构/控制流），asyncio 等标准库文档同站可达。
   date: 2026-09-05
   source: docs.python.org
+  tags: [Python]
 - title: Python - 100 天从新手到大师
   url: https://github.com/jackfrued/Python-100-Days
   summary: 中文社区最系统的 Python 基础开源教程，基础段卡壳时按天查漏；Day 1-15 覆盖本站基础段全部主题。
   date: 2026-09-05
   source: github.com
+  tags: [Python]
 - title: uv 官方文档
   url: https://docs.astral.sh/uv/
   summary: 本站钦定环境工具链的官方文档，英文但写得极好；Getting started 一小时通读即可覆盖日常全部命令。
   date: 2026-09-05
   source: docs.astral.sh
+  tags: [Python]
 - title: pytest-chinese-doc（pytest 官方文档中文翻译 + 扩展）
   url: https://github.com/luizyao/pytest-chinese-doc
   summary: 不只是翻译：每个知识点配示例加作者实战注解，配合 pytest 入门篇从第一个测试写到 fixture/mock。
   date: 2026-09-05
   source: github.com
+  tags: [Python]
 - title: mypy 文档
   url: https://mypy.readthedocs.io/
   summary: 类型检查器的官方手册；配合类型注解篇，重点读 "Getting started" 与 "Type hints cheat sheet" 两节。
   date: 2026-09-05
   source: mypy.readthedocs.io
+  tags: [Python]
 - title: pydantic 官方文档
   url: https://docs.pydantic.dev/
   summary: LLM 应用的校验中枢，英文；Models/Fields/JSON parsing 三章覆盖 dataclass 与结构化输出两篇的全部需求。
   date: 2026-09-05
   source: docs.pydantic.dev
+  tags: [Python]
 - title: FastAPI 官方文档（中文）
   url: https://fastapi.tiangolo.com/zh/
   summary: 官方简中版（AI 协作翻译，个别语句需回看英文），用户指南前半 + Async 部分正好支撑 FastAPI 服务化一篇。
   date: 2026-09-05
   source: fastapi.tiangolo.com
+  tags: [Python]
 - title: NumPy 中文文档
   url: https://www.numpy.org.cn/
   summary: 社区维护的官方中文翻译；只重点读 broadcasting（广播）与线性代数两章，正好是向量运算一篇的底座。
   date: 2026-09-05
   source: numpy.org.cn
+  tags: [Python]
 - title: joyful-pandas（Datawhale 中文 pandas 教程）
   url: https://github.com/datawhalechina/joyful-pandas
   summary: 中文 pandas 系统教程，练一练 + 章后习题驱动；pandas 会用级一篇的配套练习库。
   date: 2026-09-05
   source: github.com
+  tags: [Python]
 - title: Thorough-Pytorch（Datawhale 深入浅出 PyTorch）
   url: https://github.com/datawhalechina/thorough-pytorch
   summary: 中文 PyTorch 入门教程，张量/autograd/模型加载讲解完整，配合 PyTorch 读懂级一篇食用。
   date: 2026-09-05
   source: github.com
+  tags: [Python]
 - title: HuggingFace Transformers 文档（中文）
   url: https://huggingface.co/docs/transformers/zh
   summary: 官方中文文档；LLM 基础章常客——tokenizer、量化、Trainer 三章对应上下文/量化/训练三篇。
   date: 2026-09-05
   source: huggingface.co
+  tags: [LLM基础]
 - title: vLLM 官方文档
   url: https://docs.vllm.ai/
   summary: 生产级推理引擎文档；KV cache 与量化一篇的展开读物，重点看 quantization 与 serve 部署章节。
   date: 2026-09-05
   source: docs.vllm.ai
+  tags: [LLM基础]
 - title: Ollama
   url: https://github.com/ollama/ollama
   summary: 本地模型秒起的整合层，README 即文档；开发期接本地模型（qwen 等）的默认入口，OpenAI 兼容 API 直接对接现有代码。
   date: 2026-09-05
   source: github.com
+  tags: [LLM基础]
 - title: OpenAI · Structured Outputs
   url: https://platform.openai.com/docs/guides/structured-outputs
   summary: constrained decoding 的机制说明 + schema 支持范围；结构化输出两篇（工程侧/底层侧）的原始依据。
   date: 2026-09-05
   source: platform.openai.com
+  tags: [LLM基础]
 - title: happy-llm（Datawhale · 从零构建大模型）
   url: https://github.com/datawhalechina/happy-llm
   summary: 中文教程从零实现 LLM，训练侧全景一篇想深入时的下一站；理论推导与代码实现并重。
   date: 2026-09-05
   source: github.com
+  tags: [LLM基础]
 - title: mlabonne/llm-course
   url: https://github.com/mlabonne/llm-course
   summary: 公认最好的 LLM 全景路线图（英文精品），Fundamentals→Scientist→Engineer 三段与知识地图几乎同构，配 Colab 练习。
   date: 2026-09-05
   source: github.com
+  tags: [LLM基础]
 - title: "Karpathy · Neural Networks: Zero to Hero"
   url: https://karpathy.ai/zero-to-hero.html
   summary: 从手写 autograd 到 GPT 的免费视频课，训练侧最好的英文视频（B 站有中文翻译版）；不赶进度时强烈推荐。
   date: 2026-09-05
   source: karpathy.ai
+  tags: [LLM基础]
 - title: llm-universe（Datawhale · 动手学大模型应用开发）
   url: https://github.com/datawhalechina/llm-universe
   summary: 中文大模型应用开发教程，RAG 章节完整可跑；基础管线五篇的动手配套。
   date: 2026-09-05
   source: github.com
+  tags: [RAG]
 - title: FlagEmbedding（bge 系列官方仓库）
   url: https://github.com/FlagOpen/FlagEmbedding
   summary: bge embedding 与 reranker 的官方仓库，中文说明完善；embedding 选型与检索重排两篇的工具来源，含微调脚本。
   date: 2026-09-05
   source: github.com
+  tags: [RAG]
 - title: Qdrant 文档
   url: https://qdrant.tech/documentation/
   summary: 向量库选型的主推候选，文档质量高；重点读 concepts（ANN/过滤）与 hybrid queries 两块。
   date: 2026-09-05
   source: qdrant.tech
+  tags: [RAG]
 - title: Chroma 文档
   url: https://docs.trychroma.com/
   summary: 嵌入式向量库，pip 即用；原型期与向量库选型篇的"零部署"选项。
   date: 2026-09-05
   source: docs.trychroma.com
+  tags: [RAG]
 - title: LlamaIndex 文档
   url: https://docs.llamaindex.ai/
   summary: RAG 生态最全的框架文档（英文），agentic RAG 与多模态示例可直接抄；与 LangChain 二选一深入即可。
   date: 2026-09-05
   source: docs.llamaindex.ai
+  tags: [RAG]
 - title: Anthropic · Contextual Retrieval
   url: https://www.anthropic.com/engineering/contextual-retrieval
   summary: chunk 上下文增强 + hybrid + rerank 的组合实践，RAG 基础管线多篇文章反复引用的必读博客。
   date: 2026-09-05
   source: anthropic.com
+  tags: [RAG]
 - title: Anthropic · Building Effective Agents
   url: https://www.anthropic.com/research/building-effective-agents
   summary: Agent 章总纲：五个基础模式与 workflow/agent 边界的出处，写 Agent 代码前先重读一遍。
   date: 2026-09-05
   source: anthropic.com
+  tags: [Agent设计模式]
 - title: Agent-Learning-Hub（Datawhale · Agent 学习路线）
   url: https://github.com/datawhalechina/Agent-Learning-Hub
   summary: 中文 Agent 学习资料库与路线图，Agent 章的中文资源索引。
   date: 2026-09-05
   source: github.com
+  tags: [路线图]
 - title: LangGraph 官方文档
   url: https://langchain-ai.github.io/langgraph/
   summary: Agent 章深入框架的官方文档（英文）；Quickstart → Persistence → Multi-agent 的路径对应 LangGraph 一篇的学习路径。
   date: 2026-09-05
   source: langchain-ai.github.io
+  tags: [Agent框架]
 - title: LangChain 中文站 · LangGraph
   url: https://github.langchain.ac.cn/langgraph/
   summary: 官方文档的中文镜像站，查 API 细节时比读英文快；以官方英文版为准确。
   date: 2026-09-05
   source: github.langchain.ac.cn
+  tags: [Agent框架]
 - title: easy-langent（Datawhale · LangChain/LangGraph 实战）
   url: https://github.com/datawhalechina/easy-langent
   summary: 中文实战教程，从框架认知到动手开发；LangGraph 一篇推荐的中文入门配套。
   date: 2026-09-05
   source: github.com
+  tags: [Agent框架]
 - title: MCP 官方文档
   url: https://modelcontextprotocol.io
   summary: MCP 协议的权威文档（英文）；重点读 concepts 与 build-server，配合自建 MCP Server 篇动手。
   date: 2026-09-05
   source: modelcontextprotocol.io
+  tags: [工具调用/MCP]
 - title: mcp-for-beginners（微软官方课程中文版）
   url: https://github.com/microsoft/mcp-for-beginners
   summary: 微软开源 MCP 课程官方中文翻译，多语言示例；MCP 两篇的中文系统课。
   date: 2026-09-05
   source: github.com
+  tags: [工具调用/MCP]
 - title: modelcontextprotocol/servers（官方与社区 Server 合集）
   url: https://github.com/modelcontextprotocol/servers
   summary: 官方维护的 MCP Server 参考 实现（文件系统/GitHub/数据库等），自建 Server 前先看别人怎么写。
   date: 2026-09-05
   source: github.com
+  tags: [工具调用/MCP]
 - title: awesome-mcp-servers（中文版）
   url: https://github.com/punkpeye/awesome-mcp-servers
   summary: 收录质量最高的 MCP Server 清单（官方中文 README，符合"好的 awesome 收"标准）；找现成 Server 的第一站。
   date: 2026-09-05
   source: github.com
+  tags: [工具调用/MCP]
 - title: OpenHands（原 OpenDevin）
   url: https://github.com/All-Hands-AI/OpenHands
   summary: 开源编程 Agent 顶流，事件流架构 + 容器沙箱，SWE-bench 常客；编程 Agent 篇的主角，源码值得按事件类型读起。
   date: 2026-09-05
   source: github.com
+  tags: [Agent生态]
 - title: SWE-agent
   url: https://github.com/SWE-agent/SWE-agent
   summary: 普林斯顿出品的编程 Agent，提出 Agent-Computer Interface（ACI）概念——工具接口设计本身是研究贡献，读它的工具返回格式设计。
   date: 2026-09-05
   source: github.com
+  tags: [Agent生态]
 - title: Aider
   url: https://github.com/Aider-AI/aider
   summary: 终端结对编程 Agent，repo map 与 git 原生集成是两个教科书级设计；上下文工程的最佳案例库。
   date: 2026-09-05
   source: github.com
+  tags: [Agent生态]
 - title: Cline
   url: https://github.com/cline/cline
   summary: VS Code 内的编程 Agent，plan/act 双模式与逐步确认是可控性范本；早期 MCP 客户端支持者。
   date: 2026-09-05
   source: github.com
+  tags: [Agent生态]
 - title: Codex CLI（OpenAI 官方开源外壳）
   url: https://github.com/openai/codex
   summary: OpenAI 编程 Agent 的开源 CLI：本地/云端双形态、审批模式分级；外壳层被多个后来者移植借鉴，读它看"官方 harness 怎么做"。
   date: 2026-09-05
   source: github.com
+  tags: [Agent生态]
 - title: OpenCode
   url: https://github.com/anomalyco/opencode
   summary: 供应商中立的终端编程 Agent（MIT，约 20 万星）：任意模型即插即用，build/plan 双内置 Agent 一键切换是模式切换的干净设计。
   date: 2026-09-05
   source: github.com
+  tags: [Agent生态]
 - title: Pi Agent Harness
   url: https://github.com/earendil-works/pi
   summary: 极简 harness 哲学的代表作（MIT，约 10 万星）：pi-ai/pi-agent-core/pi-tui 各自独立成库，无内置权限系统（交给沙箱）+ 供应链加固清单；读源码学 Agent 结构的首选标本。
   date: 2026-09-05
   source: github.com
+  tags: [Agent生态]
 - title: Grok Build
   url: https://github.com/xai-org/grok-build
   summary: xAI 官方终端编程 Agent（Rust，Apache-2.0）：TUI/无头/ACP 三形态，MCP + skills + hooks 扩展；README 自述工具实现移植自 codex 与 opencode——harness 公共底盘化的活证据。
   date: 2026-09-05
   source: github.com
+  tags: [Agent生态]
 - title: DeepSeek Harness
   url: https://github.com/deepseek-ai/deepseek-harness
   summary: DeepSeek 官方 Agent harness（dsh），"一切皆插件"架构；模型厂商下场争夺 Agent 运行时层的标志性事件。
   date: 2026-09-05
   source: github.com
+  tags: [Agent生态]
 - title: Open Interpreter
   url: https://github.com/OpenInterpreter/open-interpreter
   summary: 代码即动作思想的鼻祖：本地执行 LLM 写的代码来操作电脑；通用 Agent 里 code as action 路线的源头。
   date: 2026-09-05
   source: github.com
+  tags: [Agent生态]
 - title: browser-use
   url: https://github.com/browser-use/browser-use
   summary: 把浏览器操作变成 Agent 工具的库（Playwright 之上语义化元素树），浏览器内任务的工程优选；几行代码起一个浏览器 Agent。
   date: 2026-09-05
   source: github.com
+  tags: [Agent生态]
 - title: OpenManus
   url: https://github.com/FoundationAgents/OpenManus
   summary: MetaGPT 团队数小时复刻 Manus 的开源实现——证明通用 Agent = 循环 + 工具集 + 环境隔离，本质不神秘；拆解练习的好标本。
   date: 2026-09-05
   source: github.com
+  tags: [Agent生态]
 - title: MetaGPT
   url: https://github.com/FoundationAgents/MetaGPT
   summary: AI 软件公司式多智能体框架（约 70k stars，ICLR 口头报告）：SOP 编码进流水线、结构化文档即接口；读 metagpt/roles/ 目录学角色分工。
   date: 2026-09-05
   source: github.com
+  tags: [Agent设计模式]
 - title: ChatDev
   url: https://github.com/OpenBMB/ChatDev
   summary: 轻量版"AI 软件公司"，聊天链驱动的多 Agent 开发；代码量小，一个下午读完整个多 Agent 链路的教学标本。
   date: 2026-09-05
   source: github.com
+  tags: [Agent设计模式]
 - title: gpt-researcher
   url: https://github.com/assafelovic/gpt-researcher
   summary: 深度研究 Agent 的开源代表：规划-检索-交叉验证-成文的完整流水线，研究型 Agent 的架构参考。
   date: 2026-09-05
   source: github.com
+  tags: [Agent设计模式]
 - title: Dify
   url: https://github.com/langgenius/dify
   summary: 开源 LLMOps 平台标杆：编排/模型网关/RAG/发布全模块，看懂它的模块划分等于拿到 LLM 应用平台最小完备集清单。
   date: 2026-09-05
   source: github.com
+  tags: [Agent生态]
 - title: Coze Studio（扣子开源版）
   url: https://github.com/coze-dev/coze-studio
   summary: 字节 2025-07 开源的扣子核心引擎（Apache 2.0）：工业级可视化 Agent 开发平台，配套 Coze Loop 做评测观测；国内平台层自建的现实起点。
   date: 2026-09-05
   source: github.com
+  tags: [Agent生态]
 - title: FastGPT
   url: https://github.com/labring/FastGPT
   summary: 中文知识库问答平台，RAG 质量调优面板做得很深（分段/检索测试/引用标注）；"格致问答"原型验证的候选。
   date: 2026-09-05
   source: github.com
+  tags: [RAG]
 - title: n8n
   url: https://github.com/n8n-io/n8n
   summary: 老牌自动化工作流平台的 AI 化路线：触发器思维 + AI 判断节点——提醒我们很多"Agent 应用"本质是自动化工作流。
   date: 2026-09-05
   source: github.com
+  tags: [Agent生态]
 - title: RAGAS 文档
   url: https://docs.ragas.io/
   summary: RAG 评测标准指标（faithfulness/precision/recall）的官方文档，RAGAS 一篇的工具本体。
   date: 2026-09-05
   source: docs.ragas.io
+  tags: [评测与可观测]
 - title: DeepEval
   url: https://github.com/confident-ai/deepeval
   summary: RAGAS 之外的另一个 LLM 评测框架（pytest 风格写法，中文 README 有翻译），和 pytest 习惯最搭。
   date: 2026-09-05
   source: github.com
+  tags: [评测与可观测]
 - title: Langfuse 文档
   url: https://langfuse.com/docs
   summary: 开源 LLM 可观测平台，trace/成本/评测回流三件套；可观测一篇的工具本体，自托管友好。
   date: 2026-09-05
   source: langfuse.com
+  tags: [评测与可观测]
 - title: LangSmith 文档
   url: https://docs.smith.langchain.com/
   summary: LangChain 官方可观测/评测平台，与 LangGraph 集成最深；Agent evals 一篇的配套工具。
   date: 2026-09-05
   source: docs.smith.langchain.com
+  tags: [评测与可观测]
 - title: OpenAI Cookbook
   url: https://cookbook.openai.com/
   summary: 官方示例库，评测方法系列（evaluation）与结构化输出示例最值得精读；官方最佳实践的第一手来源。
   date: 2026-09-05
   source: cookbook.openai.com
+  tags: [评测与可观测]
 - title: PEFT 文档
   url: https://huggingface.co/docs/peft
   summary: LoRA 官方实现库，重点读 LoRA/QLoRA 配置与 get_peft_model 用法；LoRA 一篇代码示例的出处。
   date: 2026-09-05
   source: huggingface.co
+  tags: [微调]
 - title: HuggingFace TRL 文档
   url: https://huggingface.co/docs/trl
   summary: 训练器全家桶（SFT/DPO），SFTTrainer 的数据格式说明是数据集准备一篇的对齐标准。
   date: 2026-09-05
   source: huggingface.co
+  tags: [微调]
 - title: Unsloth
   url: https://github.com/unslothai/unsloth
   summary: 单卡微调加速库（省显存 50%+），notebook 式教程对入门极友好；QLoRA 实操首选。
   date: 2026-09-05
   source: github.com
+  tags: [微调]
 - title: axolotl
   url: https://github.com/axolotl-ai-cloud/axolotl
   summary: YAML 配置驱动的微调工具，多任务批量实验的标准选择；Unsloth 玩熟后的进阶工具。
   date: 2026-09-05
   source: github.com
+  tags: [微调]
 - title: LoRA 论文（arXiv 2106.09685）
   url: https://arxiv.org/abs/2106.09685
   summary: 低秩适配的原始论文，数学只需要读懂第 4 节；LoRA 一篇公式表述的出处。
   date: 2026-09-05
   source: arxiv.org
+  tags: [微调]
 - title: self-llm（Datawhale · 开源大模型食用指南）
   url: https://github.com/datawhalechina/self-llm
   summary: 中文开源模型微调全流程指南（环境/部署/LoRA），国产模型覆盖最全；微调章三篇的中文实战底座。
   date: 2026-09-05
   source: github.com
+  tags: [微调]

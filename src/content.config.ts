@@ -41,13 +41,20 @@ const articleSchema = z.object({
   related: z.boolean().optional(),
 });
 
-// 资源卡：title / url / summary / date 必填，source 可选（缺省由页面从 url 提取域名）
+// 资源卡：title / url / summary / date 必填，source 可选（缺省由页面从 url 提取域名）；
+// tags 可选（资源收藏页按标签分组的依据），打标规则与文章一致：只从 tags.yaml 清单选
 const resourceSchema = z.object({
   title: z.string().min(1, 'title 必填'),
   url: z.string().url(),
   summary: z.string().min(1, 'summary 必填：一句话摘要'),
   date: z.coerce.date(),
   source: z.string().optional(),
+  tags: z
+    .array(z.string())
+    .refine((tags) => tags.every((t) => TAG_SET.has(t)), {
+      message: `存在 tags.yaml 清单外的标签（可用：${[...TAG_SET].join('、')}）`,
+    })
+    .optional(),
 });
 
 const articles = (name: 'ai' | 'stack') =>
