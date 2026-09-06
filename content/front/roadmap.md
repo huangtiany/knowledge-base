@@ -6,7 +6,7 @@ summary: 吃饭的家伙也要成体系——把散落的前端经验挂成树�
 related: false
 ---
 
-这张地图是前端域的知识体系。与前两个域不同，前端是我吃饭的家伙——这里写的不是「从零学习」，而是**体系自查**：把日常工作里散落的经验挂成一棵树，深挖那些天天在用却说不清原理的盲区。用 [roadmap.sh/frontend](https://roadmap.sh/frontend) 做外部校准，每个 h2 是一章，对应标签清单里的一个章级标签；章下面的小节是笔记主题，全部已写成互链（项目实战与移动与跨端两节留白）。
+这张地图是前端域的知识体系。与前两个域不同，前端是我吃饭的家伙——这里写的不是「从零学习」，而是**体系自查**：把日常工作里散落的经验挂成一棵树，深挖那些天天在用却说不清原理的盲区。用 [roadmap.sh/frontend](https://roadmap.sh/frontend) 做外部校准，每个 h2 是一章，对应标签清单里的一个章级标签；章下面的小节是笔记主题，全部已写成互链（项目实战一节留白）。
 
 ## 定位与主线
 
@@ -15,9 +15,10 @@ related: false
 依赖主线：
 
 - **HTML与CSS → JavaScript → TypeScript → 浏览器原理**：结构、行为、类型、宿主平台，四层地基一次理顺
-- **Vue生态 与 React生态** 双线并列：框架是主场武器，两个心智模型都值得吃透，先读选型对比再进各自核心
-- **工程化**（模块化构建 + 质量工具链）与 **性能优化**：从「写得出来」到「交付得好」
-- **项目实战**与 **移动与跨端** 留白：实战等真实项目沉淀，跨端是下一阶段的扩展方向
+- **Vue生态 与 React生态** 双线并列：各 4 篇从核心走到元框架（Nuxt / Next.js），两个心智模型都吃透
+- **工程化**（构建 → 质量工具链 → 测试 → Monorepo → 部署监控）与 **性能优化**：从「写得出来」到「交付得好」
+- **跨端与桌面**：小程序双篇（原生机制 + Taro/uni-app 多端）、RN/Flutter 移动选型、Tauri 双篇（核心 + 工程实践）
+- **项目实战**留白：实战的价值在真实踩坑，等进展后写成笔记回这里点亮
 
 ## HTML 与 CSS
 
@@ -73,37 +74,54 @@ related: false
 
 ## Vue 生态
 
-标签：`Vue生态`。主武器之一。选型对比与 React 共用一篇，从这里进：
+标签：`Vue生态`。主武器之一：核心 → 路由与状态 → 组件进阶 → 全栈框架，一条线走完：
 
 - [Vue 还是 React：框架选型对比](framework/00-vue-or-react.md)
 - [Vue 3 核心：响应式与组件化](vue/01-vue3-core.md)
+- [Vue Router 与 Pinia：路由与状态管理](vue/02-vue-router-pinia.md)
+- [Vue 组件进阶：插槽、依赖注入与复用体系](vue/03-vue-component-patterns.md)
+- [Nuxt：Vue 的全栈框架](vue/04-nuxt.md)
 
 ### 本章资源
 
 - [Vue.js 官方文档（中文）](https://cn.vuejs.org/) —— 权威出处
+- [Vue Router 官方文档（中文）](https://router.vuejs.org/zh/) —— 路由器本体
 - [Pinia 官方文档（中文）](https://pinia.vuejs.org/zh/) —— 状态管理
+- [Nuxt 官方文档](https://nuxt.com/) —— 元框架权威
 
 ## React 生态
 
-标签：`React生态`。另一个心智模型——不可变与重渲染的世界（选型对比见上一章）：
+标签：`React生态`。另一个心智模型：核心 → 状态管理 → 进阶模式 → Next.js，与 Vue 线对称展开（选型对比见上一章）：
 
 - [React 核心：组件、JSX 与 Hooks](react/01-react-core-hooks.md)
+- [React 状态管理：Context、Zustand 与 TanStack Query](react/02-react-state.md)
+- [React 进阶：复合组件、Suspense 与并发](react/03-react-advanced-patterns.md)
+- [Next.js：App Router 与服务端组件](react/04-nextjs.md)
 
 ### 本章资源
 
 - [React 官方中文文档](https://zh-hans.react.dev/) —— Learn 区块质量极高
+- [TanStack Query 官方文档](https://tanstack.com/query/latest) —— 服务端状态标准
+- [Zustand 官方文档](https://zustand.docs.pmnd.rs/) —— 客户端状态极简方案
+- [Next.js 官方文档](https://nextjs.org/docs) —— App Router 权威
 
 ## 工程化
 
-标签：`工程化`。从源码到交付物——构建工具解决模块、转译、优化，质量工具链把低级争论交给机器：
+标签：`工程化`。从源码到稳定上线：构建 → 规范 → 测试 → Monorepo → 部署监控，五篇一条交付链：
 
 - [模块化与构建：从 Webpack 到 Vite](engineering/01-modules-and-vite.md)
 - [代码质量工具链：ESLint、Prettier 与 pnpm](engineering/02-quality-toolchain.md)
+- [前端测试：Vitest、Testing Library 与 Playwright](engineering/03-testing.md)
+- [Monorepo：pnpm workspace 与 Turborepo](engineering/04-monorepo.md)
+- [部署与前端监控](engineering/05-deploy-and-monitoring.md)
 
 ### 本章资源
 
-- [Vite 官方文档（中文）](https://cn.vite.dev/) —— 工具本体
+- [Vite 官方文档（中文）](https://cn.vite.dev/) —— 构建工具本体
 - [pnpm 官方文档（中文）](https://pnpm.io/zh/) —— 包管理器
+- [Vitest 官方文档](https://vitest.dev/) —— 单测框架
+- [Playwright 官方文档](https://playwright.dev/docs/intro) —— E2E 框架
+- [Turborepo 官方文档](https://turbo.build/repo/docs) —— 任务编排与缓存
 
 ## 性能优化
 
@@ -115,19 +133,36 @@ related: false
 
 - [web.dev · Core Web Vitals](https://web.dev/articles/vitals) —— 指标权威出处
 
+## 跨端与桌面
+
+标签：`跨端与桌面`。浏览器之外的端：小程序双篇打地基，移动选型一张表，桌面双篇走通 Tauri 从核心到发布：
+
+- [微信小程序：双线程模型与页面体系](cross-platform/01-miniprogram-core.md)
+- [小程序生态与多端框架：Taro 与 uni-app](cross-platform/02-miniprogram-ecosystem.md)
+- [React Native 与 Flutter：移动跨端选型](cross-platform/03-rn-flutter.md)
+- [Tauri 入门：Rust 内核的桌面应用](cross-platform/04-tauri-core.md)
+- [Tauri 工程实践：插件、权限与分发](cross-platform/05-tauri-practice.md)
+
+### 本章资源
+
+- [微信小程序官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/) —— 最终依据
+- [Taro 官方文档](https://docs.taro.zone/) —— 多端 React 线
+- [uni-app 官方文档](https://uniapp.dcloud.net.cn/) —— 多端 Vue 线
+- [React Native 官方文档](https://reactnative.dev/) —— 移动跨端
+- [Flutter 官方文档（中文）](https://docs.flutter.cn/) —— 移动自绘
+- [Tauri 官方文档（中文）](https://tauri.app/zh-cn/) —— 桌面主角
+- [Electron 官方文档（中文）](https://www.electronjs.org/zh/docs/latest) —— 桌面对照组
+
 ## 项目实战
 
 标签：`项目实战`。**留白**——按前两个域的先例，实战的价值在真实踩坑，预先编写没有意义。候选方向：
 
 - 本站的交互增强复盘（搜索防抖、目录 scroll-spy 都是现成素材）
 - 组件库 / 工程模板的沉淀笔记
-
-## 移动与跨端
-
-标签：`移动与跨端`。**留白**——当前路线未覆盖，作为下一阶段的扩展方向：响应式的移动端深化、小程序、React Native / Flutter 的选型认知。以 [roadmap.sh/frontend](https://roadmap.sh/frontend) 的对应分支为预备地图。
+- Tauri 小工具：给日常流程做个桌面助手
 
 ## 进度点亮
 
-- 地图上的主题已全部成文互链；项目实战与移动与跨端两节留白，等真实进展后写成笔记回这里点亮
-- 每个章级标签：有笔记即点亮；前端域目前保持灰组的标签是 `项目实战` 与 `移动与跨端`
+- 地图上的主题已全部成文互链；项目实战一节留白，等真实进展后写成笔记回这里点亮
+- 每个章级标签：有笔记即点亮；前端域目前保持灰组的标签是 `项目实战`
 - 每章末尾的「本章资源」与资源收藏页同源：卡片收在 `content/front/resources.yaml`，地图只做学习视角的精选
