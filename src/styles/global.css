@@ -150,6 +150,9 @@ nav.main a.on { color: var(--ink); font-weight: 600; background: #EDEFEA; }
 .art-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr) 218px; gap: 64px; padding: 56px 0 40px; }
 @media(max-width:1279px) { .art-layout { grid-template-columns: minmax(0, 1fr) 218px; } .art-layout > .art-nav { display: none; } }
 @media(max-width:900px) { .art-layout { grid-template-columns: 1fr; } .art-layout > .toc { display: none; } }
+/* 左右目录上移 33px（header 59 + 区块内边距 56 − 吸顶位 82），自然位与吸顶位重合：
+   容器任何滚动位置都完整落在屏幕内（底部恒留 24px），页首不再探出屏幕下缘 */
+.art-layout > .art-nav, .art-layout > .toc { margin-top: -33px; }
 .art-meta .crumb { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
 .art-meta .crumb a { text-decoration: underline; text-underline-offset: 3px; }
 .art-meta h1 { font-family: var(--serif); font-weight: 900; font-size: clamp(28px, 4.4vw, 40px); line-height: 1.35; }
