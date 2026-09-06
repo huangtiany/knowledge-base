@@ -1,0 +1,30 @@
+---
+// 「全部笔记」导航：本领域文章按标签分组（组内文件名序号 = 学习路径序），
+// 当前文章高亮。详情页左栏与移动端抽屉（NavDrawer）共用。
+import { groupArticlesByTags } from '../lib/navigation';
+
+interface Props {
+  domainTags: string[];
+  articles: any[];
+  currentId: string;
+  base: string;
+  dom: string;
+}
+const { domainTags, articles, currentId, base, dom } = Astro.props;
+const { filled, byTag } = groupArticlesByTags(domainTags, articles);
+---
+<nav class="art-nav" aria-label="全部笔记">
+  <div class="toc-t">全部笔记</div>
+  {filled.map((tag) => (
+    <div class="an-group">
+      <div class="an-tag">{tag}</div>
+      {byTag.get(tag)!.map((a) => (
+        <a
+          href={`${base}${dom}/${a.id}/`}
+          aria-current={a.id === currentId ? 'page' : undefined}
+          title={a.data.title}
+        >{a.data.title}</a>
+      ))}
+    </div>
+  ))}
+</nav>

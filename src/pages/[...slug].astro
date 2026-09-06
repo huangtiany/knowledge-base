@@ -4,6 +4,9 @@ import Layout from '../layouts/Layout.astro';
 import { extractRelated } from '../lib/related';
 import { rewriteInterlinks } from '../lib/interlinks';
 import { formatFullDate } from '../lib/format';
+import { buildDomainChain, chainNeighbors } from '../lib/navigation';
+import { loadTags } from '../lib/tags';
+import ArticleNav from '../components/ArticleNav.astro';
 
 export async function getStaticPaths() {
   const ai = await getCollection('ai');
@@ -30,10 +33,16 @@ if (entry.body && !entry.rendered?.html) {
 const bodyHtml = rewriteInterlinks(entry.rendered?.html ?? '', entry, all, base);
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const domName = dom === 'ai' ? 'AI / Agent' : '全栈开发';
+// 左栏「全部笔记」与文末「上一篇 / 下一篇」共用同一条学习路径链（标签清单顺序 × 组内文件名序）
+const domainTags = loadTags()[dom];
+const domainArticles = all.filter((e) => e.collection === dom);
+const { prev, next } = chainNeighbors(buildDomainChain(domainTags, domainArticles), entry.id);
 ---
 <Layout title={`${entry.data.title} · 格致`} description={entry.data.summary} dom={dom} active={dom} ogType="article">
   <div class="wrap">
     <div class="art-layout">
+      <ArticleNav domainTags={domainTags} articles={domainArticles} currentId={entry.id} base={base} dom={dom} />
+
       <div>
         <div class="art-meta">
           <div class="crumb">
@@ -64,6 +73,25 @@ const domName = dom === 'ai' ? 'AI / Agent' : '全栈开发';
             )
           }
         </div>
+
+        {(prev || next) && (
+          <div class="pn-nav">
+            {prev ? (
+              <a class="pn-prev" href={`${base}${dom}/${prev.id}/`}>
+                <span class="pn-d">上一篇 · 学习路径</span>
+                <span class="pn-t">{prev.data.title}</span>
+              </a>
+            ) : (
+              <span class="pn-spacer"></span>
+            )}
+            {next && (
+              <a class="pn-next" href={`${base}${dom}/${next.id}/`}>
+                <span class="pn-d">下一篇 · 学习路径</span>
+                <span class="pn-t">{next.data.title}</span>
+              </a>
+            )}
+          </div>
+        )}
       </div>
 
       <aside class="toc">

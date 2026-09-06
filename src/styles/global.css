@@ -145,7 +145,9 @@ nav.main a.on { color: var(--ink); font-weight: 600; background: #EDEFEA; }
 .rescard .res-date { font-family: var(--mono); font-size: 11.5px; color: #9AA3AD; margin-top: 6px; }
 
 /* ---------- 文章页 ---------- */
-.art-layout { display: grid; grid-template-columns: minmax(0, 1fr) 218px; gap: 64px; padding: 56px 0 40px; }
+/* 三栏：左「全部笔记」220px + 正文 + 右 TOC 218px；<1280 收左栏，<900 全收（与抽屉配合） */
+.art-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr) 218px; gap: 64px; padding: 56px 0 40px; }
+@media(max-width:1279px) { .art-layout { grid-template-columns: minmax(0, 1fr) 218px; } .art-nav { display: none; } }
 @media(max-width:900px) { .art-layout { grid-template-columns: 1fr; } .toc { display: none; } }
 .art-meta .crumb { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
 .art-meta .crumb a { text-decoration: underline; text-underline-offset: 3px; }
@@ -195,6 +197,26 @@ nav.main a.on { color: var(--ink); font-weight: 600; background: #EDEFEA; }
 .toc a { display: block; color: var(--muted); padding: 4.5px 0; transition: .15s; }
 .toc a:hover { color: var(--dom, var(--ai)); }
 .toc a.l2 { padding-left: 14px; }
+
+/* 左栏「全部笔记」：与右栏 TOC 同一视觉语言（镜像 border-right），sticky + 限高内滚 */
+.art-nav { position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 106px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: #B9C2CC transparent; border-right: 1px solid var(--line); padding-right: 18px; font-size: 13px; }
+.art-nav .toc-t { font-size: 11.5px; color: #9AA3AD; margin-bottom: 10px; font-family: var(--mono); }
+.an-group { margin-bottom: 16px; }
+.an-group:last-child { margin-bottom: 0; }
+.an-tag { font-family: var(--mono); font-size: 11px; color: #9AA3AD; margin-bottom: 2px; }
+.art-nav a { display: block; color: var(--muted); padding: 4.5px 0; transition: .15s; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.art-nav a:hover { color: var(--dom, var(--ai)); }
+.art-nav a[aria-current="page"] { color: var(--dom, var(--ai)); font-weight: 600; }
+
+/* 文末上一篇 / 下一篇：沿学习路径链前后走，视觉与 relbox 同语言 */
+.pn-nav { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pn-nav a { border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; min-width: 0; transition: border-color .15s; }
+.pn-nav a:hover { border-color: var(--dom, var(--ai)); }
+.pn-nav .pn-d { font-family: var(--mono); font-size: 11px; color: #9AA3AD; }
+.pn-nav .pn-t { font-size: 14px; font-weight: 600; }
+.pn-nav a.pn-next { text-align: right; align-items: flex-end; }
+.pn-nav .pn-spacer { visibility: hidden; }
+@media(max-width:700px) { .pn-nav { grid-template-columns: 1fr; } .pn-nav a.pn-next { text-align: left; align-items: flex-start; } .pn-nav .pn-spacer { display: none; } }
 
 /* ---------- 关于 ---------- */
 .about { max-width: 560px; padding: 72px 0 60px; }
