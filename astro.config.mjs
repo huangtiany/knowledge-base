@@ -8,6 +8,7 @@ import { cbBarTransformer } from './src/plugins/shiki-cb-bar.mjs';
 import { rehypeCbBar } from './src/plugins/rehype-cb-bar.mjs';
 import { rehypeH2Numbering } from './src/plugins/rehype-h2-numbering.mjs';
 import { rehypeImgFigure } from './src/plugins/rehype-img-figure.mjs';
+import { rehypeExternalLinks } from './src/plugins/rehype-external-links.mjs';
 
 // 站点 base 单一来源：site 配置与 rehype 插件共用，避免两处漂移
 const BASE = '/knowledge-base';
@@ -40,6 +41,6 @@ export default defineConfig({
       transformers: [cbBarTransformer()],
     },
     remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeSlug, rehypeKatex, rehypeMathDisplay, rehypeImgFigure, rehypeCbBar, rehypeH2Numbering],
+    rehypePlugins: [rehypeSlug, rehypeKatex, rehypeMathDisplay, rehypeImgFigure, rehypeCbBar, rehypeH2Numbering, rehypeExternalLinks],
   },
 });
