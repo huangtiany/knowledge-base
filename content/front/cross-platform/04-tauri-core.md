@@ -2,10 +2,10 @@
 title: Tauri 入门：Rust 内核的桌面应用
 date: 2026-09-06
 tags: [跨端与桌面]
-summary: 用系统自带的 WebView 渲染前端、用 Rust 写系统能力——Tauri 把 Electron 的「打包一个浏览器」变成「借用操作系统的浏览器」，体积与内存降一个量级，代价是 IPC 边界与 Rust 心智。
+summary: Tauri 用系统自带的 WebView 渲染前端、用 Rust 实现系统能力，安装包体积与内存占用远低于 Electron；代价是系统 WebView 的渲染差异与 Rust 的学习成本。
 ---
 
-桌面开发对前端最友好的路线曾经只有 Electron（VS Code、Slack 都是它）：前端技术栈直接用，代价是**每个应用打包一个完整的 Chromium**（安装包 80MB+、内存轻松上 GB）。Tauri 给出另一个答案：**渲染交给操作系统自带的 WebView，系统能力用 Rust 写**——安装包 MB 级、内存占用低一个量级。这篇从架构对比讲到跑通第一个应用。
+Electron（VS Code、Slack 使用中）让前端技术栈可以直接开发桌面应用，代价是每个应用打包一个完整的 Chromium：安装包 80MB 以上，内存占用高。Tauri 的方案是渲染交给操作系统自带的 WebView，系统能力用 Rust 实现，安装包只有几 MB，内存占用明显更低。下文从架构对比讲到跑通第一个应用。
 
 ## 架构对比：打包浏览器 vs 借用浏览器
 
@@ -17,8 +17,8 @@ Tauri v2：  你的前端（WebView 渲染）+ Rust 核心进程（系统 WebVie
             （Windows 用 WebView2 / macOS 用 WKWebView / Linux 用 WebKitGTK）
 ```
 
-- **体积与内存**的来源差异一目了然：Electron 自带浏览器，Tauri 借系统的——安装包从 80MB+ 降到 3-10MB，空闲内存常差一个量级
-- **代价同样清晰**：系统 WebView 三端内核不同（Chromium 系 WebView2 / WebKit 系 WKWebView、WebKitGTK），**渲染一致性需要验证**——好在现代 CSS/JS 特性三家内核都跟得很快，比当年的浏览器兼容地狱好得多（查 [caniuse](https://caniuse.com/) 的习惯在这里继续有效）
+- **体积与内存**的差异来源直接：Electron 自带浏览器，Tauri 用系统的。安装包从 80MB+ 降到 3-10MB，空闲内存通常低一个数量级
+- **代价同样清晰**：系统 WebView 三端内核不同（Chromium 系 WebView2 / WebKit 系 WKWebView、WebKitGTK），**渲染一致性需要验证**。好在现代 CSS/JS 特性三家内核都跟进很快，远好于早期的浏览器兼容问题（查 [caniuse](https://caniuse.com/) 的习惯在这里仍然适用）
 - Rust 核心进程让 Tauri 天然获得内存安全与无 GC 的系统级性能；Electron 的 Node 主进程则生态更熟（npm 全量可用）
 
 ## 进程模型与 IPC：前后的边界
@@ -31,9 +31,9 @@ Tauri v2：  你的前端（WebView 渲染）+ Rust 核心进程（系统 WebVie
 ```
 
 - 前端**跑在 WebView 里**：你写的还是熟悉的 SPA（Vite 热更新照常），只是「浏览器」由 Tauri 托管
-- **一切系统能力都是跨进程调用**：前端 `invoke` 调 Rust 侧函数、Rust 侧 `emit` 向前端推事件——这个边界是 Tauri 开发的核心心智，等价于前端熟悉的「客户端调 API」，只是 API 就在你自己的进程里
+- **一切系统能力都是跨进程调用**：前端 `invoke` 调 Rust 侧函数、Rust 侧 `emit` 向前端推事件。这个边界等价于前端熟悉的「客户端调 API」，只是 API 在同一个应用进程里
 
-## 最小应用：一个 command 走通全链路
+## 最小应用：定义并调用一个 command
 
 ```rust title="src-tauri/src/lib.rs"
 use std::fs;
@@ -66,8 +66,8 @@ export async function readNotes(): Promise<string[]> {
 ```
 
 - 起步命令：`pnpm create tauri-app`（选前端框架模板）→ `tauri dev`（前端热更新照常，Rust 改动才触发重编译）→ `tauri build` 出三平台安装包
-- **前端只需要会 `invoke`**：参数与返回值自动 JSON 序列化，TS 类型可由 `tauri-specta` 之类工具从 Rust 侧生成——前端视角的 Rust 门槛主要在「写 command 时」的那部分
-- Rust 侧需要补的最小集：所有权/借用检查的心智（编译器会一直教你）、`serde` 序列化（struct ↔ JSON）、`Result` 错误处理——对照后端那篇[Java 基础](../../backend/java-basics/01-syntax-and-oop.md)的强类型心智，Rust 只是把约束推得更远
+- **前端只需要会 `invoke`**：参数与返回值自动 JSON 序列化，TS 类型可由 `tauri-specta` 之类工具从 Rust 侧生成。前端视角的 Rust 门槛主要在写 command 这部分
+- Rust 侧需要补的最小集：所有权与借用检查（编译器会持续提示）、`serde` 序列化（struct ↔ JSON）、`Result` 错误处理。对照后端[Java 基础](../../backend/java-basics/01-syntax-and-oop.md)的强类型机制，Rust 的约束更严格
 
 ## Tauri vs Electron：选型清单
 
@@ -79,9 +79,9 @@ export async function readNotes(): Promise<string[]> {
 | 移动端 | v2 官方支持 iOS/Android（同一套代码） | 无官方方案 |
 | 生态成熟度 | 较新，插件体系成型中 | 十年沉淀，案例最多（VS Code/Slack） |
 
-- 决策建议：**新桌面项目默认先看 Tauri**（体积/内存/移动端潜力都是代差优势）；两个例外——需要三端像素级一致的复杂 UI（比如重音视频、复杂 Canvas，WebView 差异风险高），或团队完全没精力碰任何 Rust（Electron 的 Node 主进程对前端零门槛）
-- Electron 也不是退路而是平行选项：它的窗口管理、自动更新（electron-updater）、托盘等实践积累成熟，遇到问题搜得到答案——Tauri 生态在快速追，写代码前先查插件覆盖度
+- 决策建议：**新桌面项目默认先看 Tauri**，体积、内存占用与移动端支持都明显优于 Electron。两个例外：需要三端像素级一致的复杂 UI（重音视频、复杂 Canvas 场景下 WebView 差异风险高），或团队没有精力接触 Rust（Electron 的 Node 主进程对前端零门槛）
+- Electron 是平行选项而非退路：窗口管理、自动更新（electron-updater）、托盘等实践成熟，遇到的问题大多有现成答案。Tauri 生态在快速补齐，动手前先确认插件覆盖度
 
 ## 小结
 
-Tauri 的心智两句话：**渲染借系统 WebView、能力用 Rust 写**（体积内存代差优势的来源），**一切系统能力走 invoke/emit 的 IPC 边界**。第一个应用十分钟就能跑通，真正的工程问题（权限、更新、分发）在[下一篇](05-tauri-practice.md)。
+Tauri 的核心机制：渲染用系统 WebView，系统能力用 Rust 实现，前后端之间通过 invoke/emit 通信。第一个应用很快能跑通，权限、更新、分发等工程问题见[下一篇](05-tauri-practice.md)。

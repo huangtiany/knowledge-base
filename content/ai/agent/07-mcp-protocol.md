@@ -2,7 +2,7 @@
 title: MCP 协议：工具接入的 USB-C
 date: 2026-09-05
 tags: [工具调用/MCP]
-summary: MCP 解决的不是"模型能不能调工具"，是"工具能不能只写一次、被所有应用复用"——Client/Server 架构、三类原语、与 function calling 的关系。
+summary: MCP 解决的不是"模型能不能调工具"，是"工具能不能只写一次、被所有应用复用"：Client/Server 架构、三类原语、与 function calling 的关系。
 ---
 
 Function calling 的痛点：每个应用都要为每套数据源手写一遍工具集成。MCP（Model Context Protocol，Anthropic 2024.11 开源）把它标准化成**工具侧只实现一次 Server，任何支持 MCP 的应用都能即插即用**——社区比喻是"AI 应用的 USB-C 接口"。
@@ -16,7 +16,7 @@ Function calling 的痛点：每个应用都要为每套数据源手写一遍工
                 └── 你的数据与系统（数据库、API、文件系统）
 ```
 
-MCP **不替代 function calling**——Host 把 MCP Server 暴露的工具翻译成模型的 function calling schema，模型侧体验完全不变。MCP 管的是 **Host 与外部工具源之间**的标准化协议：发现（list tools）、调用（call tool）、传输（stdio / Streamable HTTP）。
+MCP **不替代 function calling**：Host 把 MCP Server 暴露的工具翻译成模型的 function calling schema，模型侧体验完全不变。MCP 管的是 **Host 与外部工具源之间**的标准化协议：发现（list tools）、调用（call tool）、传输（stdio / Streamable HTTP）。
 
 ## 三类原语
 
@@ -47,13 +47,13 @@ def get_doc(path: str) -> str:
     return (DOCS_ROOT / path).read_text(encoding="utf-8")
 ```
 
-注意 `@mcp.tool()` 的 docstring 与类型注解——MCP SDK 把它们编译成模型可见的 schema，和 function calling 的写法纪律完全一致。
+注意 `@mcp.tool()` 的 docstring 与类型注解，MCP SDK 把它们编译成模型可见的 schema，和 function calling 的写法纪律完全一致。
 
 ## 为什么它重要：三个实际收益
 
 1. **生态复用**：官方/社区的成百上千个现成 Server（GitHub、Postgres、Slack、浏览器……）直接接入你的 Host，见 modelcontextprotocol/servers 合集
 2. **解耦升级**：工具实现改动不碰应用代码；Host 应用不锁定于特定模型供应商
-3. **权限边界清晰**：Server 是天然的沙箱单元——给 Server 什么凭证，这个 Agent 会话就有什么能力
+3. **权限边界清晰**：Server 是天然的沙箱单元：给 Server 什么凭证，这个 Agent 会话就有什么能力
 
 ## 安全：MCP 的头号议题
 

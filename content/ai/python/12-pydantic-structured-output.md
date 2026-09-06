@@ -2,10 +2,10 @@
 title: pydantic 对接 LLM 结构化输出
 date: 2026-09-05
 tags: [Python]
-summary: 把"模型吐的一段话"变成"类型可信的对象"——schema 设计、JSON mode / function calling 两种通道、解析失败的重试循环。
+summary: 把模型输出的文本变成类型可信的对象：schema 设计、JSON mode / function calling 两种通道、解析失败的重试循环。
 ---
 
-LLM 的原生输出只有一种类型：**文本**。结构化输出（抽取字段、分类标签、评分）的全部工程，就是把文本可靠地变成 `BaseModel`。这篇是 [dataclass 与 pydantic](08-dataclass-and-pydantic.md) 的直接续篇：那里讲校验器本身，这里讲它怎么嵌进 LLM 调用链。
+LLM 的原生输出只有一种类型：**文本**。结构化输出（抽取字段、分类标签、评分）的全部工程，就是把文本可靠地变成 `BaseModel`。校验器定义见 [dataclass 与 pydantic](08-dataclass-and-pydantic.md)，本文聚焦它如何嵌入 LLM 调用链。
 
 ## 先定义 schema：字段即提示词
 
@@ -20,7 +20,7 @@ class ExtractedFact(BaseModel):
     confidence: float = Field(ge=0, le=1, description="抽取置信度")
 ```
 
-`description` 不是装饰——OpenAI structured outputs 会把每个字段的 description 直接注入给模型看。**schema 写得越像文档，输出越稳**：给字段起清楚的 名字、写清取值含义、用 Literal 圈死枚举、用 ge/le 圈死范围，都是在"提示"模型。
+`description` 会直接进入模型上下文：OpenAI structured outputs 把每个字段的 description 注入给模型。**schema 写得越像文档，输出越稳**：给字段起清楚的名字、写清取值含义、用 Literal 限定枚举、用 ge/le 限定范围，都是在提示模型。
 
 ## 两条通道：JSON mode 与 SDK 内建
 
@@ -74,14 +74,14 @@ def extract_with_retry(text: str, retries: int = 2) -> ExtractedFact:
     raise RuntimeError("结构化输出重试耗尽")
 ```
 
-这个循环值得写成项目里的通用工具——所有非 constrained 的结构化调用都用它。
+这个循环值得写成项目里的通用工具，所有非 constrained 的结构化调用都用它。
 
 ## 常见坑
 
 - **枚举值漂移**：模型输出"科技公司"而 schema 要"机构"。用 Literal + description 写明全部合法值；仍漂移时在 prompt 里给 few-shot
-- **长文本截断 JSON**：`max_tokens` 给小了，JSON 被腰斩，解析必挂。结构化调用把 max_tokens 放宽
-- **过度嵌套**：三层以上的嵌套 schema 两个通道都容易翻车，优先拍平
-- **别把业务校验混进 schema**：pydantic 管"形状"，"这个日期不能是周末"这类业务规则放业务层
+- **长文本截断 JSON**：`max_tokens` 给小了，JSON 会被截断，解析必然失败。结构化调用把 max_tokens 放宽
+- **过度嵌套**：三层以上的嵌套 schema 两个通道都容易失败，优先拍平
+- **别把业务校验混进 schema**：pydantic 管数据形状，"这个日期不能是周末"这类业务规则放业务层
 
 ## 参考与延伸
 

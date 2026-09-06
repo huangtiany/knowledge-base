@@ -3,7 +3,7 @@
 # tags：资源页按标签分组的依据，只从 content/tags.yaml 的 front 清单选；未打标落「未分组」。
 - title: roadmap.sh · Frontend
   url: https://roadmap.sh/frontend
-  summary: 社区公认的前端技能路线图（英文），逐项可勾选；用这张图校准自己的盲区，比任何教程目录都全。
+  summary: 社区公认的前端技能路线图（英文），逐项可勾选；用来对照检查自己遗漏的知识点，覆盖比任何教程目录都全。
   date: 2026-09-06
   source: roadmap.sh
   tags: [路线图]
@@ -15,13 +15,13 @@
   tags: [路线图]
 - title: Can I Use
   url: https://caniuse.com/
-  summary: 浏览器兼容性查询的事实标准；用新特性前先来这里看一眼支持率，决定要不要写降级。
+  summary: 浏览器兼容性查询的事实标准；使用新特性前先查支持率，决定要不要写降级。
   date: 2026-09-06
   source: caniuse.com
   tags: [HTML与CSS]
 - title: Flexbox Froggy
   url: https://flexboxfroggy.com/#zh-cn
-  summary: 中文版 Flex 布局闯关游戏，24 关把 justify/align 全部练成肌肉记忆；便宜有效的入门练习。
+  summary: 中文版 Flex 布局闯关游戏，24 关逐项练习 justify/align 的用法；成本低、适合入门。
   date: 2026-09-06
   source: flexboxfroggy.com
   tags: [HTML与CSS]
@@ -45,13 +45,13 @@
   tags: [JavaScript]
 - title: MDN · JavaScript 指南（中文）
   url: https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide
-  summary: MDN 官方语言指南（中文），语法与标准内置对象的权威出处；中文二手资料讲不清时回这里。
+  summary: MDN 官方语言指南（中文），语法与标准内置对象的权威出处；中文二手资料讲不清时以这里为准。
   date: 2026-09-06
   source: developer.mozilla.org
   tags: [JavaScript]
 - title: MDN · 使用 Promise（中文指南）
   url: https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Using_promises
-  summary: MDN 官方 Promise 使用指南（中文），链式规则与组合方法的权威出处；异步篇想深挖 thenable 与错误传递时的下一站。
+  summary: MDN 官方 Promise 使用指南（中文），链式规则与组合方法的权威出处；异步篇深挖 thenable 与错误传递时的进阶读物。
   date: 2026-09-06
   source: developer.mozilla.org
   tags: [JavaScript]
@@ -63,13 +63,13 @@
   tags: [TypeScript]
 - title: TypeScript 入门教程
   url: https://ts.xcatliu.com/
-  summary: 中文开源 TS 入门教程（xcatliu），例子短平快；官方手册读吃力时的中文替代路径。
+  summary: 中文开源 TS 入门教程（xcatliu），示例简短；官方手册读起来吃力时的中文替代。
   date: 2026-09-06
   source: ts.xcatliu.com
   tags: [TypeScript]
 - title: 小林 coding · 图解网络
   url: https://xiaolincoding.com/network/
-  summary: 中文图解计算机网络的标杆：HTTP、TCP、缓存全用图讲透；HTTP 缓存篇的深挖读物。
+  summary: 中文图解计算机网络的代表作：HTTP、TCP、缓存都以图解讲清；HTTP 缓存篇的深挖读物。
   date: 2026-09-06
   source: xiaolincoding.com
   tags: [浏览器原理]
@@ -117,7 +117,7 @@
   tags: [React生态]
 - title: Zustand 官方文档
   url: https://zustand.docs.pmnd.rs/
-  summary: React 极简客户端状态库文档，create + selector 模式与中间件说明；状态管理篇的客户端状态主角（英文）。
+  summary: React 极简客户端状态库文档，create + selector 模式与中间件说明；状态管理篇客户端状态部分的对应文档（英文）。
   date: 2026-09-06
   source: docs.pmnd.rs
   tags: [React生态]
@@ -135,31 +135,31 @@
   tags: [工程化]
 - title: pnpm 官方文档（中文）
   url: https://pnpm.io/zh/
-  summary: pnpm 官方中文文档，符号链接的依赖结构与 workspace 用法都在这里；质量工具链篇的包管理器主角。
+  summary: pnpm 官方中文文档，符号链接的依赖结构与 workspace 用法都在这里；质量工具链篇包管理器部分的对应文档。
   date: 2026-09-06
   source: pnpm.io
   tags: [工程化]
 - title: Vitest 官方文档
   url: https://vitest.dev/
-  summary: 与 Vite 同配置的单测框架官方文档，mock、覆盖率与配置项说明；前端测试篇的单元层主角（英文）。
+  summary: 与 Vite 同配置的单测框架官方文档，mock、覆盖率与配置项说明；前端测试篇单元测试部分的对应文档（英文）。
   date: 2026-09-06
   source: vitest.dev
   tags: [工程化]
 - title: Testing Library 官方文档
   url: https://testing-library.com/
-  summary: 以「测行为不测实现」为信条的组件测试库文档，getByRole 查询哲学值得通读；测试篇的组件层工具（英文）。
+  summary: 以「测行为不测实现」为原则的组件测试库文档，getByRole 查询哲学值得通读；测试篇的组件层工具（英文）。
   date: 2026-09-06
   source: testing-library.com
   tags: [工程化]
 - title: Playwright 官方文档
   url: https://playwright.dev/docs/intro
-  summary: 微软出品 E2E 框架的官方文档（英文），自动等待、trace 回放与多浏览器矩阵；测试篇的端到端层主角。
+  summary: 微软出品 E2E 框架的官方文档（英文），自动等待、trace 回放与多浏览器矩阵；测试篇端到端部分的对应文档。
   date: 2026-09-06
   source: playwright.dev
   tags: [工程化]
 - title: Turborepo 官方文档
   url: https://turbo.build/repo/docs
-  summary: Rust 编写的 monorepo 任务编排器文档，任务图与缓存模型说明；Monorepo 篇的缓存层主角（英文）。
+  summary: Rust 编写的 monorepo 任务编排器文档，任务图与缓存模型说明；Monorepo 篇缓存部分的对应文档（英文）。
   date: 2026-09-06
   source: turbo.build
   tags: [工程化]
@@ -177,13 +177,13 @@
   tags: [跨端与桌面]
 - title: Taro 官方文档
   url: https://docs.taro.zone/
-  summary: 京东开源的多端框架（React 语法）官方文档，编译机制与各端差异说明；多端框架篇的 React 线主角。
+  summary: 京东开源的多端框架（React 语法）官方文档，编译机制与各端差异说明；多端框架篇 React 路线的对应文档。
   date: 2026-09-06
   source: taro.zone
   tags: [跨端与桌面]
 - title: uni-app 官方文档
   url: https://uniapp.dcloud.net.cn/
-  summary: DCloud 的多端框架（Vue 语法）官方文档，全端覆盖与条件编译说明；多端框架篇的 Vue 线主角。
+  summary: DCloud 的多端框架（Vue 语法）官方文档，全端覆盖与条件编译说明；多端框架篇 Vue 路线的对应文档。
   date: 2026-09-06
   source: uniapp.dcloud.net.cn
   tags: [跨端与桌面]

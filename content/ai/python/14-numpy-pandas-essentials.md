@@ -2,10 +2,10 @@
 title: numpy / pandas 会用级
 date: 2026-09-05
 tags: [Python]
-summary: 只学 LLM 工程里真正高频的那一层：向量运算与相似度计算（numpy），表格清洗与聚合（pandas）——不是数据科学全家桶。
+summary: 只学 LLM 工程里真正高频的那一层：向量运算与相似度计算（numpy），表格清洗与聚合（pandas）。不覆盖数据科学的完整体系。
 ---
 
-数据科学教程往往以"数据分析"为目标带你学完整座山；LLM 工程师对 numpy/pandas 的需求窄得多：**向量运算 + 相似度计算**（numpy）和**语料表格的清洗、过滤、统计**（pandas）。这篇只收会用级的那一层。
+数据科学教程往往以"数据分析"为目标，覆盖面很广；LLM 工程师对 numpy/pandas 的需求窄得多：**向量运算 + 相似度计算**（numpy）和**语料表格的清洗、过滤、统计**（pandas）。本文只整理会用级的用法。
 
 ## numpy：向量就是一维数组
 
@@ -24,19 +24,19 @@ scores = Vn @ qn                                     # (1000,) 一行算完所�
 top5 = np.argsort(scores)[::-1][:5]                  # 相似度最高的 5 个下标
 ```
 
-要建立的感觉是**广播**：形状对不上的数组之间运算，numpy 自动沿缺失维度扩展（`(1000,1024)` 与 `(1024,)` 相除，后者被当作 `(1,1024)` 广播到每行）。向量化写法比 for 循环快几十倍——因为循环在 Python 层，向量化运算在 C 层。
+重点理解**广播**：形状对不上的数组之间运算，numpy 自动沿缺失维度扩展（`(1000,1024)` 与 `(1024,)` 相除，后者被当作 `(1,1024)` 广播到每行）。向量化写法比 for 循环快几十倍，原因是循环跑在 Python 层，向量化运算跑在 C 层。
 
 ```python title="broadcast.py"
 a = np.array([[1, 2], [3, 4]])     # (2, 2)
 b = np.array([10, 20])             # (2,)
-a + b                              # [[11,22],[13,24]] —— b 广播到每行
+a + b                              # [[11,22],[13,24]]，b 广播到每行
 ```
 
-常用到肌肉记忆的操作：`np.array / astype / shape / reshape`、`norm / dot / @`、`argsort / argmax`、`concatenate`、布尔掩码 `V[scores > 0.8]`。
+高频操作：`np.array / astype / shape / reshape`、`norm / dot / @`、`argsort / argmax`、`concatenate`、布尔掩码 `V[scores > 0.8]`。
 
 ## pandas：表格思维处理语料
 
-pandas 的核心对象 DataFrame——一张带列名的表。LLM 工程里它是"语料管理器"：
+pandas 的核心对象 DataFrame，一张带列名的表。LLM 工程里它是"语料管理器"：
 
 ```python title="corpus.py"
 import pandas as pd
@@ -61,7 +61,7 @@ df.nlargest(3, "quality")[["doc_id", "quality"]]
 
 ## 两个工程提醒
 
-- **pandas 不是生产管线**：它是探索和批处理工具。数据规则沉淀之后（比如清洗规则），要迁移成纯 Python/数据库流水线，pandas 留在 notebook 和脚本层
+- **pandas 不是生产管线**：它是探索和批处理工具。数据规则确定之后（比如清洗规则），要迁移成纯 Python/数据库流水线，pandas 留在 notebook 和脚本层
 - **大表小心 `apply`**：逐行 apply 是 Python 层循环，能用列运算（向量化）就用列运算，实在不行 `tqdm` 加个进度条再接受它的慢
 
 ## 参考与延伸

@@ -2,10 +2,10 @@
 title: Spring 核心：IoC、DI 与 AOP
 date: 2026-09-05
 tags: [Spring生态]
-summary: IoC/DI 对照 Vue 的 provide/inject，AOP 对照 axios 拦截器——Spring 的两大支柱在框架里早就有直觉版，这里只是把它们变成后端的标配。
+summary: IoC/DI 对照 Vue 的 provide/inject，AOP 对照 axios 拦截器，Spring 的两个核心机制都能在前端框架里找到对应概念。
 ---
 
-Spring 框架的所有复杂度都长在两大支柱上：**IoC/DI**（对象谁来创建、依赖谁来注入）和 **AOP**（横切逻辑怎么织入）。好在这两个问题前端框架都回答过——Vue 的 `provide/inject`、React 的 Context、axios 的拦截器就是它们的直觉版。
+Spring 框架的复杂度集中在两个机制上：**IoC/DI**（对象谁来创建、依赖谁来注入）和 **AOP**（横切逻辑怎么织入）。这两个问题前端框架都回答过：Vue 的 `provide/inject`、React 的 Context、axios 的拦截器就是它们的直觉版。
 
 ## IoC：对象不由你 new，由容器管
 
@@ -24,9 +24,9 @@ public class OrderService {
 }
 ```
 
-对照前端：Vue 的 `provide/inject`——父层提供，子层声明注入，不关心中间怎么传递；React Context 同理。**DI（依赖注入）是 IoC 的实现手段**：`OrderService` 依赖 `UserMapper`，但不用自己 new，容器在创建时自动装配。
+对照前端：Vue 的 `provide/inject`，父层提供，子层声明注入，不关心中间怎么传递；React Context 同理。**DI（依赖注入）是 IoC 的实现手段**：`OrderService` 依赖 `UserMapper`，但不用自己 new，容器在创建时自动装配。
 
-为什么值得：依赖关系集中可管理、**单例复用**（Bean 默认单例，对照全局 store）、最关键的是——**测试时可以注入 mock**（把 UserMapper 换成假实现，OrderService 照样单测，对照前端 mock 一个 api 模块）。
+为什么值得：依赖关系集中可管理、**单例复用**（Bean 默认单例，对照全局 store）、最关键的是**测试时可以注入 mock**（把 UserMapper 换成假实现，OrderService 照样单测，对照前端 mock 一个 api 模块）。
 
 声明 Bean 的注解家族（都是"把这个类交给容器"）：
 
@@ -41,11 +41,11 @@ public class OrderService {
 
 ## Bean 默认单例：Servlet 的老规矩
 
-容器里每个 Bean 默认**单例**——全服务一个实例，所有请求并发打进它。规则与 [Servlet 篇](../javaweb/01-servlet-and-http.md)一致：**Bean 里不要放可变的请求级成员变量**（并发互相覆盖），请求相关数据走局部变量或参数传递。这个约束在 Spring 里同样成立，而且因为 Bean 更多，踩中面更大。
+容器里每个 Bean 默认**单例**，全服务一个实例，所有请求并发打到它上面。规则与 [Servlet 篇](../javaweb/01-servlet-and-http.md)一致：**Bean 里不要放可变的请求级成员变量**（并发互相覆盖），请求相关数据走局部变量或参数传递。这个约束在 Spring 里同样成立，而且因为 Bean 更多，踩中面更大。
 
 ## AOP：横切逻辑的统一织入
 
-日志、鉴权、事务、耗时统计——这类"每个方法都要"的逻辑，写在每个方法里是灾难。AOP（面向切面编程）把横切逻辑抽成**切面**，声明式地织入目标方法：
+日志、鉴权、事务、耗时统计这类"每个方法都要"的逻辑，写在每个方法里会大量重复。AOP（面向切面编程）把横切逻辑抽成**切面**，声明式地织入目标方法：
 
 ```java title="aspect.java"
 @Aspect
@@ -67,7 +67,7 @@ public class TimeLogAspect {
 
 对照前端两个原型：**axios 拦截器**（每个请求自动带 token/记耗时，不用每个请求手写）和 **HOC/装饰器**（包一层增强，不动原组件）。区别是 axios 拦截器作用在网络层，AOP 作用在**任意 Bean 的方法**上，织入由动态代理在运行时完成。
 
-日常业务里你很少手写切面，但 AOP 无处不在地替你工作：`@Transactional`（事务）、`@Cacheable`（缓存）、`@Async`（异步）底层全是 AOP。**理解"注解 = 声明式地挂了一个切面"**，后面 [Spring 事务](02-spring-transactions.md)的失效场景（自调用不生效）就秒懂——那正是 AOP 代理机制的边界。
+日常业务里你很少手写切面，但 AOP 的应用很广：`@Transactional`（事务）、`@Cacheable`（缓存）、`@Async`（异步）底层全是 AOP。**理解"注解 = 声明式地挂了一个切面"**，后面 [Spring 事务](02-spring-transactions.md)的失效场景（自调用不生效）就容易理解，那正是 AOP 代理机制的边界。
 
 ## 参考与延伸
 

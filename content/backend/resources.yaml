@@ -3,7 +3,7 @@
 # tags：资源页按标签分组的依据，只从 content/tags.yaml 的 backend 清单选；未打标落「未分组」。
 - title: 菜鸟教程 · Java 教程
   url: https://www.runoob.com/java/java-tutorial.html
-  summary: 中文 Java 基础速查站，Java基础章五篇的语法备查源；卡壳的语法点按目录直接跳。
+  summary: 中文 Java 基础速查站，Java基础章五篇的语法备查源；没把握的语法点按目录直接跳。
   date: 2026-09-05
   source: runoob.com
   tags: [Java基础]
@@ -45,7 +45,7 @@
   tags: [数据库]
 - title: PageHelper
   url: https://github.com/pagehelper/Mybatis-PageHelper
-  summary: 国内最常用的 MyBatis 分页插件，中文 README；动态 SQL 与分页篇的工具本体。
+  summary: 国内最常用的 MyBatis 分页插件，中文 README；动态 SQL 与分页篇对应的工具。
   date: 2026-09-05
   source: github.com
   tags: [数据库]
@@ -75,7 +75,7 @@
   tags: [Spring生态]
 - title: Spring 中文社区（springdoc.cn）
   url: https://springdoc.cn/
-  summary: 第三方维护的 Spring 中文文档与教程站（Boot/Cloud/Security 覆盖全），英文官方读吃力时的中文对照。
+  summary: 第三方维护的 Spring 中文文档与教程站（Boot/Cloud/Security 覆盖全），英文官方文档读起来吃力时的中文对照。
   date: 2026-09-05
   source: springdoc.cn
   tags: [Spring生态]
@@ -117,7 +117,7 @@
   tags: [工程实践]
 - title: 图解设计模式
   url: https://design-patterns.readthedocs.io/zh-cn/latest/
-  summary: 中文图解设计模式教程（16 个模式，图 + 代码 + 时序图），设计模式一篇想深挖的下一站。
+  summary: 中文图解设计模式教程（16 个模式，图 + 代码 + 时序图），设计模式一篇的深挖读物。
   date: 2026-09-05
   source: readthedocs.io
   tags: [工程实践]

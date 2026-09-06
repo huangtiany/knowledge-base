@@ -2,10 +2,10 @@
 title: 泛型与工具类型
 date: 2026-09-06
 tags: [TypeScript]
-summary: 泛型是类型层的函数——把类型当参数传入；内置工具类型是标准库。从 Array<T> 的直觉出发，到 Partial/Pick/Omit 的日常组合，再到条件类型的适度使用。
+summary: 泛型是类型层的函数：把类型当参数传入；内置工具类型是标准库。Array<T> 的直觉、Partial/Pick/Omit 的日常组合、条件类型的适度使用。
 ---
 
-如果说类型标注是「给值贴标签」，泛型就是「写一个类型的函数」：类型作为参数传入，产出适配的类型。`Array<T>` 早就在用它——这篇从直觉出发，过一遍内置工具类型的日常组合，最后给「类型体操」划一条适可而止的线。
+类型标注给值贴上标签，泛型则把类型当参数传入，产出适配的类型，`Array<T>` 早就在用它。下文从直觉出发，过一遍内置工具类型的日常组合，最后说明「类型体操」的适用边界。
 
 ## 泛型基础：类型当参数
 
@@ -16,7 +16,7 @@ function first<T>(list: T[]): T | undefined {   // T 由调用处的实参推导
 const n = first([1, 2, 3]);       // T 推导为 number，n: number | undefined
 const s = first(["a"]);           // T 推导为 string
 
-// 约束：要求 T 至少有 length —— extends 是类型层的"参数校验"
+// 约束：要求 T 至少有 length，extends 是类型层的参数校验
 function logSize<T extends { length: number }>(x: T): T {
   console.log(x.length);
   return x;
@@ -30,7 +30,7 @@ logSize(42);             // ✗ 编译报错：number 没有 length
 
 ## 内置工具类型：标准库优先于自造
 
-日常九成需求，内置工具类型已经覆盖——**先查标准库再自己写**：
+日常九成需求，内置工具类型已经覆盖，**先查标准库再自己写**：
 
 ```ts title="utility.ts"
 interface Article { id: number; title: string; summary: string; content: string }
@@ -45,19 +45,19 @@ function update(id: number, patch: Partial<Article>) {}  // 补丁式更新：Pa
 update(1, { title: "新标题" });
 ```
 
-函数相关的两个高频款：
+函数相关的两个高频工具：
 
 ```ts title="functions.ts"
 type Handler = (event: Event) => void;
-type Args = Parameters<Handler>;        // [event: Event] —— 取函数参数元组
-type Ret = ReturnType<Handler>;         // void —— 取返回值类型
+type Args = Parameters<Handler>;        // [event: Event]：取函数参数元组
+type Ret = ReturnType<Handler>;         // void：取返回值类型
 ```
 
 `Parameters`/`ReturnType` 的价值在「**跟随而非复制**」：包装第三方函数时不必抄它的签名，类型自动同步。
 
 ## 类型体操入门：keyof 与映射类型
 
-工具类型本身是用两个原语造出来的——`keyof` 取键的联合，映射类型逐键变换：
+工具类型本身由两个原语构成：`keyof` 取键的联合，映射类型逐键变换：
 
 ```ts title="operators.ts"
 type Keys = keyof Article;              // "id" | "title" | "summary" | "content"
@@ -70,16 +70,16 @@ type Getters<T> = { [K in keyof T as `get${Capitalize<string & K>}`]: () => T[K]
 type A = Getters<{ name: string }>;     // { getName: () => string }
 ```
 
-看懂这段就解开了工具类型的魔法：`[K in keyof T]` 遍历键，`T[K]` 索引访问取值类型，`as` 子句重命名键。条件类型与 `infer` 是再往上一级的原语（`T extends U ? X : Y`，从结构中提取类型），能读懂内置定义即可——**业务代码里手写条件类型的机会非常少**。
+看懂这段就看懂了工具类型的实现：`[K in keyof T]` 遍历键，`T[K]` 索引访问取值类型，`as` 子句重命名键。条件类型与 `infer` 是再往上一级的原语（`T extends U ? X : Y`，从结构中提取类型），能读懂内置定义即可，**业务代码里手写条件类型的机会非常少**。
 
 ## 适度体操：三条工程纪律
 
-1. **类型为使用服务**：当一个类型定义需要注释才能看懂时，它已经在亏本——先写值和逻辑，类型复杂度被动增长
+1. **类型为使用服务**：类型定义需要注释才能看懂时，复杂度已经过了头；先写值和逻辑，类型复杂度被动增长
 2. **推导优先于声明**：`const config = { port: 3000 }` 的类型是推出来的，只有跨边界的契约（导出、API、props）值得手写
-3. **体操的合理出场位是库代码**：泛型组件、类型安全的 API 封装、DSL；业务代码里见到 `infer` 三层嵌套，通常意味着该重构了
+3. **体操的合理位置在库代码**：泛型组件、类型安全的 API 封装、DSL；业务代码里见到 `infer` 三层嵌套，通常意味着该重构了
 
-配合 CI 的 `tsc --noEmit`（类型检查不产出文件），类型层就能当测试的第一道网用。工程配置见[质量工具链篇](../engineering/02-quality-toolchain.md)。
+配合 CI 的 `tsc --noEmit`（类型检查不产出文件），类型层能替测试挡住一部分错误。工程配置见[质量工具链篇](../engineering/02-quality-toolchain.md)。
 
 ## 小结
 
-两级台阶收拢：**泛型 = 类型层的函数**（推导优先、extends 做约束），**工具类型 = 标准库**（Partial/Pick/Omit/Record 覆盖日常，Parameters/ReturnType 跟随第三方）。体操原语（keyof、映射、条件类型）用于看懂库与偶尔自造，业务层适可而止。类型扎稳后，把视角切到运行环境——[浏览器渲染原理](../browser/01-rendering-pipeline.md)。
+**泛型 = 类型层的函数**（推导优先、extends 做约束），**工具类型 = 标准库**（Partial/Pick/Omit/Record 覆盖日常，Parameters/ReturnType 跟随第三方）。体操原语（keyof、映射、条件类型）用于看懂库与偶尔自造，业务层适可而止。类型扎稳后，下一步是运行环境：[浏览器渲染原理](../browser/01-rendering-pipeline.md)。

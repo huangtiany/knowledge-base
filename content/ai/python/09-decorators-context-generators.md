@@ -2,14 +2,14 @@
 title: 装饰器、with 与生成器
 date: 2026-09-05
 tags: [Python]
-summary: 三个"高级语法"其实是一件事的三种包装：装饰器包装函数，with 包装资源生命周期，生成器包装惰性序列——LLM SDK 源码里全是它们。
+summary: 装饰器包装函数，with 包装资源生命周期，生成器包装惰性序列。LLM SDK 源码里三者随处可见。
 ---
 
-这三个概念常被并列成"Python 进阶三件套"。它们的共同点：都是**把一件事的"做什么"和"怎么管"分开**——函数逻辑与横切逻辑（装饰器）、使用逻辑与资源生命周期（with）、生产逻辑与消费节奏（生成器）。
+装饰器分开函数逻辑与横切逻辑，with 分开使用逻辑与资源生命周期，生成器分开生产逻辑与消费节奏。三者都是把一件事的"做什么"和"怎么管"分开。
 
 ## 装饰器：不改动函数本体加行为
 
-装饰器是"接收函数、返回函数"的函数，`@` 只是语法糖：
+装饰器是接收函数、返回函数的函数，`@` 只是语法糖：
 
 ```python title="decorator.py"
 import functools, time
@@ -29,7 +29,7 @@ def embed_batch(texts: list[str]) -> list[list[float]]:
     return [[0.0] * 1024 for _ in texts]
 ```
 
-计时、重试、缓存、鉴权这类横切逻辑全部走装饰器——LLM SDK 里的 `@retry`、FastAPI 里的 `@app.get` 都是它。带参数的装饰器是"三层函数"（收参数→收函数→收调用），读懂即可，手写频率低。
+计时、重试、缓存、鉴权这类横切逻辑全部走装饰器，LLM SDK 里的 `@retry`、FastAPI 里的 `@app.get` 都是它。带参数的装饰器是"三层函数"（收参数→收函数→收调用），读懂即可，手写频率低。
 
 ## with 与上下文管理器：资源的确定性释放
 
@@ -66,15 +66,15 @@ def timer(label: str):
     print(f"{label} 耗时 {time.perf_counter() - t0:.2f}s")
 ```
 
-心智对照：`with` 之于资源，约等于 TS `try...finally` 的声明式版本，但协议化之后任何库都能定义自己的 with 语义（数据库事务、HTTP 客户端、临时目录）。
+可以把它当作 TS `try...finally` 的声明式版本，但协议化之后任何库都能定义自己的 with 语义（数据库事务、HTTP 客户端、临时目录）。
 
 ## 生成器：惰性序列
 
-含 `yield` 的函数就是生成器：调用不执行，每次 `next()` 跑到下一个 yield 暂停。价值是**惰性**——不把整个数据集装进内存：
+含 `yield` 的函数就是生成器：调用不执行，每次 `next()` 跑到下一个 yield 暂停。价值是**惰性**，不把整个数据集装进内存：
 
 ```python title="generator.py"
 def iter_chunks(path: str, size: int = 512):
-    """逐段读取大文本，按字符数切块——RAG 语料预处理的雏形"""
+    """逐段读取大文本，按字符数切块（RAG 语料预处理的雏形）"""
     buf = []
     with open(path, encoding="utf-8") as f:
         for line in f:

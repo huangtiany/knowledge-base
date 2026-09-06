@@ -2,12 +2,12 @@
 title: 现代 CSS 布局：Flex、Grid 与响应式
 date: 2026-09-06
 tags: [HTML与CSS]
-summary: 布局问题的第一问是一维还是二维——Flex 管一维流，Grid 管二维面，clamp 与容器查询补上响应式的最后一块。
+summary: 布局先判断一维还是二维：Flex 管一维流，Grid 管二维面板，clamp 与容器查询处理响应式。
 ---
 
-float 和行内块时代留下的布局恐惧早该清零了。现在的布局决策可以收敛成一个判断树：**一维还是二维？** 一维内容流用 Flex，二维面板用 Grid，剩下的响应式交给媒体查询、clamp 和容器查询。这篇把常用的心智模型和踩过的坑收拢成一篇。
+float 和行内块不再是布局的起点。布局决策先问一个问题：**一维还是二维？** 一维内容流用 Flex，二维面板用 Grid，剩下的响应式交给媒体查询、clamp 和容器查询。
 
-## 盒模型与 sizing：一切的底座
+## 盒模型与 sizing：布局的前提
 
 ```css title="box.css"
 * { box-sizing: border-box; }  /* width 包含 padding+border，第 0 条全局规则 */
@@ -19,7 +19,7 @@ float 和行内块时代留下的布局恐惧早该清零了。现在的布局�
 
 `border-box` 是所有布局估算成立的前提；`min-height: 100vh` 换成 `100dvh`（dynamic viewport height）能消掉移动端地址栏收起时的跳动。
 
-## Flex：一维布局的默认答案
+## Flex：一维布局的默认选择
 
 Flex 的心智模型是**主轴与交叉轴**：`flex-direction` 定主轴，`justify-content` 管主轴分布，`align-items` 管交叉轴对齐。
 
@@ -28,23 +28,23 @@ Flex 的心智模型是**主轴与交叉轴**：`flex-direction` 定主轴，`ju
 .toolbar .title { flex: 1; }   /* flex:1 = flex-grow:1; flex-shrink:1; flex-basis:0% */
 
 .cards { display: flex; flex-wrap: wrap; gap: 16px; }
-.cards > * { flex: 1 1 240px; } /* 基准 240px、可伸可缩、放不下换行——简易响应式 */
+.cards > * { flex: 1 1 240px; } /* 基准 240px、可伸可缩、放不下换行，简易响应式 */
 ```
 
-三个高频盲区：
+三个容易忽略的点：
 
 - **`flex: 1` 的 basis 是 0**：内容长短不再影响分配，按剩余空间均分；想要「内容打底、再分剩余」用 `flex: auto`
-- **min-width 悖论**：flex 子项默认 `min-width: auto`，长单词/长串会撑破容器——内容溢出时给子项 `min-width: 0` 是标准处方
+- **min-width 悖论**：flex 子项默认 `min-width: auto`，长单词/长串会撑破容器；内容溢出时给子项 `min-width: 0`
 - **间距用 gap 不用 margin**：margin 相邻方案要处理边界（`:last-child` 清尾差），gap 天然没有首尾问题
 
-入门练手推荐 [Flexbox Froggy](https://flexboxfroggy.com/#zh-cn) 通关一遍，justify/align 就再也不用查了。
+入门推荐 [Flexbox Froggy](https://flexboxfroggy.com/#zh-cn) 练一遍，justify/align 就不用再查了。
 
-## Grid：二维面板与"不写媒体查询的响应式"
+## Grid：二维面板与不需要媒体查询的响应式
 
 Grid 的心智模型是**先划网格再放内容**：
 
 ```css title="grid.css"
-/* 显式面板：头部/侧栏/内容/页脚 一图流 */
+/* 显式面板：头部/侧栏/内容/页脚一次划好 */
 .layout {
   display: grid;
   grid-template:
@@ -61,13 +61,13 @@ Grid 的心智模型是**先划网格再放内容**：
            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
 ```
 
-`repeat(auto-fill, minmax(220px, 1fr))` 是最有性价比的一行：容器宽就多放几列，窄了自动减列，**没有一处媒体查询**。Flex 版的 `flex-wrap` 方案能做类似效果，但每行末尾的对齐补位不如 Grid 干净。
+`repeat(auto-fill, minmax(220px, 1fr))` 一行就够：容器宽就多放几列，窄了自动减列，**没有一处媒体查询**。Flex 版的 `flex-wrap` 方案能做类似效果，但每行末尾的对齐补位不如 Grid 整齐。
 
-二维就上 Grid，别用 Flex 嵌套硬凑行和列——那是把 Grid 出现前的工作流又走了一遍。
+二维布局直接用 Grid，不要用 Flex 嵌套凑行和列，那是在重复 Grid 出现前的工作流。
 
 ## 响应式：移动优先与三个新工具
 
-断点写法的共识是**移动优先**：基础样式给小屏，`@media (min-width: …)` 逐级增强——CSS 的层叠特性天然支持「向后覆盖」。
+断点写法的共识是**移动优先**：基础样式给小屏，`@media (min-width: …)` 逐级增强，CSS 的层叠特性天然支持「向后覆盖」。
 
 在此之上，三个新工具能消掉大量断点：
 
@@ -81,14 +81,14 @@ h1 { font-size: clamp(28px, 4vw + 12px, 56px); } /* 流体字号：下限/理想
 ```
 
 - **clamp()**：一个声明覆盖字号/间距的全区间，缩放平滑无跳变
-- **容器查询**：组件按「自己所在容器」的宽度响应，而不是整个视口——同一组件放进侧栏和主区自动切换形态，这是组件化时代真正想要的响应式
+- **容器查询**：组件按「自己所在容器」的宽度响应，而不是整个视口；同一组件放进侧栏和主区会自动切换形态
 - 兼容性拿不准时先查 [Can I Use](https://caniuse.com/)，容器查询的基础用法 2023 年起已全线可用
 
 ## 层叠、继承与变量：调试 CSS 的底层逻辑
 
 布局问题有时出在样式没生效，这时要回到层叠规则：**优先级 = 内联 > id > 类/属性/伪类 > 元素**，同优先级看源码顺序，`!important` 只留给工具类与覆盖第三方样式的出口。
 
-自定义属性是组织样式的中枢：
+自定义属性是组织样式的核心工具：
 
 ```css title="tokens.css"
 :root { --ink: #1B2733; --space: 8px; }
@@ -100,4 +100,4 @@ h1 { font-size: clamp(28px, 4vw + 12px, 56px); } /* 流体字号：下限/理想
 
 ## 小结
 
-布局决策树收拢成一句：**一维 Flex、二维 Grid、组件级响应式用容器查询、连续值用 clamp**。剩下的坑大多来自盒模型与 min-width 这类底层细节。布局就绪后，性能账单主要来自渲染侧——延伸阅读[浏览器渲染原理](../browser/01-rendering-pipeline.md)与[性能优化](../performance/01-performance-metrics.md)。
+一维布局用 Flex，二维面板用 Grid，组件级响应式用容器查询，连续缩放值用 clamp。常见的布局问题多与盒模型和 `min-width` 有关。布局之外的性能问题多在渲染侧，延伸阅读[浏览器渲染原理](../browser/01-rendering-pipeline.md)与[性能优化](../performance/01-performance-metrics.md)。

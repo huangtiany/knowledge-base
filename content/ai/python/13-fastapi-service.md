@@ -2,10 +2,10 @@
 title: FastAPI：依赖注入与 SSE 流式
 date: 2026-09-05
 tags: [Python]
-summary: 把 LLM 包成服务的标准答案：类型即接口、依赖注入管配置与客户端、SSE 把 token 流式推给前端。
+summary: 把 LLM 封装成服务的标准做法：类型即接口、依赖注入管配置与客户端、SSE 把 token 流式推给前端。
 ---
 
-选 FastAPI 做 LLM 服务化没有悬念：原生 async（吞吐刚需）、pydantic 类型即校验（结构化输出直通）、自动生成 OpenAPI 文档（前端/联调直接看）、StreamingResponse 一行开流。这篇抓三件 LLM 服务化最高频的事：类型化接口、依赖注入、流式响应。
+LLM 服务化默认选 FastAPI：原生 async 支撑并发吞吐，pydantic 类型即校验（结构化输出直通），自动生成 OpenAPI 文档（前端/联调直接看），StreamingResponse 一行开流。下文聚焦其中最高频的三件事：类型化接口、依赖注入、流式响应。
 
 ## 类型即接口
 
@@ -56,11 +56,11 @@ def get_client(settings: Settings = Depends(get_settings)) -> OpenAI:
     return OpenAI(api_key=settings.openai_api_key)   # 依赖可以级联：client 依赖 settings
 ```
 
-`Depends` 的价值在测试：`app.dependency_overrides[get_client] = lambda: fake_client` 一行把真客户端换成 mock，[pytest](10-pytest-basics.md) 里不花钱跑集成测试。鉴权、限流、trace 注入同样是 Depends 的活。
+`Depends` 的价值在测试：`app.dependency_overrides[get_client] = lambda: fake_client` 一行把真客户端换成 mock，[pytest](10-pytest-basics.md) 里不调真实 API 就能跑集成测试。鉴权、限流、trace 注入同样通过 Depends 实现。
 
 ## SSE 流式：token 一个个推给前端
 
-LLM 体验的分水岭在流式——非流式接口要干等完整答案，流式接口首字延迟 < 1s：
+LLM 体验的分水岭在流式——非流式接口要等完整答案，流式接口首字延迟 < 1s：
 
 ```python title="stream.py"
 from fastapi.responses import StreamingResponse

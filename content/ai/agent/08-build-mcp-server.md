@@ -2,10 +2,10 @@
 title: 实战：写一个自己的 MCP Server
 date: 2026-09-05
 tags: [工具调用/MCP]
-summary: 用 FastMCP 把本站知识库包成 MCP Server——tool + resource 双原语、stdio 传输、接入 Claude Desktop 验证，45 行起步。
+summary: 用 FastMCP 把本站知识库包成 MCP Server，覆盖 tool + resource 双原语、stdio 传输，接入 Claude Desktop 验证，45 行起步。
 ---
 
-概念在[上一篇](07-mcp-protocol.md)，这篇动手：把「格致」知识库包成一个 MCP Server，让任何 MCP Host（Claude Desktop、IDE、自建 Agent）都能检索本站的 Markdown 文章。选 Python 官方 SDK 的 FastMCP 风格——用装饰器声明，几十行可跑。
+概念在[上一篇](07-mcp-protocol.md)，这篇动手：把「格致」知识库包成一个 MCP Server，让任何 MCP Host（Claude Desktop、IDE、自建 Agent）都能检索本站的 Markdown 文章。选 Python 官方 SDK 的 FastMCP 风格，用装饰器声明，几十行可跑。
 
 ## 项目骨架
 
@@ -59,7 +59,7 @@ if __name__ == "__main__":
 三个值得注意的写法：
 
 - **docstring 就是工具文档**：SDK 把它编译成模型可见的 description，按[function calling 的写法纪律](06-function-calling.md)认真写
-- **路径穿越防护**：`resolve() + is_relative_to`——任何接收路径参数的工具都要做，否则 `../../.zshrc` 就是数据泄露
+- **路径穿越防护**：`resolve() + is_relative_to`，任何接收路径参数的工具都要做，否则 `../../.zshrc` 就是数据泄露
 - **tool vs resource 的取舍**：模型决策触发的（搜索）做成 tool；应用可主动注入的（读全文）同时暴露 resource
 
 ## 调试与接入
@@ -68,7 +68,7 @@ if __name__ == "__main__":
 # 方式一：SDK 自带 inspector（网页调试台，看 tool 列表、手动调用）
 uv run mcp dev server.py
 
-# 方式二：直接连 Claude Desktop —— 配置文件里加：
+# 方式二：直接连 Claude Desktop，配置文件里加：
 # claude_desktop_config.json
 # {
 #   "mcpServers": {
@@ -83,7 +83,7 @@ stdio 模式的两个高频坑：**日志只能打到 stderr**（stdout 是协�
 ## 从 demo 到生产
 
 - **传输换 Streamable HTTP**：stdio 只适合本地单机；远程部署用 `mcp.run(transport="streamable-http")`，客户端跨网络连接
-- **检索升级**：demo 里是关键词计数，换成真向量检索（见 [RAG 章](../rag/01-chunking-strategies.md)），工具签名不变——工具接口稳定，实现可替换
+- **检索升级**：demo 里是关键词计数，换成真向量检索（见 [RAG 章](../rag/01-chunking-strategies.md)），工具签名不变，工具接口稳定，实现可替换
 - **鉴权**：远程 Server 必须加鉴权（token/OAuth），凭证按 Server 粒度最小化
 - **测试**：tool 实现是普通函数，直接 pytest（见[pytest 入门](../python/10-pytest-basics.md)）；协议层用 inspector 冒烟
 

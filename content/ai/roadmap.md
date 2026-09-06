@@ -2,11 +2,11 @@
 title: AI / Agent 知识地图
 date: 2026-09-05
 tags: [路线图]
-summary: AI/Agent 模块的知识体系与学习主线——每个主题对应一篇笔记，每章末尾挂本章资源。
+summary: AI/Agent 模块的知识体系与学习主线：每个主题对应一篇笔记，每章末尾附本章资源。
 related: false
 ---
 
-这张地图是 AI / Agent 模块的知识体系：每个 h2 是一章，对应标签清单里的一个章级标签；章下面的小节是笔记主题，全部已写成互链（除了项目实战两篇，等真实进展后补写）。它既是目录，也是学习路线——按主线顺序读即可。
+这张地图是 AI / Agent 模块的知识体系：每个 h2 是一章，对应标签清单里的一个章级标签；章下面的小节是笔记主题，全部已写成互链（除了项目实战两篇，等真实进展后补写）。它既是目录，也是学习路线，按主线顺序读即可。
 
 ## 定位与主线
 
@@ -16,12 +16,12 @@ related: false
 
 - **Python → RAG → Agent**：Python 速通后进入 RAG；检索是 Agent 最常用的工具，RAG 是 Agent 的前置
 - **LLM 基础**是支线，穿插在调参与排错的过程里，不单独立期
-- **评测与可观测**横切 RAG 和 Agent——没有评测的优化是玄学
+- **评测与可观测**横切 RAG 和 Agent：没有评测，优化效果无从验证
 - 主线以**项目实战**收尾；**微调**在主线之外，是后续的扩展方向
 
 ## Python 与 AI 工程
 
-标签：`Python`。目标：以 AI 工程师的方式掌握 Python——会写、会组织工程、会把模型包成服务。
+标签：`Python`。目标：像 AI 工程师一样掌握 Python，会写、会组织工程、会把模型包成服务。
 
 ### 基础段：整体语法
 
@@ -148,7 +148,7 @@ related: false
 
 ## Agent 生态（热门项目）
 
-标签：`Agent生态`。看别人怎么做 Agent——先有[设计模式](agent/01-workflow-vs-agent.md)与[手写循环](agent/03-minimal-agent-loop.md)的底子，拆热门项目才有味道：
+标签：`Agent生态`。看别人怎么做 Agent：先有[设计模式](agent/01-workflow-vs-agent.md)与[手写循环](agent/03-minimal-agent-loop.md)的底子，再拆热门项目：
 
 - [Agent 生态全景：产品、框架与平台](agents/01-agent-landscape.md)
 - [编程 Agent：OpenHands、SWE-agent、Aider 与 Cline](agents/02-coding-agents.md)
@@ -181,9 +181,9 @@ related: false
 
 ## 评测与可观测
 
-标签：`评测与可观测`。横切章——RAG 和 Agent 的笔记会反复指回来：
+标签：`评测与可观测`。此章横切 RAG 和 Agent，两边的笔记会反复指回来：
 
-- [评测先行：没有评测的优化是玄学](evaluation/01-evaluation-first.md)
+- [评测先行：用评测驱动优化](evaluation/01-evaluation-first.md)
 - [RAGAS：RAG 评测的标准指标](evaluation/02-ragas.md)
 - [Agent evals：轨迹评估与 LLM-as-judge 的坑](evaluation/03-agent-evals.md)
 - [Langfuse：Trace 与成本统计](evaluation/04-langfuse.md)
@@ -200,8 +200,8 @@ related: false
 
 标签：`项目实战`。每条主线以实战收尾；站上只记过程、踩坑与复盘，代码不放站上。**实战两篇留待真实进展后补写**：
 
-- 实战一 · 格致问答：语料就是本站 `content/` 的 Markdown，FastAPI 服务化 + 流式 + 引用溯源——RAG 收尾，Python 工程段在这里现学现用
-- 实战二 · 工具 Agent：集成知识库检索与 MCP 工具的真实 Agent——Agent 收尾
+- 实战一 · 格致问答：语料就是本站 `content/` 的 Markdown，FastAPI 服务化 + 流式 + 引用溯源，作为 RAG 收尾；Python 工程段在这里现学现用
+- 实战二 · 工具 Agent：集成知识库检索与 MCP 工具的真实 Agent，作为 Agent 收尾
 
 ## 微调（扩展方向）
 
@@ -222,6 +222,6 @@ related: false
 
 ## 进度点亮
 
-- 地图上的主题已全部成文互链；唯一例外是实战两篇——等项目真实推进后写成笔记，回这里替换纯文本为互链
+- 地图上的主题已全部成文互链；唯一例外是实战两篇，等项目真实推进后写成笔记，回这里替换纯文本为互链
 - 每个章级标签：有笔记即点亮；目前唯一保持灰色「待学习」的标签是 `项目实战`
 - 每章末尾的「本章资源」与资源收藏页同源：卡片收在 `content/ai/resources.yaml`，地图只做学习视角的精选

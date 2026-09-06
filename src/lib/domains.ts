@@ -17,7 +17,7 @@ export const DOMAINS = {
   front: {
     key: 'front',
     name: '前端',
-    desc: 'HTML/CSS、JavaScript/TypeScript、浏览器原理、Vue 与 React、工程化与性能。吃饭的家伙，也成体系地整理。',
+    desc: 'HTML/CSS、JavaScript/TypeScript、浏览器原理、Vue 与 React、工程化与性能。日常使用的主技术栈，成体系整理。',
     glyph: '页',
     short: '前端',
   },

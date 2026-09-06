@@ -2,11 +2,11 @@
 title: 后端知识地图
 date: 2026-09-05
 tags: [路线图]
-summary: 前端转 Java 后端的知识体系与学习主线——每个主题对应一篇笔记，每章末尾挂本章资源。姊妹篇：《AI / Agent 知识地图》与《前端知识地图》。
+summary: 前端转 Java 后端的知识体系与学习主线：每个主题对应一篇笔记，每章末尾挂本章资源。姊妹篇：《AI / Agent 知识地图》与《前端知识地图》。
 related: false
 ---
 
-这张地图是后端域的知识体系，输入是一份《前端转 Java 后端入门学习路线》：每个 h2 是一章，对应标签清单里的一个章级标签；章下面的小节是笔记主题，全部已写成互链（项目实战与 JVM 两节留白）。教学法沿用该路线的「前端类比」——每个 Java 概念都从你熟悉的前端原型切入。
+这张地图是后端域的知识体系，输入是一份《前端转 Java 后端入门学习路线》：每个 h2 是一章，对应标签清单里的一个章级标签；章下面的小节是笔记主题，全部已写成互链（项目实战与 JVM 两节留白）。教学法沿用该路线的「前端类比」：每个 Java 概念都从你熟悉的前端原型切入。
 
 ## 定位与主线
 
@@ -14,8 +14,8 @@ related: false
 
 依赖主线：
 
-- **Java基础 → 数据库 → JavaWeb → Spring生态**：语言先立住，数据是后端的核心资产，JavaWeb 是 Spring 的地基，Spring 是最终主战场
-- **中间件**（Redis/MQ/Nginx）在高并发场景进场，概念先行、深入后置
+- **Java基础 → 数据库 → JavaWeb → Spring生态**：语言先上手，数据是后端的核心资产，JavaWeb 是 Spring 的前置知识，Spring 是学习的重点
+- **中间件**（Redis/MQ/Nginx）服务于高并发场景，概念先行、深入后置
 - **工程实践**（Maven/工具链/设计模式/规范）穿插始终，本图集中成章
 - **项目实战**与 **JVM** 留白：实战等真实项目进展后补写，JVM 是下一阶段的扩展方向
 
@@ -55,7 +55,7 @@ related: false
 
 ## JavaWeb
 
-标签：`JavaWeb`。Spring 的地基——Servlet 的生命周期与单例多线程模型，决定了后面所有框架行为的边界：
+标签：`JavaWeb`。Servlet 的生命周期与单例多线程模型，决定了后面所有框架行为的边界：
 
 - [Servlet 与 HTTP 请求处理](javaweb/01-servlet-and-http.md)
 - [Session、Cookie 与 Filter](javaweb/02-session-cookie-filter.md)
@@ -66,7 +66,7 @@ related: false
 
 ## Spring 生态
 
-标签：`Spring生态`。主战场：IoC/DI/AOP 两大支柱 → 事务 → Boot 日常四件套 → 微服务：
+标签：`Spring生态`。学习重点：IoC/DI/AOP 两大支柱 → 事务 → Boot 常用要点 → 微服务：
 
 - [Spring 核心：IoC、DI 与 AOP](spring/01-spring-core-ioc-di-aop.md)
 - [Spring 事务管理：@Transactional 与它的失效场景](spring/02-spring-transactions.md)
@@ -82,7 +82,7 @@ related: false
 
 ## 中间件
 
-标签：`中间件`。概念先行、深入后置——高并发场景才需要真正吃透：
+标签：`中间件`。概念先行、深入后置，高并发场景才需要深入：
 
 - [Redis：内存数据库与缓存](middleware/01-redis.md)
 - [消息队列 MQ：削峰、解耦、异步](middleware/02-mq.md)
@@ -114,14 +114,14 @@ related: false
 
 ## 项目实战
 
-标签：`项目实战`。**留白**——按 AI 域的先例，实战的价值在真实踩坑，预先编写没有意义。候选方向（学到 Spring Boot 后自然浮现）：
+标签：`项目实战`。**留白**：按 AI 域的先例，实战笔记的价值在真实踩坑，预先编写没有意义。候选方向（学到 Spring Boot 后自然浮现）：
 
 - 把本站的后端 API 化：为格致知识库做一个 Spring Boot + MySQL 的服务
 - 接手公司项目的过程笔记与复盘
 
 ## JVM
 
-标签：`JVM`。**留白**——当前路线未覆盖，作为 Java基础 的下一阶段扩展方向：内存结构、类加载、垃圾回收。以[Java 全栈知识体系](https://pdai.tech/)的 JVM 板块为预备资源。
+标签：`JVM`。**留白**：当前路线未覆盖，作为 Java基础 的下一阶段扩展方向，内容是内存结构、类加载、垃圾回收。以[Java 全栈知识体系](https://pdai.tech/)的 JVM 板块为预备资源。
 
 ## 进度点亮
 

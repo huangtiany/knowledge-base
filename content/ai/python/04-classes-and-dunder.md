@@ -2,10 +2,10 @@
 title: 类与 OOP：__init__、继承与 dunder 方法
 date: 2026-09-05
 tags: [Python]
-summary: Python 风格的面向对象：self 的真相、类属性与实例属性、super 与 MRO，以及用 dunder 方法给自定义类接入语言协议。
+summary: Python 风格的面向对象：self 的含义、类属性与实例属性、super 与 MRO，以及用 dunder 方法给自定义类接入语言协议。
 ---
 
-Python 的 OOP 比 Java 系轻得多：没有接口关键字、没有访问修饰符、不强制一切皆类。这篇讲清类机制的核心，重点放在 dunder 方法——它是"鸭子类型"在类层面的落地方式。
+Python 的 OOP 比 Java 系轻得多：没有接口关键字、没有访问修饰符、不强制一切皆类。本篇讲类机制，重点是 dunder 方法，它是鸭子类型在类层面的实现方式。
 
 ## __init__ 与 self
 
@@ -33,7 +33,7 @@ class Doc:
         self.name = name     # 实例属性：每实例一份
 ```
 
-给 `self.kind` 赋值会在实例上**新建**一个同名属性遮住类属性——共享可变的类属性（比如类属性是 list）是另一个经典坑。
+给 `self.kind` 赋值会在实例上**新建**一个同名属性遮住类属性。共享可变的类属性（比如类属性是 list）是另一个经典坑。
 
 ## 继承与 super()
 
@@ -50,11 +50,11 @@ class VectorRetriever(BaseRetriever):
         return [f"vec({query})"]
 ```
 
-约定俗成：`_name` 是内部使用（只是君子协定，没有强制），`__name` 触发名称改写（一般用不到，别用来做"私有"）。多继承存在且 MRO（方法解析顺序）保证查找顺序确定，`super()` 按 MRO 向上找——日常写协作式 `super().__init__()` 即可，MRO 细节遇到多继承混入（mixin）时再看。
+约定俗成：`_name` 是内部使用（只是君子协定，没有强制），`__name` 触发名称改写（一般用不到，别用来做"私有"）。多继承存在且 MRO（方法解析顺序）保证查找顺序确定，`super()` 按 MRO 向上找。日常写协作式 `super().__init__()` 即可，MRO 细节遇到多继承混入（mixin）时再看。
 
 ## dunder 方法：接入语言协议
 
-双下划线方法（dunder）不是炫技命名，而是 Python 的**协议接口**：实现了 `__len__` 就能 `len()`，实现了 `__iter__` 就能 for 循环，实现了 `__call__` 就能像函数一样调用。这比继承抽象基类更贴近 Python 的品味：
+双下划线方法（dunder）是 Python 的**协议接口**：实现了 `__len__` 就能 `len()`，实现了 `__iter__` 就能 for 循环，实现了 `__call__` 就能像函数一样调用。这比继承抽象基类更贴近 Python 的惯例：
 
 ```python title="dunder.py"
 class Scored:
@@ -76,7 +76,7 @@ print(sorted(docs))                         # 按 __lt__ 排序
 
 常用协议速查：`__repr__`/`__str__`（显示）、`__eq__`/`__hash__`（相等与哈希，实现了 `__eq__` 会默认把 `__hash__` 置 None，对象将不可放进 set/dict）、`__len__`/`__getitem__`/`__iter__`（容器协议）、`__enter__`/`__exit__`（with 协议，见[下一篇](09-decorators-context-generators.md)前的 with 部分）、`__call__`（可调用）。
 
-纯数据类不必手写这些——`@dataclass` 自动生成（见 [dataclass 与 pydantic](08-dataclass-and-pydantic.md)）。
+纯数据类不必手写这些，`@dataclass` 会自动生成（见 [dataclass 与 pydantic](08-dataclass-and-pydantic.md)）。
 
 ## @property：把方法伪装成属性
 

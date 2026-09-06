@@ -2,12 +2,12 @@
 title: 常用设计模式：六个对照前端讲
 date: 2026-09-05
 tags: [工程实践]
-summary: 单例、工厂、观察者、策略、装饰器、模板方法——六个在 Java 后端最高频的模式，每个在前端都有原型。目标是看得懂、认得出，不是背 UML。
+summary: 单例、工厂、观察者、策略、装饰器、模板方法，六个在 Java 后端最高频的模式，每个在前端都有原型。目标是看得懂、认得出，不背 UML。
 ---
 
-设计模式是"解决问题的成熟套路"，前端早就在用：Vuex store 是单例、HOC 是装饰器、EventBus 是观察者。这篇挑 Java 后端最高频的六个，全部对照前端原型讲——**目标是读得懂框架源码和同事的代码、认得出模式的应用时机**，不是背 UML 图。
+设计模式是"解决问题的成熟套路"，前端早就在用：Vuex store 是单例、HOC 是装饰器、EventBus 是观察者。下文挑 Java 后端最高频的六个，全部对照前端原型讲，**目标是读得懂框架源码和同事的代码、认得出模式的应用时机**，不是背 UML 图。
 
-学习方法一句话（与文档一致）：**结合框架学**——Spring 里全是模式，遇到注解想一层"这是什么模式在起作用"，比背图有效十倍。
+学习方法与文档一致：**结合框架学**。Spring 里全是模式，遇到注解想一层"这是什么模式在起作用"，比背图有效十倍。
 
 ## 1. 单例：全局只有一个实例
 
@@ -21,9 +21,9 @@ public class ConfigCenter {
 }
 ```
 
-在后端的实际形态：**Spring 的 Bean 默认就是单例**（容器帮你管理，连 getInstance 都不用写）——写业务代码时你在天天用单例而不自知。数据库连接池、配置类，天然该单例。警惕点在[多线程](../java-basics/04-concurrency.md)篇讲过：单例对象的可变成员变量在并发下是事故源。
+在后端的实际形态：**Spring 的 Bean 默认就是单例**（容器帮你管理，连 getInstance 都不用写），写业务代码时天天在用单例而不自知。数据库连接池、配置类，天然该单例。警惕点在[多线程](../java-basics/04-concurrency.md)篇讲过：单例对象的可变成员变量在并发下是事故源。
 
-## 2. 工厂：创建逻辑收敛到一处
+## 2. 工厂：创建逻辑集中在一处
 
 前端原型：根据类型返回不同对象的工厂函数。Java 里当"创建过程复杂"（需要读配置、建连接）时，工厂把创建细节藏起来：
 
@@ -39,7 +39,7 @@ public class PayFactory {
 }
 ```
 
-认识场景：Spring 的 `BeanFactory`（IoC 容器本质是个超级工厂——[IoC 篇](../spring/01-spring-core-ioc-di-aop.md)里"对象由容器创建"就是工厂模式）、MyBatis 的 `SqlSessionFactory`。
+认识场景：Spring 的 `BeanFactory`（IoC 容器本质是个超级工厂，[IoC 篇](../spring/01-spring-core-ioc-di-aop.md)里"对象由容器创建"就是工厂模式）、MyBatis 的 `SqlSessionFactory`。
 
 ## 3. 观察者：发布-订阅
 
@@ -52,7 +52,7 @@ applicationEventPublisher.publishEvent(new OrderCreatedEvent(orderId));
 // 订阅（解耦的下游）：
 @EventListener
 public void onOrderCreated(OrderCreatedEvent event) {
-    pointService.add(event.getUserId());       // 加积分 —— 不侵入下单主流程
+    pointService.add(event.getUserId());       // 加积分，不侵入下单主流程
 }
 ```
 
@@ -68,7 +68,7 @@ public interface PayStrategy { PayResult pay(PayRequest req); }
 @Component
 public class AlipayStrategy implements PayStrategy { ... }
 
-// 分发：Spring 注入所有实现，按 key 选 —— 新增渠道只加一个类，不改分发逻辑
+// 分发：Spring 注入所有实现，按 key 选，新增渠道只加一个类，不改分发逻辑
 private final Map<String, PayStrategy> strategies;   // Spring 自动按 BeanName 注入整表
 ```
 
@@ -83,15 +83,15 @@ private final Map<String, PayStrategy> strategies;   // Spring 自动按 BeanNam
 @Transactional
 public void transfer(...) { ... }
 
-// 2. IO 流的经典套娃：一层层包出增强能力
+// 2. IO 流的装饰器写法：一层层包装出增强能力
 new BufferedReader(new InputStreamReader(fileInput))   // 缓冲增强 ← 编码转换 ← 原始流
 ```
 
-认得出的关键：看到 `BufferedXxx(InputStreamXxx)` 套娃和 AOP 注解，都是装饰器思想。Spring 的 `@Transactional`、`@Cacheable` 全是这个模式（实现机制见 [AOP 篇](../spring/01-spring-core-ioc-di-aop.md)）。
+认得出的关键：看到 `BufferedXxx(InputStreamXxx)` 这类嵌套和 AOP 注解，都是装饰器思想。Spring 的 `@Transactional`、`@Cacheable` 全是这个模式（实现机制见 [AOP 篇](../spring/01-spring-core-ioc-di-aop.md)）。
 
 ## 6. 模板方法：骨架定好，钩子留给子类
 
-前端原型：生命周期钩子——Vue 定流程（created → mounted），你填具体逻辑。Java 版：
+前端原型：生命周期钩子，Vue 定流程（created → mounted），你填具体逻辑。Java 版：
 
 ```java title="template.java"
 public abstract class AbstractExporter {

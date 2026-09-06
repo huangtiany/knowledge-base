@@ -2,7 +2,7 @@
 title: SQL 基础：从 filter 到 JOIN
 date: 2026-09-05
 tags: [数据库]
-summary: SELECT/WHERE/GROUP BY 的语义与 JS 数组方法一一对应——filter、map、reduce 换个数据源而已；真正的新东西是 JOIN 和 NULL 三值逻辑。
+summary: SELECT/WHERE/GROUP BY 的语义与 JS 数组方法一一对应，filter、map、reduce 换个数据源而已。真正的新东西是 JOIN 和 NULL 三值逻辑。
 ---
 
 SQL 对前端工程师有个隐藏优势：它的核心语义和 JS 数组方法一一对应，`WHERE ≈ filter`、`GROUP BY ≈ reduce`。真正的新东西只有两块：**JOIN** 和 **NULL 的三值逻辑**。本篇以 MySQL 为例。
@@ -39,8 +39,8 @@ LIMIT 10;
 
 三种 JOIN 的区别用韦恩图记忆：
 
-- **INNER JOIN**：两表都有的行（交集）——最常用
-- **LEFT JOIN**：左表全保留，右表没匹配填 NULL——"查所有用户，包括没下过单的"只能用它
+- **INNER JOIN**：两表都有的行（交集），最常用
+- **LEFT JOIN**：左表全保留，右表没匹配填 NULL。"查所有用户，包括没下过单的"只能用它
 - **RIGHT JOIN**：LEFT 的镜像，实际代码里习惯改写成 LEFT（调整表位置），可读性更好
 
 ## GROUP BY：对照 reduce
@@ -72,18 +72,18 @@ WITH big_orders AS (
 SELECT u.name, b.total FROM big_orders b JOIN users u ON u.id = b.user_id;
 ```
 
-写复杂查询的习惯：**用 CTE 把"每一步算什么"起名拆开**，一步一验，比一条几百行的嵌套 SQL 好维护得多——和代码里"提取中间变量"是同一个道理。另外记住一个实战常用的 upsert：`INSERT ... ON DUPLICATE KEY UPDATE`（存在则更新，常用于计数器、配置项写入）。
+写复杂查询的习惯：**用 CTE 把"每一步算什么"起名拆开**，一步一验，比一条几百行的嵌套 SQL 好维护得多，和代码里"提取中间变量"是同一个道理。另外记住一个实战常用的 upsert：`INSERT ... ON DUPLICATE KEY UPDATE`（存在则更新，常用于计数器、配置项写入）。
 
 ## NULL：三值逻辑的陷阱
 
 JS 里 `null == undefined` 的宽松直觉在 SQL 会踩坑，因为 NULL 参与运算的结果还是 NULL（不是 true/false，是"未知"）：
 
 ```sql
-SELECT * FROM users WHERE city != '杭州';   -- city 为 NULL 的行【不会出现】！
+SELECT * FROM users WHERE city != '杭州';   -- city 为 NULL 的行【不会出现】
 SELECT * FROM users WHERE city IS NULL;     -- 判空必须用 IS NULL / IS NOT NULL
 ```
 
-"不等于杭州"查不出"没有城市"的人——因为 NULL 与任何值比较都是 UNKNOWN，而 WHERE 只留 TRUE 行。这是 SQL 与 JS 逻辑最大的语义差异，**建表时想清楚哪些列允许 NULL**（能 NOT NULL 就 NOT NULL，给默认值更好）。
+"不等于杭州"查不出"没有城市"的人：NULL 与任何值比较都是 UNKNOWN，而 WHERE 只留 TRUE 行。这是 SQL 与 JS 逻辑最大的语义差异，**建表时想清楚哪些列允许 NULL**（能 NOT NULL 就 NOT NULL，给默认值更好）。
 
 ## 参考与延伸
 

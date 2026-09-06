@@ -2,10 +2,10 @@
 title: Vue Router 与 Pinia：路由与状态管理
 date: 2026-09-06
 tags: [Vue生态]
-summary: SPA 的两大基础设施：Router 把 URL 变成状态源，Pinia 把跨组件状态收拢成组合式函数——守卫做鉴权、懒加载做分包、持久化做记忆，落地用法一篇收拢。
+summary: SPA 的路由与状态管理：Router 把 URL 变成状态源，Pinia 用组合式函数的写法管理跨组件状态。守卫做鉴权、懒加载做分包、持久化做状态恢复。
 ---
 
-Vue 生态的官方全家桶里，Router 和 Pinia 是除核心之外必装的两件：**Router 解决「URL ↔ 界面」的映射**（刷新不丢、可分享、可前进后退），**Pinia 解决「跨组件状态放哪」**。这篇按「装上就用的主干 + 真实项目里的高频配置」展开。核心机制见[Vue 3 核心](01-vue3-core.md)，服务端渲染下的路由与状态进阶在[Nuxt](04-nuxt.md)。
+Vue 官方生态里，Router 和 Pinia 是除核心之外必装的两个库：**Router 解决「URL ↔ 界面」的映射**（刷新不丢、可分享、可前进后退），**Pinia 解决「跨组件状态放哪」**。核心机制见[Vue 3 核心](01-vue3-core.md)，服务端渲染下的路由与状态进阶在[Nuxt](04-nuxt.md)。
 
 ## 路由基础：把 URL 变成组件树
 
@@ -28,8 +28,8 @@ export const router = createRouter({
 });
 ```
 
-- **组件内取参**：`useRoute()` 读（`route.params.id`、`route.query.q`），`useRouter()` 写（`router.push({ name: "article", params: { id } })`)——push 传对象比拼字符串可靠（自动编码、类型可查）
-- **`/article/1` 与 `/article/1?tab=comments` 是同一路由不同 query**：组件默认复用（不重新挂载），依赖 query 的逻辑用 `watch(() => route.query, …)` 而不是 onMounted——这是复用机制下的高频坑
+- **组件内取参**：`useRoute()` 读（`route.params.id`、`route.query.q`），`useRouter()` 写（`router.push({ name: "article", params: { id } })`)。push 传对象比拼字符串可靠（自动编码、类型可查）
+- **`/article/1` 与 `/article/1?tab=comments` 是同一路由不同 query**：组件默认复用（不重新挂载），依赖 query 的逻辑用 `watch(() => route.query, …)` 而不是 onMounted，这是复用机制下的常见问题
 - 懒加载写法（`() => import()`）从第一个业务路由就该用，Vite 会自动按路由切分包，对应[性能篇](../performance/01-performance-metrics.md)的代码分割手段
 
 ## 导航守卫：鉴权与拦截的标准位置
@@ -48,7 +48,7 @@ router.beforeEach(async (to) => {
 
 ## Pinia：store 就是组合式函数
 
-Pinia 的 store 写法直接复用组合式 API 的心智：
+Pinia 的 store 写法直接复用组合式 API：
 
 ```ts title="stores/articles.ts"
 import { defineStore } from "pinia";
@@ -71,11 +71,11 @@ export const useArticlesStore = defineStore("articles", () => {
 两个高频细节：
 
 - **解构会丢响应性**：`const { list } = store` 拿到的是快照值；要解构用 `const { list } = storeToRefs(store)`（方法不用包，直接解构）
-- **store 之间可以互相 use**：登录 store 里调 `useUserStore()` 拉资料、路由守卫里调 auth store——Pinia 没有 module 层级，扁平注册、按需引入，这正是它取代 Vuex 的原因（没有 mutation、天然 TS 推导、DevTools 完整支持）
+- **store 之间可以互相 use**：登录 store 里调 `useUserStore()` 拉资料、路由守卫里调 auth store。Pinia 没有 module 层级，扁平注册、按需引入，这正是它取代 Vuex 的原因（没有 mutation、天然 TS 推导、DevTools 完整支持）
 
 ## 持久化与状态恢复
 
-刷新丢状态是 SPA 的默认行为，需要「记忆」的状态（登录 token、主题偏好）做持久化：
+刷新丢状态是 SPA 的默认行为，需要跨刷新保留的状态（登录 token、主题偏好）做持久化：
 
 ```ts title="persistence.ts"
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
@@ -83,8 +83,8 @@ pinia.use(piniaPluginPersistedstate);
 // store 定义里： { persist: { pick: ["token", "theme"], storage: localStorage } }
 ```
 
-注意与[浏览器存储](../browser/02-http-cache-and-storage.md)的选型边界：持久化插件底层就是 localStorage，只适合小体量偏好数据；敏感凭证要考虑 XSS 面（localStorage 可被脚本读，HttpOnly Cookie 更安全——那需要后端配合）。
+注意与[浏览器存储](../browser/02-http-cache-and-storage.md)的选型边界：持久化插件底层就是 localStorage，只适合小体量偏好数据；敏感凭证要考虑 XSS 面（localStorage 可被脚本读，HttpOnly Cookie 更安全，但需要后端配合）。
 
 ## 小结
 
-Router 与 Pinia 的分工一句话：**URL 是可分享的状态源，store 是可共享的状态源**——路由参数决定「看什么」，store 决定「拿什么看」。守卫是两者交汇点（读状态、控导航）。骨架齐了之后，把这套栈搬到服务端就是[Nuxt](04-nuxt.md)；组件复用与高级原语见[组件进阶](03-vue-component-patterns.md)。
+Router 与 Pinia 的分工：**URL 是可分享的状态源，store 是可共享的状态源**，路由参数决定「看什么」，store 决定「拿什么看」。守卫是两者的交汇点（读状态、控导航）。把这套栈搬到服务端就是[Nuxt](04-nuxt.md)；组件复用与高级原语见[组件进阶](03-vue-component-patterns.md)。

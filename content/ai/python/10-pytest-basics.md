@@ -2,10 +2,10 @@
 title: pytest 入门
 date: 2026-09-05
 tags: [Python]
-summary: 断言即测试、参数化、fixture 管依赖、mock 边界——最小成本的测试习惯，从写给 embedding 函数的第一个单测开始。
+summary: 断言即测试、参数化、fixture 管依赖、mock 边界：最小成本的测试习惯，从写给 embedding 函数的第一个单测开始。
 ---
 
-测试不写，重构全靠胆子。pytest 的哲学是**让测试看起来就是普通 Python 函数**：不用类、不用断言库，`assert` 什么就测什么，失败时自动帮你展开上下文。
+测试是重构的前提。pytest 的哲学是**让测试看起来就是普通 Python 函数**：不用类、不用断言库，`assert` 什么就测什么，失败时自动展开上下文。
 
 ## 第一批测试
 
@@ -56,7 +56,7 @@ def test_clean_text(raw, expected):
 
 ## fixture：测试的依赖注入
 
-被测函数要数据库、要 API key、要临时文件？fixture 声明一次，按名注入：
+被测函数需要数据库、API key 或临时文件时，用 fixture 声明一次，按名注入：
 
 ```python title="fixtures.py"
 import pytest
@@ -76,11 +76,11 @@ def test_iter_chunks(sample_chunks, tmp_corpus):
     assert tmp_corpus.exists()
 ```
 
-`tmp_path`、`caplog`、`monkeypatch` 是内置 fixture 三件套。fixture 默认每个测试独立（隔离），`scope="module"` 可共享昂贵资源。
+`tmp_path`、`caplog`、`monkeypatch` 是常用的内置 fixture。fixture 默认每个测试独立（隔离），`scope="module"` 可共享昂贵资源。
 
-## mock：把外部世界挡在门外
+## mock：隔离外部依赖
 
-单测不该真的调 embedding API——又慢又花钱还不稳定：
+单测不该真的调 embedding API，又慢又花钱还不稳定：
 
 ```python title="mock.py"
 from unittest.mock import Mock
@@ -95,7 +95,7 @@ def test_index_builds_from_embedder():
     assert index.vectors == [[0.1, 0.2]]
 ```
 
-原则：**mock 边界，不 mock 内部**——mock 网络客户端/模型 API，绝不去 mock 被测函数自己调的下层工具函数。
+原则：**mock 边界，不 mock 内部**。mock 网络客户端/模型 API，绝不 mock 被测函数自己调的下层工具函数。
 
 ## 参考与延伸
 

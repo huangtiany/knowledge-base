@@ -2,10 +2,10 @@
 title: PyTorch 读懂级：加载模型跑通 demo
 date: 2026-09-05
 tags: [Python]
-summary: 目标不是训练模型，是读懂微调/embedding 代码、跑通推理 demo——只需要 tensor、autograd 概念、Module 和 save/load 四块。
+summary: 目标不是训练模型，而是读懂微调/embedding 代码、跑通推理 demo：需要 tensor、autograd 概念、Module 和 save/load 四块。
 ---
 
-应用工程师对 PyTorch 的需求是**读懂级**：看懂微调脚本在干嘛、能把 HuggingFace 模型加载下来跑推理、知道显存去了哪。不需要推导反向传播。这篇就收这四块。
+应用工程师对 PyTorch 的需求是**读懂级**：看懂微调脚本在做什么、能把 HuggingFace 模型加载下来跑推理、知道显存消耗在哪。不需要推导反向传播。本文覆盖这四块。
 
 ## tensor：带 GPU 和梯度的一维/多维数组
 
@@ -21,11 +21,11 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 w_gpu = w.to(device)                  # 数据显式搬上 GPU
 ```
 
-tensor = numpy 数组 + 两件超能力：`device`（数据在 CPU/GPU 哪里，要手动 `.to()` 搬运）和 `requires_grad`（自动求导引擎的开关）。读代码时看到 `.to("cuda")`、`.cpu()` 都是在搬设备。
+tensor = numpy 数组 + 两项额外能力：`device`（数据在 CPU/GPU 哪里，要手动 `.to()` 搬运）和 `requires_grad`（自动求导引擎的开关）。读代码时看到 `.to("cuda")`、`.cpu()` 都是在设备间搬数据。
 
 ## autograd：只需要知道这一件事
 
-训练 = 前向算损失 → 反向算梯度 → 优化器更新参数。autograd 把"反向"全自动了：
+训练 = 前向算损失 → 反向算梯度 → 优化器更新参数。autograd 把反向这一步全自动了：
 
 ```python title="autograd.py"
 w = torch.tensor([1.0], requires_grad=True)
@@ -64,7 +64,7 @@ torch.save(model.state_dict(), "model.pt")     # 存参数（推荐只存 state_
 model.load_state_dict(torch.load("model.pt"))  # 读参数
 ```
 
-显存粗估（读代码时判断"我这卡跑得动吗"用）：模型加载显存 ≈ 参数量 × 每参字节数。7B 模型 fp16 ≈ 14 GB，int4 量化 ≈ 4 GB——这就是量化（见 [KV cache 与量化速览](../llm-basics/03-kv-cache-and-quantization.md)）存在的意义。训练再叠加梯度和优化器状态（fp16 训练约 ×4），所以 7B 全参微调要 A100 级，LoRA 微调一张 24G 卡即可（见 [LoRA / QLoRA](../finetune/01-lora-and-qlora.md)）。
+显存粗估（读代码时判断显存是否够用）：模型加载显存 ≈ 参数量 × 每参字节数。7B 模型 fp16 ≈ 14 GB，int4 量化 ≈ 4 GB，这就是量化的作用（见 [KV cache 与量化速览](../llm-basics/03-kv-cache-and-quantization.md)）。训练再叠加梯度和优化器状态（fp16 训练约 ×4），所以 7B 全参微调要 A100 级，LoRA 微调一张 24G 卡即可（见 [LoRA / QLoRA](../finetune/01-lora-and-qlora.md)）。
 
 ## 参考与延伸
 

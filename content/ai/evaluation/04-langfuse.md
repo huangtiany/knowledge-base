@@ -2,10 +2,10 @@
 title: Langfuse：Trace 与成本统计
 date: 2026-09-05
 tags: [评测与可观测]
-summary: 上线之后每一笔 LLM 调用都该有迹可查：trace 看一次请求的完整调用树，成本统计看钱花在哪，评分回流把线上数据变成评测集。
+summary: 上线之后每一笔 LLM 调用都该有迹可查：trace 看一次请求的完整调用树，成本统计看费用分布，评分回流把线上数据变成评测集。
 ---
 
-评测（离线，事前把关）和可观测（在线，事后追查）是互补的两半。Langfuse 是开源 LLM 可观测的事实标准之一：接入成本低（SDK 埋点）、与 OpenAI SDK/LangGraph 原生集成、trace/成本/评测回流三件套齐全。
+评测（离线，事前把关）和可观测（在线，事后追查）是互补的两部分。Langfuse 是开源 LLM 可观测的事实标准之一：接入成本低（SDK 埋点）、与 OpenAI SDK/LangGraph 原生集成、trace/成本/评测回流三项功能齐全。
 
 ## Trace：一次请求的完整调用树
 
@@ -32,22 +32,22 @@ with lf.start_as_current_span(name="rag_search") as span:
 
 排查场景：用户报"答错了" → 按 session_id 找到那次 trace → 看检索给了什么、prompt 是什么、模型输出什么 → 失败在检索还是生成一眼定位（对应[评测的三层失败](01-evaluation-first.md)，从离线搬到线上）。
 
-## 成本统计：钱花在哪、花得值不值
+## 成本统计：按请求与按维度
 
 Langfuse 按模型单价自动算每个 span 的费用，聚合成两个视角：
 
 - **按请求**：哪类请求最贵？通常是"检索内容塞太多"或"Agent 轮数失控"（见[上下文成本](../llm-basics/02-context-window-and-tokens.md)）
-- **按维度**：按用户/功能/模型分组聚合——小模型路由（见[路由模式](../agent/02-five-patterns.md)）的省钱效果，用数据说话
+- **按维度**：按用户/功能/模型分组聚合。小模型路由（见[路由模式](../agent/02-five-patterns.md)）的节省效果可以直接从数据得出
 
 成本异常是最容易先被发现的故障信号：某天单请求成本 ×3，往往意味着检索退化（context 暴涨）或循环失控。
 
-## 评分回流：线上数据喂评测集
+## 评分回流：线上数据进入评测集
 
-可观测和评测的闭环——线上 trace 打标后回流成评测资产：
+可观测和评测形成回路：线上 trace 打标后回流成评测资产。
 
 1. **用户反馈**：点赞/点踩挂在 session 上，差评的 trace 进入人工复核队列
 2. **人工标注**：复核结论（检索失败/生成幻觉/拒答过敏）写成标签
-3. **沉淀用例**：每个确认的失败案例转化为[评测集](01-evaluation-first.md)的一条用例——线上病历本持续变厚
+3. **沉淀用例**：每个确认的失败案例转化为[评测集](01-evaluation-first.md)的一条用例，线上"病历本"持续变厚
 
 这一步是[评测先行](01-evaluation-first.md)说的"评测集就是病历本"的线上实现。
 
@@ -58,7 +58,7 @@ uv add langfuse
 export LANGFUSE_PUBLIC_KEY=... LANGFUSE_SECRET_KEY=... LANGFUSE_HOST=...
 ```
 
-自托管（docker compose，数据不出内网）或用 Langfuse Cloud 免费额度。同类选项：LangSmith（LangChain 官方，与 LangGraph 集成最深，见其文档）、Arize Phoenix（开源，评测向）。选择标准：**用了 LangGraph 就优先试 LangSmith，否则 Langfuse 的开源自托管更省心**。
+自托管（docker compose，数据不出内网）或用 Langfuse Cloud 免费额度。同类选项：LangSmith（LangChain 官方，与 LangGraph 集成最深，见其文档）、Arize Phoenix（开源，评测向）。选择标准：**用了 LangGraph 就优先试 LangSmith，否则 Langfuse 的开源自托管运维成本更低**。
 
 ## 参考与延伸
 

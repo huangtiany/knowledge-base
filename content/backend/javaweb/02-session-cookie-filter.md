@@ -2,14 +2,14 @@
 title: Session、Cookie 与 Filter
 date: 2026-09-05
 tags: [JavaWeb]
-summary: Cookie 和 Session 的概念前端完全熟悉，新的只是"存在哪"的分工；Filter 是服务端的中间件链，Spring 拦截器和网关都是它的精神后代。
+summary: Cookie 和 Session 的概念前端完全熟悉，新的只是"存在哪"的分工；Filter 是服务端的中间件链，Spring 拦截器和网关都是同一思路的延伸。
 ---
 
-这篇的两个主题前端都有等价物：Cookie/Session 只需要弄清"存在哪、谁管理"；Filter 就是 Express 中间件的服务端 Java 版。它们是登录态与请求横切逻辑的地基。
+两个主题前端都有等价物：Cookie/Session 只需要弄清"存在哪、谁管理"；Filter 就是 Express 中间件的服务端 Java 版。它们是登录态与请求横切逻辑的基础。
 
-## Cookie 与 Session：同一份登录态的两半
+## Cookie 与 Session：登录态存在哪
 
-HTTP 本身无状态——每个请求都是陌生的。维持"登录了"的状态靠两件套：
+HTTP 本身无状态，服务端不记得上一个请求。维持"登录了"的状态靠两件套：
 
 ```text
 登录成功
@@ -28,11 +28,11 @@ HTTP 本身无状态——每个请求都是陌生的。维持"登录了"的状�
 
 token 方案把状态挪到客户端（服务端无状态、易水平扩容），代价是签发与校验逻辑（JWT）；session 方案服务端可控可踢人，代价是分布式下要共享 Session（放 Redis）。两套都要认识：新项目常是 token，老项目（尤其银行类）Session 方案常见。
 
-Java 里 Session 的常用 API 一眼就懂：`request.getSession().setAttribute("user", u)` / `.getAttribute("user")`——对照 `localStorage.setItem`，只是存的方向在服务端。Cookie 的 `HttpOnly` 属性顺带记住：设了它 JS 就读不到这个 Cookie，登录凭证类 Cookie 必设（防 XSS 偷 token）。
+Java 里 Session 的常用 API 一眼就懂：`request.getSession().setAttribute("user", u)` / `.getAttribute("user")`，对照 `localStorage.setItem`，只是存的方向在服务端。Cookie 的 `HttpOnly` 属性顺带记住：设了它 JS 就读不到这个 Cookie，登录凭证类 Cookie 必设（防 XSS 偷 token）。
 
 ## Filter：服务端的中间件链
 
-Filter（过滤器）在请求到达 Servlet **之前**（和响应返回**之后**）执行横切逻辑——和 Express 的 middleware 概念完全同构：
+Filter（过滤器）在请求到达 Servlet **之前**（和响应返回**之后**）执行横切逻辑，和 Express 的 middleware 概念完全同构：
 
 ```javascript
 // Express 中间件
@@ -55,11 +55,11 @@ public class AuthFilter implements Filter {
 }
 ```
 
-`chain.doFilter()` 就是 Express 的 `next()`：多个 Filter 按配置顺序组成链，前半段在请求前执行、后半段在响应后执行。登录校验、字符编码、日志埋点、防 XSS 过滤——这些"每个请求都要"的逻辑都住在这里。
+`chain.doFilter()` 就是 Express 的 `next()`：多个 Filter 按配置顺序组成链，前半段在请求前执行、后半段在响应后执行。登录校验、字符编码、日志埋点、防 XSS 过滤，这些"每个请求都要"的逻辑都写在这里。
 
-## 拦截器与网关：Filter 的精神后代
+## 拦截器与网关：同一思路的延伸
 
-这条横切思路后面会反复遇到，先建立家族图谱：
+这条横切思路后面会反复遇到，先分清三个层次：
 
 - **Filter**：Servlet 规范层，最底层，能拦所有请求（含静态资源）
 - **Spring 拦截器（HandlerInterceptor）**：Spring MVC 层，只拦业务请求、能拿到 Controller 信息（见 [Spring Boot 要点](../spring/03-spring-boot-essentials.md)）
