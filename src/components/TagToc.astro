@@ -1,0 +1,15 @@
+---
+// 标签目录：锚点 + 计数徽标。栏目页右栏与移动端抽屉（NavDrawer）共用；
+// 右栏实例传 spy，配合 Layout 的全局 scroll-spy 脚本高亮当前分组。
+interface Props {
+  entries: { tag: string; count: number }[];
+  spy?: boolean;
+}
+const { entries, spy = false } = Astro.props;
+---
+<aside class="toc" data-spy={spy ? '' : undefined}>
+  <div class="toc-t">标签目录</div>
+  {entries.map((e) => (
+    <a href={`#${e.tag}`}>{e.tag}<span class="n">{e.count}</span></a>
+  ))}
+</aside>

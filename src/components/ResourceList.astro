@@ -1,8 +1,12 @@
 ---
-// 资源收藏页：外链卡时间流，按收藏日期倒序；source 缺省时从 url 提取域名。
+// 资源收藏页：按受控标签分组（组序 = tags.yaml 清单顺序），组内按收集时间倒序
+// （稳定排序，同日卡片保持 resources.yaml 录入顺序并列）；多标签卡出现在多个分组，
+// 未打标的落「未分组」垫底。source 缺省时从 url 提取域名。右侧标签目录住进宽屏空白。
 import Layout from '../layouts/Layout.astro';
 import { DOMAINS, type DomainKey } from '../lib/domains';
+import { loadTags } from '../lib/tags';
 import { formatShortDate } from '../lib/format';
+import TagToc from './TagToc.astro';
 
 interface Props {
   dom: DomainKey;
@@ -11,8 +15,23 @@ interface Props {
 const { dom, resources } = Astro.props;
 const meta = DOMAINS[dom];
 const base = import.meta.env.BASE_URL;
+const domainTags = loadTags()[dom];
 
-const sorted = [...resources].sort((a, b) => +b.data.date - +a.data.date);
+const UNTAGGED = '未分组';
+const byTag = new Map(domainTags.map((t) => [t, [] as any[]]));
+const untagged: any[] = [];
+for (const r of resources) {
+  const tags = (r.data.tags ?? []).filter((t: string) => byTag.has(t));
+  if (tags.length === 0) untagged.push(r);
+  else for (const t of tags) byTag.get(t)!.push(r);
+}
+const groups = [...byTag.entries()]
+  .filter(([, list]) => list.length > 0)
+  .map(([tag, list]) => ({ tag, list }));
+if (untagged.length > 0) groups.push({ tag: UNTAGGED, list: untagged });
+for (const g of groups) g.list.sort((a, b) => +b.data.date - +a.data.date);
+
+const tocEntries = groups.map((g) => ({ tag: g.tag, count: g.list.length }));
 const hostOf = (url: string) => {
   try {
     return new URL(url).hostname.replace(/^www\./, '');
@@ -23,35 +42,52 @@ const hostOf = (url: string) => {
 ---
 <Layout title={`资源收藏 · ${meta.name} · 格致`} description={`收集的 ${meta.name} 领域外部资源：链接 + 一句话摘要。`} dom={dom} active={dom}>
   <div class="wrap">
-    <div class="colhead">
-      <div class="crumb"><a href={base}>首页</a> / <a href={`${base}${dom}/`}>{meta.name}</a> / 资源收藏</div>
-      <h1>资源收藏 · {meta.name}</h1>
-      <p class="desc">外链 + 一句话摘要。只收真正读过的，链接可能失效，摘要帮我决定要不要再点开。</p>
-      <div class="colstats">{sorted.length} 张 · 按收集时间倒序</div>
-    </div>
-    <div class="subtabs">
-      <a href={`${base}${dom}/`}>文章</a>
-      <a class="on" href={`${base}${dom}/resources/`}>资源收藏</a>
-    </div>
+    <div class="col-layout">
+      <div>
+        <div class="colhead">
+          <div class="crumb"><a href={base}>首页</a> / <a href={`${base}${dom}/`}>{meta.name}</a> / 资源收藏</div>
+          <h1>资源收藏 · {meta.name}</h1>
+          <p class="desc">外链 + 一句话摘要。只收真正读过的，链接可能失效，摘要帮我决定要不要再点开。</p>
+          <div class="colstats">{resources.length} 张 · 按标签分组 · 组内按收集时间倒序</div>
+        </div>
+        <div class="subtabs">
+          <a href={`${base}${dom}/`}>文章</a>
+          <a class="on" href={`${base}${dom}/resources/`}>资源收藏</a>
+        </div>
 
-    {sorted.length === 0 ? (
-      <div class="empty-hint">
-        <div class="big">还没有收藏任何资源</div>
-        往 content/{dom}/resources.yaml 里加一张卡，这里就会出现第一格。
+        {groups.length === 0 ? (
+          <div class="empty-hint">
+            <div class="big">还没有收藏任何资源</div>
+            往 content/{dom}/resources.yaml 里加一张卡，这里就会出现第一格。
+          </div>
+        ) : (
+          groups.map((g) => (
+            <section class="taggroup">
+              <h2
+                id={g.tag}
+                style={g.tag === UNTAGGED ? 'color:#AEB5BC' : 'color:var(--dom,var(--ai))'}
+              >
+                {g.tag} <span class="cnt">{g.list.length} 张</span>
+              </h2>
+              <div class="rule"></div>
+              <ul class="reslist">
+                {g.list.map((r) => (
+                  <li class="rescard" id={r.id}>
+                    <div class="res-head">
+                      <a class="res-title" href={r.data.url} target="_blank" rel="noopener noreferrer">{r.data.title}</a>
+                      <span class="res-src">{r.data.source ?? hostOf(r.data.url)}</span>
+                    </div>
+                    <p class="res-sum">{r.data.summary}</p>
+                    <div class="res-date">收藏于 {formatShortDate(r.data.date)}</div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))
+        )}
       </div>
-    ) : (
-      <ul class="reslist">
-        {sorted.map((r) => (
-          <li class="rescard" id={r.id}>
-            <div class="res-head">
-              <a class="res-title" href={r.data.url} target="_blank" rel="noopener noreferrer">{r.data.title}</a>
-              <span class="res-src">{r.data.source ?? hostOf(r.data.url)}</span>
-            </div>
-            <p class="res-sum">{r.data.summary}</p>
-            <div class="res-date">收藏于 {formatShortDate(r.data.date)}</div>
-          </li>
-        ))}
-      </ul>
-    )}
+
+      {tocEntries.length > 0 && <TagToc entries={tocEntries} spy />}
+    </div>
   </div>
 </Layout>

@@ -1,9 +1,12 @@
 ---
-// 栏目页：按标签分组展示文章；清单差集渲染灰色"待学习"分组（标签清单兼任学习路线图）。
+// 栏目页：按标签分组展示文章，右侧标签目录住进宽屏空白（锚点 + scroll-spy）；
+// 清单差集不再逐组渲染，收成一行灰色"计划中"（标签清单兼任学习路线图）。
 import Layout from '../layouts/Layout.astro';
 import { DOMAINS, type DomainKey } from '../lib/domains';
 import { loadTags } from '../lib/tags';
+import { groupArticlesByTags } from '../lib/navigation';
 import { formatShortDate } from '../lib/format';
+import TagToc from './TagToc.astro';
 
 interface Props {
   dom: DomainKey;
@@ -15,13 +18,8 @@ const meta = DOMAINS[dom];
 const base = import.meta.env.BASE_URL;
 const domainTags = loadTags()[dom];
 
-const byTag = new Map(domainTags.map((t) => [t, [] as any[]]));
-for (const a of articles) for (const t of a.data.tags) byTag.get(t)?.push(a);
-// 组内按文件名序号排（01-、02-… 即学习路径）；同批写就的笔记日期相同，按日期排会打乱学习顺序
-for (const list of byTag.values()) list.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
-
-const filled = domainTags.filter((t) => (byTag.get(t)?.length ?? 0) > 0);
-const waiting = domainTags.filter((t) => (byTag.get(t)?.length ?? 0) === 0);
+const { filled, waiting, byTag } = groupArticlesByTags(domainTags, articles);
+const tocEntries = filled.map((tag) => ({ tag, count: byTag.get(tag)!.length }));
 const lastUpdated = articles.length
   ? formatShortDate(articles.reduce((m, a) => (+a.data.date > +m ? a.data.date : m), articles[0].data.date))
   : null;
@@ -29,48 +27,48 @@ const stats = `${articles.length} 篇笔记 · ${resCount} 张资源卡${lastUpd
 ---
 <Layout title={`${meta.name} · 格致`} description={meta.desc} dom={dom} active={dom}>
   <div class="wrap">
-    <div class="colhead">
-      <div class="crumb"><a href={base}>首页</a> / {meta.name}</div>
-      <h1>{meta.name}</h1>
-      <p class="desc">{meta.desc}</p>
-      <div class="colstats">{stats}</div>
+    <div class="col-layout">
+      <div>
+        <div class="colhead">
+          <div class="crumb"><a href={base}>首页</a> / {meta.name}</div>
+          <h1>{meta.name}</h1>
+          <p class="desc">{meta.desc}</p>
+          <div class="colstats">{stats}</div>
+        </div>
+        <div class="subtabs">
+          <a class="on" href={`${base}${dom}/`}>文章</a>
+          <a href={`${base}${dom}/resources/`}>资源收藏</a>
+        </div>
+
+        {filled.length === 0 && (
+          <div class="empty-hint">
+            <div class="big">还没有任何笔记</div>
+            在 content/{dom}/ 下写下第一篇并打上标签，这里就会长出第一个分组。
+          </div>
+        )}
+
+        {filled.map((tag) => (
+          <div class="taggroup">
+            <h2 id={tag} style={`color:var(--dom,var(--ai))`}>{tag} <span class="cnt">{byTag.get(tag)!.length} 篇</span></h2>
+            <div class="rule"></div>
+            <ul class="artlist">
+              {byTag.get(tag)!.map((a) => (
+                <li>
+                  <a href={`${base}${dom}/${a.id}/`}>
+                    <span class="a-date">{formatShortDate(a.data.date)}</span>
+                    <span class="a-title">{a.data.title}</span>
+                    {a.data.summary && <span class="a-sub">{a.data.summary}</span>}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+
+        {waiting.length > 0 && <p class="tag-wait-line">计划中：{waiting.join('、')}</p>}
+      </div>
+
+      {tocEntries.length > 0 && <TagToc entries={tocEntries} spy />}
     </div>
-    <div class="subtabs">
-      <a class="on" href={`${base}${dom}/`}>文章</a>
-      <a href={`${base}${dom}/resources/`}>资源收藏</a>
-    </div>
-
-    {filled.length === 0 && (
-      <div class="empty-hint">
-        <div class="big">还没有任何笔记</div>
-        在 content/{dom}/ 下写下第一篇并打上标签，这里就会长出第一个分组。
-      </div>
-    )}
-
-    {filled.map((tag) => (
-      <div class="taggroup">
-        <h2 id={tag} style={`color:var(--dom,var(--ai))`}>{tag} <span class="cnt">{byTag.get(tag)!.length} 篇</span></h2>
-        <div class="rule"></div>
-        <ul class="artlist">
-          {byTag.get(tag)!.map((a) => (
-            <li>
-              <a href={`${base}${dom}/${a.id}/`}>
-                <span class="a-date">{formatShortDate(a.data.date)}</span>
-                <span class="a-title">{a.data.title}</span>
-                {a.data.summary && <span class="a-sub">{a.data.summary}</span>}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    ))}
-
-    {waiting.map((tag) => (
-      <div class="taggroup">
-        <h2 id={tag} style="color:#AEB5BC">{tag} <span class="cnt">待学习</span></h2>
-        <div class="rule"></div>
-        <div class="tag-wait">还没有内容——计划中，学到这里时会补上。</div>
-      </div>
-    ))}
   </div>
 </Layout>

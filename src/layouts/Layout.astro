@@ -183,5 +183,46 @@ const ogDescription = description ?? '本地书写 Markdown 的个人知识库�
         window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
       });
     </script>
+
+    <script>
+      // 右栏标签目录 scroll-spy：滚动时取 header 下方最近越线的分组标题，
+      // 给 [data-spy] 容器内对应锚点标 aria-current 高亮。纯增强，无 JS 时锚点跳转仍可用。
+      const spyBox = document.querySelector<HTMLElement>('[data-spy]');
+      if (spyBox) {
+        const links = new Map<string, HTMLAnchorElement>();
+        spyBox.querySelectorAll('a[href^="#"]').forEach((a) => {
+          const href = a.getAttribute('href')!;
+          const id = decodeURIComponent(href.slice(1));
+          if (!links.has(id)) links.set(id, a);
+        });
+        // 目录顺序 = DOM 中分组顺序，按序扫描取"最近越线"的标题即可
+        const targets = [...links.keys()]
+          .map((id) => document.getElementById(id))
+          .filter((el): el is HTMLElement => !!el);
+        let ticking = false;
+        const update = () => {
+          ticking = false;
+          let current: string | null = null;
+          for (const t of targets) {
+            if (t.getBoundingClientRect().top <= 90) current = t.id;
+            else break;
+          }
+          if (!current && targets.length) current = targets[0].id; // 页首也让目录有落点
+          links.forEach((a, id) => {
+            if (id === current) a.setAttribute('aria-current', 'true');
+            else a.removeAttribute('aria-current');
+          });
+        };
+        const onScroll = () => {
+          if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(update);
+          }
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll, { passive: true });
+        update();
+      }
+    </script>
   </body>
 </html>
