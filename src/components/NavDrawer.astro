@@ -81,6 +81,8 @@ const hasTabs = page === 'detail';
         drawer.querySelectorAll<HTMLElement>('[data-tab]').forEach((panel) => {
           panel.hidden = panel.dataset.tab !== btn.dataset.tabBtn;
         });
+        // 通知 ArticleNav 把当前文章滚进可视区（tab 解除隐藏前无法定位）
+        document.dispatchEvent(new CustomEvent('nav-drawer:tab', { detail: { tab: btn.dataset.tabBtn } }));
       });
     });
   }

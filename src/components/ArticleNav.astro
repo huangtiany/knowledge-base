@@ -28,3 +28,31 @@ const { filled, byTag } = groupArticlesByTags(domainTags, articles);
     </div>
   ))}
 </nav>
+
+<script>
+  // 落地时把当前文章滚进导航可视区：从列表点进详情，当前项可能在栏内滚动区之外。
+  // 滚动容器取祖先里第一个 overflow-y:auto/scroll——左栏是自身，抽屉里是 .drawer-body。
+  const centerCurrent = (nav: HTMLElement) => {
+    const cur = nav.querySelector<HTMLAnchorElement>('a[aria-current="page"]');
+    if (!cur || cur.offsetHeight === 0) return; // 面板 display:none（抽屉未切到本 tab）时跳过
+    let scroller: HTMLElement | null = cur.parentElement;
+    while (scroller && scroller !== document.body) {
+      const oy = getComputedStyle(scroller).overflowY;
+      if (oy === 'auto' || oy === 'scroll') break;
+      scroller = scroller.parentElement;
+    }
+    if (!scroller || scroller === document.body) return;
+    const s = scroller.getBoundingClientRect();
+    const c = cur.getBoundingClientRect();
+    if (c.top >= s.top && c.bottom <= s.bottom) return; // 已完整可见则不动
+    scroller.scrollTop += c.top - s.top - (s.height - c.height) / 2; // 居中
+  };
+  const run = () => document.querySelectorAll<HTMLElement>('.art-nav').forEach(centerCurrent);
+  run();
+  // 抽屉的「全部笔记」tab 切换前是 display:none，无法定位；由 NavDrawer 切换后派发事件补一次
+  document.addEventListener('nav-drawer:tab', (e) => {
+    if ((e as CustomEvent).detail?.tab === 'nav') {
+      document.querySelectorAll<HTMLElement>('.drawer .art-nav').forEach(centerCurrent);
+    }
+  });
+</script>
