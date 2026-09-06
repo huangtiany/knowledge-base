@@ -7,6 +7,7 @@ import { formatFullDate } from '../lib/format';
 import { buildDomainChain, chainNeighbors } from '../lib/navigation';
 import { loadTags } from '../lib/tags';
 import ArticleNav from '../components/ArticleNav.astro';
+import NavDrawer from '../components/NavDrawer.astro';
 
 export async function getStaticPaths() {
   const ai = await getCollection('ai');
@@ -101,5 +102,19 @@ const { prev, next } = chainNeighbors(buildDomainChain(domainTags, domainArticle
         ))}
       </aside>
     </div>
+
+    <NavDrawer page="detail">
+      <Fragment slot="toc">
+        <aside class="toc">
+          <div class="toc-t">目录 / TOC</div>
+          {toc.map((h) => (
+            <a class:list={[{ l2: h.depth === 3 }]} href={`#${h.slug}`}>{h.text.replace(/^§\s*\d+\s*/, '')}</a>
+          ))}
+        </aside>
+      </Fragment>
+      <Fragment slot="nav">
+        <ArticleNav domainTags={domainTags} articles={domainArticles} currentId={entry.id} base={base} dom={dom} />
+      </Fragment>
+    </NavDrawer>
   </div>
 </Layout>

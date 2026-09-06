@@ -7,6 +7,7 @@ import { DOMAINS, type DomainKey } from '../lib/domains';
 import { loadTags } from '../lib/tags';
 import { formatShortDate } from '../lib/format';
 import TagToc from './TagToc.astro';
+import NavDrawer from './NavDrawer.astro';
 
 interface Props {
   dom: DomainKey;
@@ -89,5 +90,9 @@ const hostOf = (url: string) => {
 
       {tocEntries.length > 0 && <TagToc entries={tocEntries} spy />}
     </div>
+
+    <NavDrawer page="col">
+      <TagToc entries={tocEntries} />
+    </NavDrawer>
   </div>
 </Layout>

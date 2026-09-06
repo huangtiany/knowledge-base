@@ -1,0 +1,87 @@
+---
+// 移动端目录抽屉：侧栏被断点隐藏后的替代入口，每页挂载一个。
+// page 控制悬浮按钮出现的断点：detail 页 <1280（左栏先收），col 页 <900（右栏收）；
+// 详情页抽屉内常驻两个 tab（本页目录 / 全部笔记），栏目页单内容区。
+interface Props {
+  page: 'col' | 'detail';
+}
+const { page } = Astro.props;
+const hasTabs = page === 'detail';
+---
+<button class="drawer-fab" data-page={page} aria-label="打开目录" aria-expanded="false" aria-controls="site-drawer">
+  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path d="M2 3.5h12M2 8h12M2 12.5h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+  </svg>
+  <span>目录</span>
+</button>
+<div class="drawer-backdrop" hidden></div>
+<aside id="site-drawer" class="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <span class="drawer-t">目录</span>
+    <button class="drawer-close" aria-label="关闭目录">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+  {hasTabs && (
+    <div class="drawer-tabs">
+      <button type="button" class="on" data-tab-btn="toc">本页目录</button>
+      <button type="button" data-tab-btn="nav">全部笔记</button>
+    </div>
+  )}
+  <div class="drawer-body">
+    {hasTabs ? (
+      <>
+        <div data-tab="toc"><slot name="toc" /></div>
+        <div data-tab="nav" hidden><slot name="nav" /></div>
+      </>
+    ) : (
+      <slot />
+    )}
+  </div>
+</aside>
+
+<script>
+  // 开合 + 锁滚 + Esc / 遮罩 / 锚点关闭 + tab 切换。visibility 折叠保证关闭时不在 Tab 焦点序里。
+  const fab = document.querySelector<HTMLButtonElement>('.drawer-fab');
+  const backdrop = document.querySelector<HTMLDivElement>('.drawer-backdrop');
+  const drawer = document.getElementById('site-drawer');
+  if (fab && backdrop && drawer) {
+    const closeBtn = drawer.querySelector<HTMLButtonElement>('.drawer-close');
+    const open = () => {
+      drawer.classList.add('open');
+      drawer.setAttribute('aria-hidden', 'false');
+      backdrop.hidden = false;
+      fab.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      closeBtn?.focus();
+    };
+    const close = () => {
+      drawer.classList.remove('open');
+      drawer.setAttribute('aria-hidden', 'true');
+      backdrop.hidden = true;
+      fab.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      fab.focus();
+    };
+    fab.addEventListener('click', open);
+    closeBtn?.addEventListener('click', close);
+    backdrop.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && drawer.classList.contains('open')) close();
+    });
+    drawer.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a[href^="#"]')) close();
+    });
+    const tabs = [...drawer.querySelectorAll<HTMLButtonElement>('[data-tab-btn]')];
+    tabs.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        tabs.forEach((b) => b.classList.toggle('on', b === btn));
+        drawer.querySelectorAll<HTMLElement>('[data-tab]').forEach((panel) => {
+          panel.hidden = panel.dataset.tab !== btn.dataset.tabBtn;
+        });
+      });
+    });
+  }
+</script>

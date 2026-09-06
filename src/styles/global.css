@@ -244,6 +244,29 @@ footer { border-top: 1px solid var(--line); margin-top: 40px; }
 .to-top:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 @media(max-width:760px) { .to-top { right: 14px; bottom: 16px; width: 36px; height: 36px; } }
 
+/* ---------- 移动端目录抽屉（侧栏被断点隐藏后的替代入口） ---------- */
+/* 悬浮按钮叠在回到顶部上方；宽屏侧栏都在时不出现 */
+.drawer-fab { position: fixed; right: 22px; bottom: 78px; z-index: 15; height: 40px; padding: 0 14px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--muted); display: flex; align-items: center; gap: 7px; cursor: pointer; font-size: 13px; font-family: var(--sans); box-shadow: 0 6px 18px rgba(27, 39, 51, .10); }
+.drawer-fab:hover { border-color: var(--ink); color: var(--ink); }
+@media(min-width:1280px) { .drawer-fab[data-page="detail"] { display: none; } }
+@media(min-width:900px) { .drawer-fab[data-page="col"] { display: none; } }
+@media(max-width:760px) { .drawer-fab { right: 14px; bottom: 62px; height: 36px; } }
+
+.drawer-backdrop { position: fixed; inset: 0; z-index: 29; background: rgba(27, 39, 51, .32); }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 30; width: min(320px, 85vw); background: var(--paper); border-left: 1px solid var(--line); transform: translateX(100%); visibility: hidden; transition: transform .22s ease, visibility .22s; display: flex; flex-direction: column; }
+.drawer.open { transform: none; visibility: visible; }
+@media(prefers-reduced-motion: reduce) { .drawer { transition: none; } }
+.drawer-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.drawer-t { font-family: var(--serif); font-weight: 700; font-size: 15px; }
+.drawer-close { border: none; background: none; color: var(--muted); width: 30px; height: 30px; cursor: pointer; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+.drawer-close:hover { background: #EDEFEA; color: var(--ink); }
+.drawer-tabs { display: flex; border-bottom: 1px solid var(--line); }
+.drawer-tabs button { flex: 1; padding: 10px 0; border: none; background: none; color: var(--muted); font-size: 13.5px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.drawer-tabs button.on { color: var(--dom, var(--ai)); font-weight: 600; border-bottom-color: var(--dom, var(--ai)); }
+.drawer-body { padding: 14px 16px 20px; overflow-y: auto; flex: 1; }
+/* 抽屉内的目录 / 全部笔记副本：去掉右栏的 sticky、边线与限高 */
+.drawer .toc, .drawer .art-nav { position: static; max-height: none; overflow: visible; border: none; padding: 0; font-size: 13.5px; }
+
 /* ---------- 404（GitHub Pages 会以站点内任意未匹配路径渲染此页） ---------- */
 .not-found { max-width: 34em; margin: 0 auto; padding: 110px 0 90px; text-align: center; }
 .not-found .nf-code { font-family: var(--serif); font-weight: 900; font-size: 100px; line-height: 1; color: #DDE2DA; }

@@ -7,6 +7,7 @@ import { loadTags } from '../lib/tags';
 import { groupArticlesByTags } from '../lib/navigation';
 import { formatShortDate } from '../lib/format';
 import TagToc from './TagToc.astro';
+import NavDrawer from './NavDrawer.astro';
 
 interface Props {
   dom: DomainKey;
@@ -70,5 +71,9 @@ const stats = `${articles.length} 篇笔记 · ${resCount} 张资源卡${lastUpd
 
       {tocEntries.length > 0 && <TagToc entries={tocEntries} spy />}
     </div>
+
+    <NavDrawer page="col">
+      <TagToc entries={tocEntries} />
+    </NavDrawer>
   </div>
 </Layout>
