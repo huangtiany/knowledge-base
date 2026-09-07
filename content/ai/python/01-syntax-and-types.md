@@ -60,7 +60,9 @@ total_length(("xy", [1, 2]))   # 4：元组和列表都行
 
 `None` 不是空指针，不是"未定义"，它是一个**真实存在的单例对象**，表示"这里故意没有值"。
 
-判断必须用 `is`，不能用 `==`：
+只有当变量指向的对象就是全局唯一的 `None` 时，`is None` 才为 `True`。函数无返回值或只有空 `return` 时，都会返回 `None`。
+
+判断 `None` 必须用 `is`，不能用 `==`：
 
 ```python title="none.py"
 def find_user(uid):
@@ -73,15 +75,36 @@ if user is None:        # 恒等判断，不用 ==
     print("没找到")
 ```
 
-原因是 `==` 可以被类自定义（`__eq__`），一个实现了特殊 `__eq__` 的对象可能"等于" None；`is` 比较的是对象身份，不受其影响。同理，空容器判断惯用写法是利用真值：
+原因是 `==` 可以被类自定义（`__eq__`），一个实现了特殊 `__eq__` 的对象可能"等于" None；`is` 比较的是对象内存身份，不受其影响。
+
+### 真值判断 vs is None
+
+在条件分支中，Python 会自动对值进行真假值测试（Truthiness）。不要把"假值"和 `None` 混淆：
+
+| 表达式 | `bool(...)` | `... is None` | 说明 |
+|---|---|---|---|
+| `None` | `False` | **`True`** | 唯一的单例对象 |
+| `0` | `False` | `False` | 整数对象，不是 None |
+| `""`（空字符串） | `False` | `False` | 字符串对象，不是 None |
+| `[]`（空列表） | `False` | `False` | 列表对象，不是 None |
+| `{}`（空字典） | `False` | `False` | 字典对象，不是 None |
+| `False` | `False` | `False` | 布尔对象，不是 None |
+
+区分两种场景的惯用写法：
 
 ```python title="truthiness.py"
+# 场景 1：检查容器是否为空（惯用真值判断）
 items = []
 if not items:           # 惯用：空容器为假
     print("空列表")
-```
 
-`0`、`""`、`[]`、`{}`、`None` 都为假，其余为真。注意这会把 `0` 一起判为假，"区分没有值和值为零"的场景必须用 `is None`。
+# 场景 2：区分"没有传值"还是"传了 0 / 空字符串"（必须用 is None）
+def set_score(score=None):
+    if score is None:
+        print("未评分")
+    else:
+        print(f"得分: {score}")  # score=0 时能正常进入分支
+```
 
 ## 小结
 

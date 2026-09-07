@@ -1,8 +1,8 @@
 ---
-title: 模块与包、异常处理、f-string 与文件 IO
+title: 模块与包、异常处理与 f-string
 date: 2026-09-05
 tags: [Python]
-summary: import 的查找机制、__main__ 判断、EAFP 异常风格、f-string 格式化，以及 Windows 上必设的 encoding="utf-8"。
+summary: import 的查找机制、__main__ 判断、EAFP 异常风格，以及 f-string 格式化。
 ---
 
 把代码组织成模块、处理出错、格式化输出、读写文件，这四件事是之后所有工程代码的基础。
@@ -84,9 +84,9 @@ with open(md_files[0], encoding="utf-8") as f:    # with 自动关闭文件
 Path("out.jsonl").write_text("hello\n", encoding="utf-8")
 ```
 
-`encoding="utf-8"` 在 Windows 上**必须显式写**：默认编码随系统区域设置（简中 Windows 是 GBK），读 UTF-8 的 Markdown 会直接 UnicodeDecodeError。这是 Windows 开发 Python 的第一坑，写 RAG 语料加载代码时尤其高频。
+`encoding="utf-8"` 在 Windows 上**必须显式写**：默认编码随系统区域设置（简中 Windows 是 GBK），读 UTF-8 的 Markdown 会直接 UnicodeDecodeError。这是 Windows 开发 Python 的常见陷阱，写 RAG 语料加载代码时尤其高频。
 
-按行流式读大文件用迭代，不要一次 read()：
+按行流式读大文件用迭代，避免一次性 read()：
 
 ```python title="stream.py"
 with open("corpus.txt", encoding="utf-8") as f:
@@ -94,7 +94,6 @@ with open("corpus.txt", encoding="utf-8") as f:
         if i >= 3:
             break
 ```
-
 ## 参考与延伸
 
 - [Python 官方教程（中文）· 6. 模块 / 8. 错误和异常 / 7. 输入与输出](https://docs.python.org/zh-cn/3/tutorial/modules.html)
